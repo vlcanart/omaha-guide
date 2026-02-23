@@ -1,0 +1,195 @@
+# ═══════════════════════════════════════════════════════════
+# GO: Guide to Omaha — 2x Daily Event Pipeline & Deploy
+# ═══════════════════════════════════════════════════════════
+#
+# Morning (7 AM CT / 1 PM UTC): Full pipeline — all 55+ sources
+# Evening (7 PM CT / 1 AM UTC): Tier 1 refresh — major venues only
+#
+# Required Secrets:
+#   ANTHROPIC_API_KEY, NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID
+#
+# Optional Secrets:
+#   JINA_API_KEY — raises Jina rate limits
+#   SLACK_WEBHOOK_URL / DISCORD_WEBHOOK_URL — failure alerts
+#   TICKETMASTER_AFFILIATE_ID, ETIX_AFFILIATE_ID, AXS_AFFILIATE_ID,
+#   EVENTBRITE_AFFILIATE_ID, SEETICKETS_AFFILIATE_ID
+# ═══════════════════════════════════════════════════════════
+
+name: Event Pipeline
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # 7 AM CT (morning full)
+    - cron: "0 1 * * *"    # 7 PM CT (evening tier-1)
+
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Pipeline mode"
+        required: true
+        default: "full"
+        type: choice
+        options: [full, tier1, fast, dry-run]
+      source_filter:
+        description: "Source ID filter (optional)"
+        required: false
+        default: ""
+      area_filter:
+        description: "Area filter (optional)"
+        required: false
+        default: ""
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      # ── Determine mode ──
+      - name: Determine mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" = "13" ]; then
+              echo "mode=full" >> $GITHUB_OUTPUT
+              echo "desc=Morning full run (all sources)" >> $GITHUB_OUTPUT
+            else
+              echo "mode=tier1" >> $GITHUB_OUTPUT
+              echo "desc=Evening tier-1 refresh" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+            echo "desc=Manual (${{ github.event.inputs.mode }})" >> $GITHUB_OUTPUT
+          fi
+
+      # ── Run Pipeline ──
+      - name: Run event pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TICKETMASTER_AFFILIATE_ID: ${{ secrets.TICKETMASTER_AFFILIATE_ID }}
+          ETIX_AFFILIATE_ID: ${{ secrets.ETIX_AFFILIATE_ID }}
+          AXS_AFFILIATE_ID: ${{ secrets.AXS_AFFILIATE_ID }}
+          EVENTBRITE_AFFILIATE_ID: ${{ secrets.EVENTBRITE_AFFILIATE_ID }}
+          SEETICKETS_AFFILIATE_ID: ${{ secrets.SEETICKETS_AFFILIATE_ID }}
+        run: |
+          MODE="${{ steps.mode.outputs.mode }}"
+          ARGS="--merge"
+          case "$MODE" in
+            full)   ARGS="$ARGS --concurrency 5" ;;
+            tier1)  ARGS="$ARGS --tier 1 --skip-url-check" ;;
+            fast)   ARGS="$ARGS --skip-url-check" ;;
+            dry-run) ARGS="--dry-run" ;;
+          esac
+          if [ -n "${{ github.event.inputs.source_filter }}" ]; then
+            ARGS="$ARGS --source ${{ github.event.inputs.source_filter }}"
+          fi
+          if [ -n "${{ github.event.inputs.area_filter }}" ]; then
+            ARGS="$ARGS --area \"${{ github.event.inputs.area_filter }}\""
+          fi
+          echo "🚀 ${{ steps.mode.outputs.desc }}"
+          echo "Running: node scripts/run-pipeline.js $ARGS"
+          eval "node scripts/run-pipeline.js $ARGS"
+
+      # ── Google Sheets sync ──
+      - name: Pull Google Sheet overrides
+        if: ${{ steps.mode.outputs.mode != 'dry-run' }}
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: google-sa-key.json
+        run: |
+          if [ -n "${{ secrets.GOOGLE_SA_KEY_JSON }}" ]; then
+            echo '${{ secrets.GOOGLE_SA_KEY_JSON }}' > google-sa-key.json
+            node scripts/sheets-sync.js --pull || echo "⚠ Sheets pull skipped"
+            rm -f google-sa-key.json
+          else
+            echo "⏭ Google Sheets not configured — skipping"
+          fi
+
+      - name: Push events to Google Sheet
+        if: ${{ steps.mode.outputs.mode != 'dry-run' }}
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: google-sa-key.json
+        run: |
+          if [ -n "${{ secrets.GOOGLE_SA_KEY_JSON }}" ]; then
+            echo '${{ secrets.GOOGLE_SA_KEY_JSON }}' > google-sa-key.json
+            node scripts/sheets-sync.js --push || echo "⚠ Sheets push skipped"
+            rm -f google-sa-key.json
+          else
+            echo "⏭ Google Sheets not configured — skipping"
+          fi
+
+      # ── Clean expired events ──
+      - name: Clean expired events
+        if: ${{ steps.mode.outputs.mode != 'dry-run' }}
+        run: node scripts/review-events.js --expired
+
+      # ── Commit ──
+      - name: Commit event data
+        if: ${{ steps.mode.outputs.mode != 'dry-run' }}
+        run: |
+          git config user.name "GO Bot"
+          git config user.email "bot@goguideomaha.com"
+          git add data/ app/events-data.js public/sitemap.xml public/robots.txt
+          git diff --cached --quiet || git commit -m "🗓️ ${{ steps.mode.outputs.desc }} $(date +%Y-%m-%d_%H:%M)"
+          git push
+
+      # ── Build & Deploy ──
+      - name: Build static site
+        if: ${{ steps.mode.outputs.mode != 'dry-run' }}
+        run: npm run build
+
+      - name: Deploy to Netlify
+        if: ${{ steps.mode.outputs.mode != 'dry-run' }}
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: "./out"
+          production-deploy: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # ── Summary ──
+      - name: Pipeline summary
+        if: always()
+        run: |
+          echo "## 📊 Pipeline — ${{ steps.mode.outputs.desc }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/ingest-log.json ]; then
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat data/ingest-log.json >> $GITHUB_STEP_SUMMARY
+            echo '' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f data/health.json ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Health Report" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            node scripts/run-pipeline.js --report >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # ── Alert on failure ──
+      - name: Alert on workflow failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          MSG="💥 GO Guide pipeline workflow failed! Mode: ${{ steps.mode.outputs.desc }}. Check: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" -H "Content-Type: application/json" -d "{\"text\": \"$MSG\"}" || true
+          fi
+          if [ -n "$DISCORD_WEBHOOK_URL" ]; then
+            curl -s -X POST "$DISCORD_WEBHOOK_URL" -H "Content-Type: application/json" -d "{\"content\": \"$MSG\"}" || true
+          fi

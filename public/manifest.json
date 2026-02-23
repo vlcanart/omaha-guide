@@ -1,0 +1,22 @@
+{
+  "name": "GO: Guide to Omaha",
+  "short_name": "GO Omaha",
+  "description": "The most comprehensive guide to events, concerts, sports, comedy & things to do in the Omaha metro area. Updated twice daily.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#141618",
+  "theme_color": "#5EC4B6",
+  "categories": ["entertainment", "events", "lifestyle"],
+  "lang": "en-US",
+  "icons": [
+    { "src": "/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/favicon.svg", "sizes": "32x32", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Today's Events", "short_name": "Today", "url": "/?preset=today" },
+    { "name": "This Weekend", "short_name": "Weekend", "url": "/?preset=weekend" }
+  ]
+}

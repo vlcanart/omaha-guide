@@ -1,0 +1,7 @@
+# GO: Guide to Omaha
+User-agent: *
+Allow: /
+Sitemap: https://goguideomaha.com/sitemap.xml
+
+# Crawl-delay for politeness
+Crawl-delay: 1

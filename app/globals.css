@@ -1,0 +1,124 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: #141618;
+  color: #F2EFE9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+::placeholder {
+  color: rgba(242, 239, 233, 0.32);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sheetUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ecard {
+  transition: all 0.22s cubic-bezier(.25, .8, .25, 1);
+}
+
+.ecard:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.ecard:active {
+  transform: translateY(0);
+}
+
+.hbtn {
+  transition: all 0.18s ease;
+}
+
+.hbtn:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.hbtn:active {
+  transform: scale(0.96);
+}
+
+.pill {
+  transition: all 0.18s ease;
+}
+
+.pill:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #F2EFE9 !important;
+}
+
+.daybtn {
+  transition: all 0.2s ease;
+}
+
+.daybtn:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.daybtn:active {
+  box-shadow: 0 0 18px rgba(94, 196, 182, 0.30) !important;
+  transform: scale(0.97);
+}
+
+.cta {
+  transition: all 0.18s ease;
+}
+
+.cta:hover {
+  opacity: 0.88;
+  box-shadow: 0 4px 18px rgba(94, 196, 182, 0.30);
+}
+
+.cta:active {
+  transform: scale(0.98);
+}
+
+/* PWA safe areas */
+@supports (padding: max(0px)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

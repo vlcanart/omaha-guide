@@ -1,0 +1,45 @@
+{
+  "name": "go-guide-to-omaha",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/prebuild-events.js",
+    "build": "node scripts/prebuild-events.js && node scripts/generate-sitemap.js && next build",
+    "start": "next start",
+
+    "pipeline": "node scripts/run-pipeline.js --merge",
+    "pipeline:full": "node scripts/run-pipeline.js --merge --concurrency 5",
+    "pipeline:fast": "node scripts/run-pipeline.js --merge --skip-url-check",
+    "pipeline:tier1": "node scripts/run-pipeline.js --merge --tier 1",
+    "pipeline:dry": "node scripts/run-pipeline.js --dry-run",
+    "pipeline:cached": "node scripts/run-pipeline.js --merge --skip-scrape",
+    "pipeline:omaha": "node scripts/run-pipeline.js --merge --area Omaha",
+    "pipeline:cb": "node scripts/run-pipeline.js --merge --area \"Council Bluffs\"",
+    "health": "node scripts/run-pipeline.js --report",
+
+    "review": "node scripts/review-events.js",
+    "review:stats": "node scripts/review-events.js --stats",
+    "review:low": "node scripts/review-events.js --low",
+    "review:dupes": "node scripts/review-events.js --dupes",
+    "review:expired": "node scripts/review-events.js --expired",
+    "review:prune": "node scripts/review-events.js --prune",
+
+    "sitemap": "node scripts/generate-sitemap.js",
+    "icons": "node scripts/generate-icons.js",
+
+    "sheets:setup": "node scripts/sheets-sync.js --setup",
+    "sheets:push": "node scripts/sheets-sync.js --push",
+    "sheets:pull": "node scripts/sheets-sync.js --pull",
+    "sheets:status": "node scripts/sheets-sync.js --status",
+
+    "ingest": "node scripts/ingest-events.js",
+    "ingest:merge": "node scripts/ingest-events.js --merge",
+    "ingest:dry": "node scripts/ingest-events.js --dry-run"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  }
+}

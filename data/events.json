@@ -1,0 +1,5276 @@
+[
+  {
+    "title": "Black History Month Story Walk",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-02-23",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Story walk event celebrating Black History Month at The RiverFront park.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877316772
+  },
+  {
+    "title": "Thomas Dambo's TROLLS: Save the Humans",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Interactive troll sculpture exhibition by artist Thomas Dambo featuring large-scale outdoor installations.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322234
+  },
+  {
+    "title": "Botanical Blooms by Pamela Martinez Oquendo",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Botanical art exhibition featuring works by artist Pamela Martinez Oquendo.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316300
+  },
+  {
+    "title": "Difficult Histories Teacher Workshop",
+    "venue": "The Durham Museum",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": "4:30-6:30 PM",
+    "price": "TBD",
+    "desc": "Workshop for teachers focusing on difficult historical topics and how to present them effectively.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "durham",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313285
+  },
+  {
+    "title": "America's Pub Quiz",
+    "venue": "Scriptown Brewing",
+    "area": "Blackstone District",
+    "date": "2026-02-23",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Weekly pub quiz with gift card prizes for 1st, 2nd, and 3rd place teams.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319471
+  },
+  {
+    "title": "Animals In Art",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": null,
+    "price": null,
+    "desc": "Art exhibition featuring animals in various artistic works, running daily until April 29, 2026",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318468
+  },
+  {
+    "title": "Dripping Earth: Cannupa Hanska Luger",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": null,
+    "price": null,
+    "desc": "Art exhibition running daily until March 8, 2026",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317332
+  },
+  {
+    "title": "Jessie Henson: Everything Comes Next",
+    "venue": null,
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": null,
+    "price": null,
+    "desc": "Art exhibition running daily until July 5, 2026",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315811
+  },
+  {
+    "title": "Omaha Beer Week",
+    "venue": "Locations Across the Metro",
+    "area": "Omaha Metro",
+    "date": "2026-02-23",
+    "time": null,
+    "price": null,
+    "desc": "Week-long beer celebration running daily until February 28, 2026",
+    "url": null,
+    "cat": "festivals",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎉",
+    "id": 1771877313987
+  },
+  {
+    "title": "Paul Pfeiffer: Red Green Blue",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": null,
+    "price": null,
+    "desc": "Art exhibition running daily until April 26, 2026",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319527
+  },
+  {
+    "title": "Driver Improvement Program (DIP)",
+    "venue": "Looft Hall at Iowa Western",
+    "area": "Council Bluffs",
+    "date": "2026-02-23",
+    "time": "10:00AM to 6:30PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315469
+  },
+  {
+    "title": "Monday Mayhem: Sand Art and DIY Trinket Dish",
+    "venue": "Carter Lake Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-23",
+    "time": "1:30 to 3:30PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320224
+  },
+  {
+    "title": "Drop-In! Shadow Drawing",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-23",
+    "time": "2:30 to 3:45PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319199
+  },
+  {
+    "title": "Teen Dungeons & Dragons Club",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-23",
+    "time": "4:00 PM - 6:00 PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322439
+  },
+  {
+    "title": "Crafter Dark",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-23",
+    "time": "6:00 PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317668
+  },
+  {
+    "title": "Karaoke Mondays",
+    "venue": "Let It Fly La Vista",
+    "area": "La Vista",
+    "date": "2026-02-23",
+    "time": "7:00 PM - 11:00 PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320713
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-02-23",
+    "time": "TBD",
+    "price": "Free – $20",
+    "desc": "Children's theater show about a boy who plays astronaut in a tangerine dress, celebrating imagination and unconventional play. Runs through March 8.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "familyfun",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322103
+  },
+  {
+    "title": "After School Drop In: Make it!",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-23",
+    "time": "2:30 PM-3:45 PM",
+    "price": "Free",
+    "desc": "Draw pictures by tracing shadows. For kids in kindergarten through 6th grade.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877313867
+  },
+  {
+    "title": "Make It With Shrinky Dinks",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-23",
+    "time": "3:00 PM-5:00 PM",
+    "price": "Free",
+    "desc": "Try your hand at a variety of Shrinky Dink based crafts. Open to patrons in grades 6-12.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321096
+  },
+  {
+    "title": "Music with Lori Lynn!",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-23",
+    "time": "6:30 PM-7:00 PM",
+    "price": "Free",
+    "desc": "Join us for a half hour of musical fun with Lori Lynn! For kids ages 5 years old and younger and an adult companion.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317712
+  },
+  {
+    "title": "Joe Bonamassa",
+    "venue": "Paramount Theatre",
+    "area": "Cedar Rapids",
+    "date": "2026-02-23",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877316649
+  },
+  {
+    "title": "Black History Month Story Walk",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-02-24",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Story walk event celebrating Black History Month at The RiverFront park.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320031
+  },
+  {
+    "title": "Thomas Dambo's TROLLS: Save the Humans",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-24",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Interactive troll sculpture exhibition by artist Thomas Dambo featuring large-scale outdoor installations.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322057
+  },
+  {
+    "title": "Botanical Blooms by Pamela Martinez Oquendo",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-24",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Botanical art exhibition featuring works by artist Pamela Martinez Oquendo.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316795
+  },
+  {
+    "title": "Drawing from Life - Single Session",
+    "venue": "Hot Shops Event Space 101",
+    "area": "Omaha",
+    "date": "2026-02-24",
+    "time": "6:00 PM",
+    "price": "$15",
+    "desc": "Supportive life drawing group session hosted by TG Ndoda",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320062
+  },
+  {
+    "title": "Teacher Tuesday at First Round",
+    "venue": "First Round",
+    "area": "Blackstone District",
+    "date": "2026-02-24",
+    "time": "11:00 AM",
+    "price": "25% off for teachers",
+    "desc": "Weekly discount day offering 25% off for all teachers.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320930
+  },
+  {
+    "title": "Best Works at Omaha's Artists' Cooperative Gallery |11 & Harney",
+    "venue": "Artists' Cooperative Gallery",
+    "area": "Omaha",
+    "date": "2026-02-24",
+    "time": null,
+    "price": null,
+    "desc": "Art exhibition running weekly on multiple days until March 1, 2026",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322689
+  },
+  {
+    "title": "Get Building! Bricks at The Durham",
+    "venue": "Durham Museum",
+    "area": "Omaha",
+    "date": "2026-02-24",
+    "time": null,
+    "price": null,
+    "desc": "Interactive building exhibit running weekly on multiple days until May 2, 2026",
+    "url": null,
+    "cat": "family",
+    "sourceId": "visitomaha",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315718
+  },
+  {
+    "title": "Hitchcock Hike for Health Club",
+    "venue": "Hitchcock Nature Center",
+    "area": "Council Bluffs",
+    "date": "2026-02-24",
+    "time": "9:00 to 11:00AM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315785
+  },
+  {
+    "title": "Damien Jurado Plays His Greatest Hits with St. Yuma",
+    "venue": "Reverb Lounge",
+    "area": "Benson",
+    "date": "2026-02-24",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Damien Jurado performs his greatest hits with opening act St. Yuma.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877314091
+  },
+  {
+    "title": "Songs & Stories",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-24",
+    "time": "10:00 AM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314371
+  },
+  {
+    "title": "Boredom Busters: Yarn Paintings",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-24",
+    "time": "4:00 PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313958
+  },
+  {
+    "title": "Storytime @ the Library",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-24",
+    "time": "9:45 AM-10:15 AM",
+    "price": "Free",
+    "desc": "Join us for stories, songs, and fun! Most appropriate for kids 5 and under and an adult companion.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314728
+  },
+  {
+    "title": "Make It With Shrinky Dinks",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-24",
+    "time": "3:00 PM-5:00 PM",
+    "price": "Free",
+    "desc": "Try your hand at a variety of Shrinky Dink based crafts. Open to patrons in grades 6-12.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877313305
+  },
+  {
+    "title": "Step Afrika",
+    "venue": "North Iowa Auditorium",
+    "area": "Mason City",
+    "date": "2026-02-24",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317205
+  },
+  {
+    "title": "Creighton Men's Basketball vs DePaul",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-25",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Creighton Bluejays men's basketball game against DePaul.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Basketball"
+    ],
+    "emoji": "🏆",
+    "id": 1771877317503
+  },
+  {
+    "title": "Omaha Women's Basketball vs. ORU",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-02-25",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Omaha women's basketball team takes on Oral Roberts University at home.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Basketball"
+    ],
+    "emoji": "🏆",
+    "id": 1771877318488
+  },
+  {
+    "title": "National Theatre Live: Dr. Strangelove",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-02-25",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "National Theatre Live presentation of Dr. Strangelove at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321965
+  },
+  {
+    "title": "Black History Month Story Walk",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-02-25",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Story walk event celebrating Black History Month at The RiverFront park.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877323094
+  },
+  {
+    "title": "Extended Hours + Discounted Admission",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-02-25",
+    "time": "3:00 PM",
+    "price": "Discounted admission",
+    "desc": "Every Wednesday, we're open late with discounted admission after 3PM! Tickets issued onsite.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321075
+  },
+  {
+    "title": "Thomas Dambo's TROLLS: Save the Humans",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-25",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Interactive troll sculpture exhibition by artist Thomas Dambo featuring large-scale outdoor installations.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320079
+  },
+  {
+    "title": "Botanical Blooms by Pamela Martinez Oquendo",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-25",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Botanical art exhibition featuring works by artist Pamela Martinez Oquendo.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316984
+  },
+  {
+    "title": "Taco Day at Crescent Moon",
+    "venue": "Crescent Moon",
+    "area": "Blackstone District",
+    "date": "2026-02-25",
+    "time": "11:00 AM",
+    "price": "$1.75 tacos",
+    "desc": "Weekly taco special with $1.75 tacos, $3 tall boys, and $4 house margaritas.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319157
+  },
+  {
+    "title": "Float Fest with Scriptown Brewing and Coneflower Creamery",
+    "venue": "Scriptown Brewing",
+    "area": "Blackstone District",
+    "date": "2026-02-25",
+    "time": "6:00 PM",
+    "price": "TBD",
+    "desc": "Beer and ice cream pairing event at the Scriptown tasting room.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322517
+  },
+  {
+    "title": "Trivia @ Crescent Moon",
+    "venue": "Crescent Moon",
+    "area": "Blackstone District",
+    "date": "2026-02-25",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Weekly trivia night at Crescent Moon.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315749
+  },
+  {
+    "title": "Trivia at First Round",
+    "venue": "First Round",
+    "area": "Blackstone District",
+    "date": "2026-02-25",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Weekly trivia night at First Round.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877318451
+  },
+  {
+    "title": "SUBSTANCE",
+    "venue": "The Sydney Bar & Lounge",
+    "area": "Benson",
+    "date": "2026-02-25",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Musical performance at The Sydney Bar & Lounge.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322310
+  },
+  {
+    "title": "PWP Wrestling presents: Love Hurts",
+    "venue": "The Waiting Room Lounge",
+    "area": "Benson",
+    "date": "2026-02-25",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Professional wrestling event presented by PWP Wrestling.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877320291
+  },
+  {
+    "title": "Popcorn and Picture Books",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-25",
+    "time": "4:00 PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877316627
+  },
+  {
+    "title": "Drop In: Art-a-doodle",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-25",
+    "time": "10:30 AM-11:30 AM",
+    "price": "Free",
+    "desc": "Drop-In and explore toddler friendly art materials. For kids ages 5 years old and younger and an adult companion.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317866
+  },
+  {
+    "title": "Make It With Shrinky Dinks",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-25",
+    "time": "3:00 PM-5:00 PM",
+    "price": "Free",
+    "desc": "Try your hand at a variety of Shrinky Dink based crafts. Open to patrons in grades 6-12.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877316662
+  },
+  {
+    "title": "Lecture Series: The Ames Connection to WWII's Manhattan Project",
+    "venue": "Ames Public Library",
+    "area": "Ames",
+    "date": "2026-02-25",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319917
+  },
+  {
+    "title": "Omaha Supernovas vs Atlanta Vibe Volleyball",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Professional volleyball match featuring Omaha Supernovas against Atlanta Vibe.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Volleyball"
+    ],
+    "emoji": "🏆",
+    "id": 1771877315037
+  },
+  {
+    "title": "All Things Equal",
+    "venue": "Orpheum Theater",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "A theatrical performance at the historic Orpheum Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "opa",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316257
+  },
+  {
+    "title": "For the People…In the Pit St. Patrick's Day 2026 Tour - DROPKICK MURPHYS",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "7:00 PM",
+    "price": "SOLD OUT",
+    "desc": "Dropkick Murphys with The Aggrolites, Haywire, and Slugger for their St. Patrick's Day tour.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315292
+  },
+  {
+    "title": "Compensation",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Repertory screening of the 1999 film at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317458
+  },
+  {
+    "title": "Art School/ Homeschool: Grades 4–6",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Educational art program designed for homeschool students in grades 4-6.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319709
+  },
+  {
+    "title": "Art School/Homeschool: Grades 1–3",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Educational art program designed for homeschool students in grades 1-3.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316206
+  },
+  {
+    "title": "LIVE @ LOW END | ZOH AMBA",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Live music performance at Low End venue within Bemis Center.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877313557
+  },
+  {
+    "title": "Black History Month Story Walk",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-02-26",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Story walk event celebrating Black History Month at The RiverFront park.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314068
+  },
+  {
+    "title": "Thomas Dambo's TROLLS: Save the Humans",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Interactive troll sculpture exhibition by artist Thomas Dambo featuring large-scale outdoor installations.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317862
+  },
+  {
+    "title": "Hair",
+    "venue": "Omaha Community Playhouse - Howard Drew Theatre",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": null,
+    "price": null,
+    "desc": "Theatre production running through March 22",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319593
+  },
+  {
+    "title": "Graffiti Legends: Culture Talk",
+    "venue": "Zinc at The Holland Center",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "7:30 PM",
+    "price": null,
+    "desc": "Hip Hop Lab community event",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877323099
+  },
+  {
+    "title": "All Things Equal - The Life & Trials of Ruth Bader Ginsburg",
+    "venue": "Orpheum Theater",
+    "area": "Omaha",
+    "date": "2026-02-26",
+    "time": "7:30 PM",
+    "price": null,
+    "desc": "Theatre production about Ruth Bader Ginsburg",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315047
+  },
+  {
+    "title": "America's Pub Quiz",
+    "venue": "Scriptown Brewing",
+    "area": "Blackstone District",
+    "date": "2026-02-26",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Weekly Thursday pub quiz with gift card prizes for top three teams.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319324
+  },
+  {
+    "title": "Bingo at Jay's",
+    "venue": "Jay's Games & Beer Garden",
+    "area": "Blackstone District",
+    "date": "2026-02-26",
+    "time": "9:00 PM",
+    "price": "TBD",
+    "desc": "Weekly bingo night at Jay's Games & Beer Garden.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317172
+  },
+  {
+    "title": "Metro Concerts Live Presents: Psyclon Nine with Clockwork Echo, Our Frankenstein",
+    "venue": "Reverb Lounge",
+    "area": "Benson",
+    "date": "2026-02-26",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Psyclon Nine performs with opening acts Clockwork Echo and Our Frankenstein.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315060
+  },
+  {
+    "title": "Crochet Club",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-26",
+    "time": "5:00 PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316702
+  },
+  {
+    "title": "Storytime @ the Library",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-26",
+    "time": "9:45 AM-10:15 AM",
+    "price": "Free",
+    "desc": "Join us for stories, songs, and fun! Most appropriate for kids 5 and under and an adult companion.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877318763
+  },
+  {
+    "title": "Leap! National Dance Competition 2026",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "7:00 AM",
+    "price": "TBD",
+    "desc": "National dance competition featuring performers from across the country.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317982
+  },
+  {
+    "title": "The Omaha Home & Garden Expo",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "Home and garden expo showcasing products and services for homeowners.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314424
+  },
+  {
+    "title": "Omaha Hockey vs. Miami (Ohio)",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Omaha Mavericks hockey team faces Miami University of Ohio.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877313900
+  },
+  {
+    "title": "SJ/SEA Presents: MELODRAMA / OLIO – NIGHT THREE",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "7:30 PM",
+    "price": "$20",
+    "desc": "Third night of the Melodrama/Olio show series presented by SJ/SEA.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322615
+  },
+  {
+    "title": "Pillion",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "New release LGBTQIA2S+ film starting at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318904
+  },
+  {
+    "title": "A Poet",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "New release film starting at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315081
+  },
+  {
+    "title": "Bison Bead Workshop",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Workshop focused on creating bead art with bison themes.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313460
+  },
+  {
+    "title": "Beading: Geometric Designs",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Workshop teaching geometric beading techniques and patterns.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315410
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "A theatrical production about self-expression and identity based on the beloved children's book.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322591
+  },
+  {
+    "title": "Omaha Hockey Hall of Fame Luncheon",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-02-27",
+    "time": "11:30 AM",
+    "price": "TBD",
+    "desc": "Annual luncheon honoring Omaha hockey legends and history.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877315319
+  },
+  {
+    "title": "Los Tucanes de Tijuana with Zamora Live",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-02-27",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Popular Mexican regional music concert featuring Los Tucanes de Tijuana with special guest Zamora Live.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317199
+  },
+  {
+    "title": "Every Body Has a Story: A Night with Nebraska Writers Collective",
+    "venue": "KANEKO",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Experience a powerful night of live readings by the Nebraska Writers Collective, inspired by Under The Skin exhibition. Original poetry and personal reflections explore the human body as storyteller.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "kaneko",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315646
+  },
+  {
+    "title": "The RiverFront Seed Share",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-02-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Seed sharing event at The RiverFront park for community gardening.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877313752
+  },
+  {
+    "title": "Thomas Dambo's TROLLS: Save the Humans",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Interactive troll sculpture exhibition by artist Thomas Dambo featuring large-scale outdoor installations.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322793
+  },
+  {
+    "title": "New York Voices - The Grand Finale",
+    "venue": "Holland Music Club",
+    "area": "Omaha",
+    "date": "2026-02-27",
+    "time": "7:30 PM",
+    "price": null,
+    "desc": "Music performance",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877316506
+  },
+  {
+    "title": "Rainbow Dance Regional Competition",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-02-27",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318116
+  },
+  {
+    "title": "PACE | Hoff Fourth Friday",
+    "venue": "Hoff Family Arts & Culture Center",
+    "area": "Council Bluffs",
+    "date": "2026-02-27",
+    "time": "4:00 to 10:00PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320757
+  },
+  {
+    "title": "Dance to the Beat",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-02-27",
+    "time": "7:00 to 11:00PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313322
+  },
+  {
+    "title": "Hoff Fourth Friday powered by Black Hills Energy",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-27",
+    "time": "4:00 PM - 10:00 PM",
+    "price": null,
+    "desc": "Monthly celebration of art, music, food, and community featuring gallery openings, pop-up restaurant, live music, hands-on activities, and creative energy throughout the Hoff.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316935
+  },
+  {
+    "title": "Creamy Chicken Pesto Risotto with Chef Tabatha",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-27",
+    "time": "6:00 PM",
+    "price": null,
+    "desc": "Pop-up restaurant experience during Hoff Fourth Friday",
+    "url": null,
+    "cat": "family",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320111
+  },
+  {
+    "title": "Collegiate Art Exhibition Opening Night",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-27",
+    "time": "6:30 PM",
+    "price": null,
+    "desc": "Opening night for collegiate art exhibition",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877323014
+  },
+  {
+    "title": "Turnin' Gears",
+    "venue": "McCormick's 1894 Bar",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-27",
+    "time": "7:00 PM - 9:00 PM",
+    "price": null,
+    "desc": "Live music performance during Hoff Fourth Friday",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877313871
+  },
+  {
+    "title": "JACK with Infielder, Mouse Heart",
+    "venue": "Reverb Lounge",
+    "area": "Benson",
+    "date": "2026-02-27",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "JACK performs with opening acts Infielder and Mouse Heart.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877313221
+  },
+  {
+    "title": "CC Pebbles Presents: Moonday Cabaret",
+    "venue": "The Sydney Bar & Lounge",
+    "area": "Benson",
+    "date": "2026-02-27",
+    "time": "9:00 PM",
+    "price": "TBD",
+    "desc": "Cabaret performance presented by CC Pebbles.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318995
+  },
+  {
+    "title": "Snowball Showdown 2!! Bigger! Badder! Louder! Head-to-Head Battle Set Chaos!!",
+    "venue": "The Waiting Room Lounge",
+    "area": "Benson",
+    "date": "2026-02-27",
+    "time": "7:30 PM",
+    "price": "TBD",
+    "desc": "High-energy competitive event at The Waiting Room Lounge.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877321211
+  },
+  {
+    "title": "Little Makers",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-27",
+    "time": "9:00 AM - 11:00 AM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320776
+  },
+  {
+    "title": "Music and Movement",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-27",
+    "time": "9:30 AM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321361
+  },
+  {
+    "title": "Make It With Shrinky Dinks",
+    "venue": "Council Bluffs Public Library",
+    "area": "Council Bluffs",
+    "date": "2026-02-27",
+    "time": "3:00 PM-5:00 PM",
+    "price": "Free",
+    "desc": "Try your hand at a variety of Shrinky Dink based crafts. Open to patrons in grades 6-12.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "cblibrary",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314623
+  },
+  {
+    "title": "Dome After Dark",
+    "venue": "Greater Des Moines Botanical Garden",
+    "area": "Des Moines",
+    "date": "2026-02-27",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317540
+  },
+  {
+    "title": "Jordan Beem",
+    "venue": "Prairie Meadows Finish Line Show Lounge",
+    "area": "Altoona",
+    "date": "2026-02-27",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322991
+  },
+  {
+    "title": "Be Like Blippi Tour",
+    "venue": "Burlington Memorial Auditorium",
+    "area": "Burlington",
+    "date": "2026-02-27",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314225
+  },
+  {
+    "title": "Ballet Des Moines Presents Nothing Holds Still",
+    "venue": "Hoyt Sherman Place",
+    "area": "Des Moines",
+    "date": "2026-02-27",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314241
+  },
+  {
+    "title": "Creighton Men's Basketball vs Providence",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "4:30 PM",
+    "price": "TBD",
+    "desc": "Creighton Bluejays men's basketball game against Providence.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Basketball"
+    ],
+    "emoji": "🏆",
+    "id": 1771877317667
+  },
+  {
+    "title": "Leap! National Dance Competition 2026",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "7:00 AM",
+    "price": "TBD",
+    "desc": "National dance competition featuring performers from across the country.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316470
+  },
+  {
+    "title": "The Omaha Home & Garden Expo",
+    "venue": "CHI Health Center",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "10:00 AM",
+    "price": "TBD",
+    "desc": "Home and garden expo showcasing products and services for homeowners.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "chi",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317285
+  },
+  {
+    "title": "Omaha Women's Basketball vs. Denver",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "1:00 PM",
+    "price": "TBD",
+    "desc": "Omaha women's basketball team plays against the University of Denver.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Basketball"
+    ],
+    "emoji": "🏆",
+    "id": 1771877317964
+  },
+  {
+    "title": "Omaha Hockey vs. Miami (Ohio)",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Second game of the weekend series between Omaha Mavericks and Miami University hockey teams.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877317363
+  },
+  {
+    "title": "SJ/SEA Presents: MELODRAMA / OLIO – NIGHT FOUR",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "7:30 PM",
+    "price": "$20",
+    "desc": "Fourth night of the Melodrama/Olio show series presented by SJ/SEA.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877314747
+  },
+  {
+    "title": "The Fox and the Hound",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Forever Young screening of the classic 1981 animated film at Dundee Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314157
+  },
+  {
+    "title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Weekend Essentials screening of Kubrick's 1964 classic at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321295
+  },
+  {
+    "title": "Watercolor: Significant Objects (Teens & Adults)",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Watercolor painting workshop for teens and adults focusing on significant objects.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322107
+  },
+  {
+    "title": "Public Tour: Meet the Joslyn",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Introductory guided tour of the Joslyn Art Museum.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321495
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "A theatrical production about self-expression and identity based on the beloved children's book.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877313419
+  },
+  {
+    "title": "Omaha Lancers Hockey vs Muskegon Lumberjacks",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-02-28",
+    "time": "6:05 PM",
+    "price": "TBD",
+    "desc": "Omaha Lancers take on the Muskegon Lumberjacks in USHL hockey action.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877322628
+  },
+  {
+    "title": "Broadway Bar – Golden Age of Broadway",
+    "venue": "KANEKO",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Omaha Broadway Bar returns to KANEKO for their second performance with a Golden Age of Broadway themed cabaret featuring a large cast.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "kaneko",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313570
+  },
+  {
+    "title": "Thomas Dambo's TROLLS: Save the Humans",
+    "venue": "Lauritzen Gardens",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Interactive troll sculpture exhibition by artist Thomas Dambo featuring large-scale outdoor installations.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "lauritzen",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320353
+  },
+  {
+    "title": "Flappers & Fizz (21-&-Over Event)",
+    "venue": "The Durham Museum",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "6-10 PM",
+    "price": "TBD",
+    "desc": "Adults-only evening event celebrating the 1920s era with period entertainment and activities.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "durham",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314657
+  },
+  {
+    "title": "Intro to Bronze Casting",
+    "venue": "Foundry at Hot Shops",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "11:00 AM",
+    "price": "$319",
+    "desc": "3-week course introducing traditional lost wax bronze casting method",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313957
+  },
+  {
+    "title": "All the Nooks and Crannies: Paper Pocket Bookmaking Workshop",
+    "venue": "Studio #116 at Hot Shops",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "1:00 PM",
+    "price": "$80",
+    "desc": "Create sewn paper pocketed book with aromatherapy and visualization",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315337
+  },
+  {
+    "title": "Traditional Leaded Stained Glass Workshop",
+    "venue": "Studio 101 at Hot Shops",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "1:00 PM",
+    "price": "$170",
+    "desc": "Learn traditional thousand-year-old leaded stained glass technique",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315132
+  },
+  {
+    "title": "Sterling Silver Stacking Rings Workshop",
+    "venue": "Hot Shops Studio 220",
+    "area": "Omaha",
+    "date": "2026-02-28",
+    "time": "1:00 PM",
+    "price": "$175",
+    "desc": "Introduction to silversmithing and basic soldering techniques",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322745
+  },
+  {
+    "title": "Rainbow Dance Regional Competition",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316272
+  },
+  {
+    "title": "Mom Prom",
+    "venue": "Hoff Family Arts & Culture Center",
+    "area": "Council Bluffs",
+    "date": "2026-02-28",
+    "time": "7:00 to 10:00PM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317516
+  },
+  {
+    "title": "Midnight Madness",
+    "venue": "Crescent Hill at Hitchcock",
+    "area": "Council Bluffs",
+    "date": "2026-02-28",
+    "time": "8:00PM to 12:00AM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317481
+  },
+  {
+    "title": "Youth Ceramics",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-28",
+    "time": "1:00 PM",
+    "price": null,
+    "desc": "Youth ceramics class",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319833
+  },
+  {
+    "title": "Youth Painting",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-28",
+    "time": "2:30 PM",
+    "price": null,
+    "desc": "Youth painting class",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320673
+  },
+  {
+    "title": "Oklahoma! Auditions",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-28",
+    "time": "3:00 PM",
+    "price": null,
+    "desc": "Auditions for Chanticleer Theater production of Oklahoma!",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321966
+  },
+  {
+    "title": "Youth Tech Art",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-02-28",
+    "time": "4:00 PM",
+    "price": null,
+    "desc": "Youth technology art class",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316464
+  },
+  {
+    "title": "Metro Concerts Live Presents: Ricky Chilton",
+    "venue": "Reverb Lounge",
+    "area": "Benson",
+    "date": "2026-02-28",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Ricky Chilton performs at Reverb Lounge.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877318140
+  },
+  {
+    "title": "Spaghetti Supper",
+    "venue": "Immanuel Lutheran Church",
+    "area": "Benson",
+    "date": "2026-02-28",
+    "time": "5:00 PM",
+    "price": "$15 Adults, $8 Youth (6-12), Under 6 Free",
+    "desc": "All-you-can-eat spaghetti dinner at Immanuel Lutheran Church.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315295
+  },
+  {
+    "title": "Plack Blague Birthday Bash with Vempire, Dead Poets",
+    "venue": "The Waiting Room Lounge",
+    "area": "Benson",
+    "date": "2026-02-28",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Birthday celebration concert featuring Plack Blague with opening acts Vempire and Dead Poets.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877318663
+  },
+  {
+    "title": "Arts & Crafts Club",
+    "venue": "La Vista Public Library",
+    "area": "La Vista",
+    "date": "2026-02-28",
+    "time": "11:00 AM",
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "lavista",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318619
+  },
+  {
+    "title": "Gretna Winter Carnival",
+    "venue": "Gretna Crossing YMCA Gymnasium",
+    "area": "Gretna",
+    "date": "2026-02-28",
+    "time": "2:00 PM - 4:00 PM",
+    "price": null,
+    "desc": "Join the City of Gretna for our Winter Carnival",
+    "url": null,
+    "cat": "family",
+    "sourceId": "gretnacal",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319634
+  },
+  {
+    "title": "The Pork Tornadoes",
+    "venue": "Paramount Theatre",
+    "area": "Cedar Rapids",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877320373
+  },
+  {
+    "title": "Sarah Colonna at Wild Rose Clinton",
+    "venue": "Wild Rose Casino & Hotel",
+    "area": "Clinton",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877318582
+  },
+  {
+    "title": "Homespun Family Band Performance",
+    "venue": "Turkey River Cultural Center",
+    "area": "Ridgeway",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877319854
+  },
+  {
+    "title": "Learn on Saturdays",
+    "venue": "Greater Des Moines Botanical Garden",
+    "area": "Des Moines",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877316615
+  },
+  {
+    "title": "The Matt Woods Band",
+    "venue": "Prairie Meadows Finish Line Show Lounge",
+    "area": "Altoona",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315494
+  },
+  {
+    "title": "Bockfest Vier at Millstream Brewing Co.",
+    "venue": "Millstream Brewing Co.",
+    "area": "Amana",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "festivals",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎉",
+    "id": 1771877316745
+  },
+  {
+    "title": "Bawdy Control",
+    "venue": "The James Theater",
+    "area": "Iowa City",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314453
+  },
+  {
+    "title": "Build Your Own Rain Barrel Workshop",
+    "venue": "Conservation Office",
+    "area": "Webster City",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314473
+  },
+  {
+    "title": "Girls in Science Festival",
+    "venue": "Science Center of Iowa",
+    "area": "Des Moines",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317349
+  },
+  {
+    "title": "Explore! Artful Engineering and Technology",
+    "venue": "Brunnier Art Museum",
+    "area": "Ames",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316288
+  },
+  {
+    "title": "Ballet Des Moines Presents Nothing Holds Still",
+    "venue": "Hoyt Sherman Place",
+    "area": "Des Moines",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319618
+  },
+  {
+    "title": "History to You Traveling Trunk Tour - School Days by Ann Cejka",
+    "venue": "Cedar Rapids Area Genealogy Library Lower Level",
+    "area": "Cedar Rapids",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315315
+  },
+  {
+    "title": "It's Flower Day!",
+    "venue": "Betty Strong Encounter Center",
+    "area": "Sioux City",
+    "date": "2026-02-28",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "family",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321293
+  },
+  {
+    "title": "Omaha Queens & Kings",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "3:00 PM",
+    "price": "TBD",
+    "desc": "Local community event featuring the Omaha Queens & Kings.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877319667
+  },
+  {
+    "title": "The Fox and the Hound",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Forever Young screening of the classic 1981 animated film at Dundee Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313498
+  },
+  {
+    "title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Weekend Essentials screening of Kubrick's 1964 classic at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315615
+  },
+  {
+    "title": "Clay Canvas (Ages 6–8)",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Clay art workshop designed for children ages 6-8.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317380
+  },
+  {
+    "title": "Lil Sculptors (Ages 4–5)",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Sculpture workshop designed for young children ages 4-5.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321586
+  },
+  {
+    "title": "Stories to Share: Teen & Adult Workshop",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Storytelling workshop for teens and adults.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319662
+  },
+  {
+    "title": "Reduction Printmaking (Teens & Adults)",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Printmaking workshop teaching reduction techniques for teens and adults.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318989
+  },
+  {
+    "title": "Printed Books (Ages 9–12)",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Book printing workshop designed for children ages 9-12.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313622
+  },
+  {
+    "title": "Public Tour: The Joslyn's Highlights",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Guided tour showcasing the museum's highlights and featured collections.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321777
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "2:00 PM",
+    "price": "TBD",
+    "desc": "A theatrical production about self-expression and identity based on the beloved children's book.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320520
+  },
+  {
+    "title": "Omaha Lancers Hockey vs Muskegon Lumberjacks",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-01",
+    "time": "5:05 PM",
+    "price": "TBD",
+    "desc": "Omaha Lancers take on the Muskegon Lumberjacks in USHL hockey action.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877315975
+  },
+  {
+    "title": "Women's History Month Story Walk",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-03-01",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Story walk event celebrating Women's History Month at The RiverFront park.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317363
+  },
+  {
+    "title": "Dan Brown's Wild Symphony",
+    "venue": "St. Andrews Methodist Church",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "2:00 PM",
+    "price": null,
+    "desc": "Omaha Symphony performance",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Orchestra"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317349
+  },
+  {
+    "title": "Lampworking: Basics of Bead Making Part II",
+    "venue": "Crystal Forge at Hot Shops",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "10:00 AM",
+    "price": "$135",
+    "desc": "Advanced bead making class building on basic skills",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319093
+  },
+  {
+    "title": "Cardinal Suncatcher Stained Glass Workshop",
+    "venue": "Studio 101 at Hot Shops",
+    "area": "Omaha",
+    "date": "2026-03-01",
+    "time": "1:00 PM",
+    "price": "$122",
+    "desc": "Create stained glass cardinal suncatcher with full glass process",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "hotshops",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315925
+  },
+  {
+    "title": "Scattered Hamlet with Molten, Fallen Reign, The Hooligan Gentlemen, The Dead Man's Band",
+    "venue": "Reverb Lounge",
+    "area": "Benson",
+    "date": "2026-03-01",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Scattered Hamlet performs with multiple opening acts.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877320286
+  },
+  {
+    "title": "The White House Effect",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-02",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "The Omaha Checkup screening of the 2024 documentary at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317551
+  },
+  {
+    "title": "Public Tour: Dripping Earth: Cannupa Hanska Luger",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-02",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Guided tour of the Cannupa Hanska Luger exhibition featuring immersive artwork inspired by Northern Plains culture.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316944
+  },
+  {
+    "title": "Fiber Get-Together",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-02",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Social gathering for fiber arts enthusiasts to share techniques and projects.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319862
+  },
+  {
+    "title": "Drawing in the Galleries: Series 2 (Teens & Adults)",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-02",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Drawing workshop held in the museum galleries for teens and adults.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319684
+  },
+  {
+    "title": "Public Tour: The Joslyn's Highlights",
+    "venue": "Joslyn Art Museum",
+    "area": "Omaha",
+    "date": "2026-03-02",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Guided tour showcasing the museum's highlights and featured collections.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "joslyn",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317070
+  },
+  {
+    "title": "Broadway Bar at the Blackbox",
+    "venue": "Omaha Community Playhouse - Howard Drew Theatre",
+    "area": "Omaha",
+    "date": "2026-03-02",
+    "time": "7:00 PM",
+    "price": null,
+    "desc": "Community Playhouse event",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320084
+  },
+  {
+    "title": "& Juliet",
+    "venue": "Orpheum Theater",
+    "area": "Omaha",
+    "date": "2026-03-03",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Broadway musical running March 3-8, 2026 at the Orpheum Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "opa",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316282
+  },
+  {
+    "title": "Cancer Survivorship Workshop",
+    "venue": "Millard Branch, Omaha Public Library",
+    "area": "Omaha",
+    "date": "2026-03-03",
+    "time": "10:00 AM",
+    "price": "Free",
+    "desc": "Workshop focused on cancer survivorship hosted by Nebraska Cancer Alliance.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "eventbrite",
+    "sourcePriority": 8,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877318820
+  },
+  {
+    "title": "Health x Place",
+    "venue": "Catalyst Omaha",
+    "area": "Omaha",
+    "date": "2026-03-03",
+    "time": "6:00 PM",
+    "price": "Free",
+    "desc": "Community event exploring the connection between health and place.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "eventbrite",
+    "sourcePriority": 8,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321184
+  },
+  {
+    "title": "Extended Hours + Discounted Admission",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-04",
+    "time": "3:00 PM",
+    "price": "Discounted admission",
+    "desc": "Every Wednesday, we're open late with discounted admission after 3PM! Tickets issued onsite.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319463
+  },
+  {
+    "title": "Johnny Guitar",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-05",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Repertory screening of the 1954 western at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313720
+  },
+  {
+    "title": "LIVE @ LOW END | MAURICIO LÓPEZ F.",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-05",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Live music performance at Low End venue within Bemis Center.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317073
+  },
+  {
+    "title": "Daniel and The Deliverance with Sal and the All-Nighters and Tumbleweed",
+    "venue": "The Sydney Bar & Lounge",
+    "area": "Benson",
+    "date": "2026-03-05",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Daniel and The Deliverance performs with opening acts.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317333
+  },
+  {
+    "title": "HEATED RIVALRY NIGHT",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-03-06",
+    "time": "9:00 PM",
+    "price": "$32.39–$62.90",
+    "desc": "Heated Rivalry Night event for ages 18 and up.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315631
+  },
+  {
+    "title": "BlackHawk with Ryan Manuel",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-03-06",
+    "time": "8:00 PM",
+    "price": "Starting at $41.10",
+    "desc": "Country music performance featuring BlackHawk with special guest Ryan Manuel.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877316551
+  },
+  {
+    "title": "Sirāt",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-06",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "New release film starting at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319568
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-03-06",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "A theatrical production about self-expression and identity based on the beloved children's book.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322263
+  },
+  {
+    "title": "NJCAA Wrestling Championships",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-03-06",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Men's & Women's National Junior College Wrestling Championship taking place over two days.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "midamerica",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877313499
+  },
+  {
+    "title": "Silent Book Club",
+    "venue": "Hoff Family Arts & Culture Center (HFACC)",
+    "area": "Council Bluffs, IA",
+    "date": "2026-03-06",
+    "time": "6:30 PM - 8:30 PM",
+    "price": null,
+    "desc": "Cozy evening of peaceful reading with raffle giveaway and 'Create Your Own Bookmark' activity",
+    "url": null,
+    "cat": "family",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320881
+  },
+  {
+    "title": "Puzzle Wars",
+    "venue": "McCormick's 1894 Bar",
+    "area": "Council Bluffs, IA",
+    "date": "2026-03-06",
+    "time": "6:30 PM - 9:00 PM",
+    "price": "members $20 & non-members $25",
+    "desc": "Competitive puzzle-solving event with teams of 2-4 people completing multiple puzzles under various challenging conditions within 2-2.5 hours. Includes non-alcoholic drink.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "paceevents",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315926
+  },
+  {
+    "title": "BFF Karaoke w/ Taylor",
+    "venue": "The Sydney Bar & Lounge",
+    "area": "Benson",
+    "date": "2026-03-06",
+    "time": "9:00 PM",
+    "price": "TBD",
+    "desc": "Karaoke night hosted by Taylor at The Sydney Bar & Lounge.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877323035
+  },
+  {
+    "title": "Third Annual Omaha Irish Film Fest",
+    "venue": "Benson Theatre",
+    "area": "Benson",
+    "date": "2026-03-06",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Annual Irish film festival at the historic Benson Theatre.",
+    "url": null,
+    "cat": "festivals",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎉",
+    "id": 1771877322649
+  },
+  {
+    "title": "The Mirror Touch Release Tour Volumes with Notions, Catsclaw, REVIVER",
+    "venue": "The Waiting Room Lounge",
+    "area": "Benson",
+    "date": "2026-03-06",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Volumes on their Mirror Touch Release Tour with opening acts.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322430
+  },
+  {
+    "title": "Felipe Esparza",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-03-07",
+    "time": "7:00 PM",
+    "price": "Starting at $26",
+    "desc": "Comedy performance by comedian Felipe Esparza.",
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877322020
+  },
+  {
+    "title": "Flushed Away",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-07",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Forever Young screening of the 2006 animated film at Dundee Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319038
+  },
+  {
+    "title": "Beau Travail",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-07",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Weekend Essentials screening of the 1999 LGBTQIA2S+ film at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319077
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-03-07",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "A theatrical production about self-expression and identity based on the beloved children's book.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317047
+  },
+  {
+    "title": "Omaha Beef Football vs St Joe Bucks",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-07",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Omaha Beef take on the St Joe Bucks in indoor football action.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Football"
+    ],
+    "emoji": "🏆",
+    "id": 1771877313849
+  },
+  {
+    "title": "OMA ARTALKS",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-07",
+    "time": "3:00 PM",
+    "price": "Free",
+    "desc": "Art-focused talk and discussion event.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317820
+  },
+  {
+    "title": "Cirque Carmen",
+    "venue": "Holland Performing Arts Center",
+    "area": "Omaha",
+    "date": "2026-03-07",
+    "time": null,
+    "price": null,
+    "desc": "Omaha Symphony performance, also March 8",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315422
+  },
+  {
+    "title": "PSYCHOSTICK & GALACTIC EMPIRE with Narcotic Self, Hatricide",
+    "venue": "The Waiting Room Lounge",
+    "area": "Benson",
+    "date": "2026-03-07",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Double headliner show with Psychostick and Galactic Empire plus opening acts.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317982
+  },
+  {
+    "title": "Pajama Jam",
+    "venue": "7440 Crown Point Ave",
+    "area": "Omaha",
+    "date": "2026-03-07",
+    "time": "10:00 PM",
+    "price": "TBD",
+    "desc": "Late night pajama-themed party event.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "eventbrite",
+    "sourcePriority": 8,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319257
+  },
+  {
+    "title": "Winter Concert Series: Screaming Orphans",
+    "venue": null,
+    "area": "Cedar Falls",
+    "date": "2026-03-07",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877323155
+  },
+  {
+    "title": "Flushed Away",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-08",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Forever Young screening of the 2006 animated film at Dundee Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320040
+  },
+  {
+    "title": "Beau Travail",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-08",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Weekend Essentials screening of the 1999 LGBTQIA2S+ film at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322750
+  },
+  {
+    "title": "Morris Micklewhite and the Tangerine Dress",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-03-08",
+    "time": "2:00 PM",
+    "price": "TBD",
+    "desc": "A theatrical production about self-expression and identity based on the beloved children's book.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319910
+  },
+  {
+    "title": "An Evening With TOTO",
+    "venue": "Orpheum Theater",
+    "area": "Omaha",
+    "date": "2026-03-09",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Concert performance by legendary rock band TOTO.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "opa",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877319606
+  },
+  {
+    "title": "Season Reveal",
+    "venue": "Holland Performing Arts Center",
+    "area": "Omaha",
+    "date": "2026-03-09",
+    "time": "6:30 PM",
+    "price": null,
+    "desc": "Omaha Performing Arts season announcement",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "ticketomaha",
+    "sourcePriority": 4,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877316512
+  },
+  {
+    "title": "The Price is Right Live!",
+    "venue": "Orpheum Theater",
+    "area": "Omaha",
+    "date": "2026-03-10",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Interactive live stage version of the popular game show.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "opa",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319672
+  },
+  {
+    "title": "Old School Shakespeare Omaha Presents 'Hamlet'",
+    "venue": "Benson Theatre",
+    "area": "Benson",
+    "date": "2026-03-10",
+    "time": "7:30 PM",
+    "price": "TBD",
+    "desc": "Classic Shakespeare production of Hamlet at the historic Benson Theatre.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314309
+  },
+  {
+    "title": "Extended Hours + Discounted Admission",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-11",
+    "time": "3:00 PM",
+    "price": "Discounted admission",
+    "desc": "Every Wednesday, we're open late with discounted admission after 3PM! Tickets issued onsite.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317134
+  },
+  {
+    "title": "Jim Breuer with Bryan McKenna",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-03-12",
+    "time": "8:00 PM",
+    "price": "Starting at $61.60",
+    "desc": "Comedy show featuring Jim Breuer with special guest Bryan McKenna.",
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877314112
+  },
+  {
+    "title": "On the Waterfront",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-12",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Repertory screening of the 1954 classic at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313932
+  },
+  {
+    "title": "Know Your Enemy Tour - RORY SCOVEL",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-03-13",
+    "time": "8:00 PM",
+    "price": "Starting at $34",
+    "desc": "Rory Scovel with Solon Holt on the Know Your Enemy Tour.",
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877322855
+  },
+  {
+    "title": "Ada Twist, Scientist & Friends",
+    "venue": "The Rose Theater",
+    "area": "Omaha",
+    "date": "2026-03-13",
+    "time": "10:00 AM",
+    "price": "TBD",
+    "desc": "A theatrical production featuring the curious young scientist Ada Twist and her adventures in discovery.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "rose",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317487
+  },
+  {
+    "title": "Conjunto Rienda Real with La Pocima Nortena, Banda Carnaval",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-13",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Mexican regional music concert featuring Conjunto Rienda Real with La Pocima Nortena and Banda Carnaval.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317479
+  },
+  {
+    "title": "Mammal Match",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-13",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "Go on a wild science adventure with Keep Omaha Beautiful to explore the mammals in our urban ecosystem!",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322294
+  },
+  {
+    "title": "Flesh & Blood Pro Quest Vegas, Baby!",
+    "venue": "Legend Comics & Coffee",
+    "area": "Benson",
+    "date": "2026-03-13",
+    "time": "6:00 PM",
+    "price": "TBD",
+    "desc": "Trading card game tournament at Legend Comics & Coffee.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317930
+  },
+  {
+    "title": "SOUL'D OUT: JERSEY EDITION",
+    "venue": "3922 Ames Ave",
+    "area": "Omaha",
+    "date": "2026-03-13",
+    "time": "9:00 PM",
+    "price": "From $0.00",
+    "desc": "Jersey-themed event by Society of Omaha Urban Leaders.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "eventbrite",
+    "sourcePriority": 8,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317128
+  },
+  {
+    "title": "Jitterbugs Swing Dancing Meetup (Omaha)",
+    "venue": "Omaha Jitterbugs",
+    "area": "Omaha",
+    "date": "2026-03-13",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Swing dancing social meetup for dance enthusiasts.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "eventbrite",
+    "sourcePriority": 8,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319733
+  },
+  {
+    "title": "Flushed Away",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Forever Young screening of the 2006 animated film at Dundee Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321700
+  },
+  {
+    "title": "Beau Travail",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Weekend Essentials screening of the 1999 LGBTQIA2S+ film at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322950
+  },
+  {
+    "title": "National Theatre Live: A Streetcar Named Desire",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "National Theatre Live presentation of the 2014 production at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320109
+  },
+  {
+    "title": "Omaha Beef Football vs Pueblo Punishers",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-14",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Omaha Beef take on the Pueblo Punishers in indoor football action.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Football"
+    ],
+    "emoji": "🏆",
+    "id": 1771877314811
+  },
+  {
+    "title": "Every Body Has a Story: An Afternoon with Nebraska Writers Collective",
+    "venue": "KANEKO",
+    "area": "Omaha",
+    "date": "2026-03-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Experience a powerful afternoon of live readings by the Nebraska Writers Collective featuring poetry, short stories, and personal reflections inspired by Under The Skin exhibition.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "kaneko",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315453
+  },
+  {
+    "title": "Pi Day Story Walk",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-03-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Educational story walk event celebrating Pi Day at The RiverFront park.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877323071
+  },
+  {
+    "title": "Pi Day at The RiverFront",
+    "venue": "The RiverFront",
+    "area": "Downtown Omaha",
+    "date": "2026-03-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Pi Day celebration event at The RiverFront park with educational activities.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "riverfront",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877318163
+  },
+  {
+    "title": "BioDiscovery Lab: Algae String",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-14",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "In this hands-on biodesign activity, visitors ages 8 and up will explore the fascinating world of biodegradable polymers derived from algae.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877322912
+  },
+  {
+    "title": "Mammal Match",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-14",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "Go on a wild science adventure with Keep Omaha Beautiful to explore the mammals in our urban ecosystem!",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877316240
+  },
+  {
+    "title": "2nd Saturday - Live Music",
+    "venue": "The Blackstone District",
+    "area": "Blackstone District",
+    "date": "2026-03-14",
+    "time": "10:00 AM",
+    "price": "TBD",
+    "desc": "Monthly event featuring live music throughout the Blackstone District.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877313957
+  },
+  {
+    "title": "Whiskey and Wine Tasting",
+    "venue": "The Cottonwood Hotel",
+    "area": "Blackstone District",
+    "date": "2026-03-14",
+    "time": "2:00 PM",
+    "price": "TBD",
+    "desc": "4th annual whiskey and wine tasting event with 5 tastings and charcuterie included.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "blackstone",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877318218
+  },
+  {
+    "title": "Guns & Hoses Hockey Challenge",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-15",
+    "time": "3:00 PM",
+    "price": "TBD",
+    "desc": "Charity hockey game between local police and fire departments.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877316589
+  },
+  {
+    "title": "Awards Night at the Ruth 2026",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-15",
+    "time": "6:00 PM",
+    "price": "TBD",
+    "desc": "Special awards event at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320844
+  },
+  {
+    "title": "Flushed Away",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-15",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Forever Young screening of the 2006 animated film at Dundee Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877319382
+  },
+  {
+    "title": "Beau Travail",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-15",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Weekend Essentials screening of the 1999 LGBTQIA2S+ film at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318802
+  },
+  {
+    "title": "Omaha Lancers Hockey vs Lincoln Stars",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-15",
+    "time": "5:05 PM",
+    "price": "TBD",
+    "desc": "Omaha Lancers face off against the Lincoln Stars in USHL hockey action.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877323100
+  },
+  {
+    "title": "Mammal Match",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-15",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "Go on a wild science adventure with Keep Omaha Beautiful to explore the mammals in our urban ecosystem!",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877319571
+  },
+  {
+    "title": "HOUNDMOUTH",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-03-16",
+    "time": "8:00 PM",
+    "price": "$30–$55",
+    "desc": "Houndmouth with The Bends performing live.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322688
+  },
+  {
+    "title": "LOVB Nebraska vs. LOVB Atlanta",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-18",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "League One Volleyball match between Nebraska and Atlanta teams.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877318870
+  },
+  {
+    "title": "National Theatre Live: A Streetcar Named Desire",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-18",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "National Theatre Live presentation of the 2014 production at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314004
+  },
+  {
+    "title": "Extended Hours + Discounted Admission",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-18",
+    "time": "3:00 PM",
+    "price": "Discounted admission",
+    "desc": "Every Wednesday, we're open late with discounted admission after 3PM! Tickets issued onsite.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314201
+  },
+  {
+    "title": "Harlem Globetrotters",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-19",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "The world-famous Harlem Globetrotters bring their entertaining basketball show to Omaha.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877317228
+  },
+  {
+    "title": "Invasion of the Body Snatchers",
+    "venue": "Film Streams",
+    "area": "Omaha",
+    "date": "2026-03-19",
+    "time": "6:30 PM",
+    "price": "TBD",
+    "desc": "Repertory screening of the 1956 sci-fi classic at the Ruth Sokolof Theater.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "filmstreams",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322000
+  },
+  {
+    "title": "LECTURE WITH DR. JACINDA TRAN, DARTMOUTH COLLEGE",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-19",
+    "time": "7:00 PM",
+    "price": "Free",
+    "desc": "Academic lecture by Dr. Jacinda Tran from Dartmouth College.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321046
+  },
+  {
+    "title": "Council Bluffs PRCA Rodeo",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-03-20",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "The Professional Rodeo Cowboys Association brings top professional rodeo contestants to compete in seven action-packed events.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "midamerica",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877320837
+  },
+  {
+    "title": "Omaha Lancers Hockey vs Team USA U17 NTDP",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-20",
+    "time": "7:05 PM",
+    "price": "TBD",
+    "desc": "Omaha Lancers host Team USA U17 National Team Development Program in USHL hockey.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877314253
+  },
+  {
+    "title": "Budding Botanists: Tree Bud Dissection",
+    "venue": "Kiewit Luminarium",
+    "area": "Omaha",
+    "date": "2026-03-20",
+    "time": "11:00 AM",
+    "price": "TBD",
+    "desc": "Spring starts small! Join Keep Omaha Beautiful for a hands-on investigation of tree buds and the exciting changes happening.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "luminarium",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321870
+  },
+  {
+    "title": "Ottumwa International Film Festival",
+    "venue": null,
+    "area": "Ottumwa",
+    "date": "2026-03-20",
+    "time": null,
+    "price": null,
+    "desc": null,
+    "url": null,
+    "cat": "arts",
+    "sourceId": "traveliowa",
+    "sourcePriority": 9,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314953
+  },
+  {
+    "title": "Let's Sing Taylor",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-03-21",
+    "time": "7:00 PM",
+    "price": "Starting at $33.55",
+    "desc": "Taylor Swift tribute performance and sing-along event.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877321036
+  },
+  {
+    "title": "Omaha Lancers Hockey vs Team USA U17 NTDP",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-21",
+    "time": "6:05 PM",
+    "price": "TBD",
+    "desc": "Omaha Lancers host Team USA U17 National Team Development Program in USHL hockey.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877322627
+  },
+  {
+    "title": "EXHIBITIONS HIGHLIGHTS TOUR",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-21",
+    "time": "3:00 PM",
+    "price": "Free",
+    "desc": "Guided tour highlighting current exhibitions at Bemis Center.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877318636
+  },
+  {
+    "title": "In Conversation: Stephen Cornelius Roberts with Jeff Koterba",
+    "venue": "KANEKO",
+    "area": "Omaha",
+    "date": "2026-03-21",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Join for a compelling evening bringing together two curious, artistic voices for an engaging public dialogue that moves fluidly between topics.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "kaneko",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321123
+  },
+  {
+    "title": "Tobymac Hits Deep 2026",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-22",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "Christian hip hop artist TobyMac performs on his Hits Deep tour.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877319127
+  },
+  {
+    "title": "Mammoth Presents: INZO – MIRRORVERSE TOUR",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-03-22",
+    "time": "8:00 PM",
+    "price": "Starting at $25",
+    "desc": "INZO with Zen Selekta, Blookah, and SPENNY on the Mirrorverse Tour.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877320283
+  },
+  {
+    "title": "Omaha Lancers Hockey vs Sioux Falls Stampede",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-26",
+    "time": "7:05 PM",
+    "price": "TBD",
+    "desc": "Omaha Lancers take on the Sioux Falls Stampede in USHL hockey action.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Hockey"
+    ],
+    "emoji": "🏆",
+    "id": 1771877319792
+  },
+  {
+    "title": "LIVE @ LOW END | OMAR AHMAD",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-26",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Live music performance at Low End venue within Bemis Center.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877318614
+  },
+  {
+    "title": "2026 Nebraska Women in STEM Conference",
+    "venue": "Embassy Suites by Hilton Omaha La Vista Hotel & Conference Center",
+    "area": "La Vista",
+    "date": "2026-03-26",
+    "time": "1:00 PM",
+    "price": "From $200.00",
+    "desc": "Professional conference supporting women in science, technology, engineering, and mathematics fields.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "eventbrite",
+    "sourcePriority": 8,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320381
+  },
+  {
+    "title": "Omaha Queens & Kings",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-27",
+    "time": "6:00 PM",
+    "price": "TBD",
+    "desc": "Second appearance of the Omaha Queens & Kings community event.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877317805
+  },
+  {
+    "title": "Whitney Cummings",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-03-27",
+    "time": "7:00 PM",
+    "price": "Starting at $38.80",
+    "desc": "Stand-up comedy performance by Whitney Cummings.",
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877322141
+  },
+  {
+    "title": "Hot Wheels Monster Trucks Live Glow-N-Fire",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-03-27",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Hot Wheels Monster Truck Live Glow-N-Fire show featuring monster truck action and entertainment.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "midamerica",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877313775
+  },
+  {
+    "title": "Dynasty Combat Sports - St. Paddy Showdown 2026",
+    "venue": "Liberty First Credit Union Arena",
+    "area": "Ralston",
+    "date": "2026-03-27",
+    "time": "7:30 PM",
+    "price": "TBD",
+    "desc": "Mixed martial arts event celebrating St. Patrick's Day with Dynasty Combat Sports.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "libertyfirst",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877319895
+  },
+  {
+    "title": "LOVB Nebraska vs. LOVB Salt Lake",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-03-28",
+    "time": "4:30 PM",
+    "price": "TBD",
+    "desc": "League One Volleyball match between Nebraska and Salt Lake teams.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877316929
+  },
+  {
+    "title": "BINGO LOCO",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-03-28",
+    "time": "8:00 PM",
+    "price": "$36",
+    "desc": "Bingo Loco event for ages 21 and up.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877318500
+  },
+  {
+    "title": "OPEN HOUSE / OPEN STUDIOS",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-28",
+    "time": "1:00 PM",
+    "price": "Free",
+    "desc": "Open house event showcasing artist studios and residency program.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877313731
+  },
+  {
+    "title": "VOLUMES PERFORMANCE WITH PHILL SMITH",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-03-28",
+    "time": "3:00 PM",
+    "price": "Free",
+    "desc": "Performance event as part of the Volumes exhibition.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877321375
+  },
+  {
+    "title": "Midtown Pickle Party, presented by Bloc Fitness",
+    "venue": "Participating Midtown Crossing Establishments",
+    "area": "Midtown Crossing",
+    "date": "2026-03-28",
+    "time": "3:00 pm - 6:00 pm",
+    "price": null,
+    "desc": "Pickle party event hosted by participating Midtown Crossing establishments, presented by Bloc Fitness.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "aksarben",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877313223
+  },
+  {
+    "title": "Springfest at River's Edge",
+    "venue": "Tom Hanafan River's Edge Park",
+    "area": "Council Bluffs",
+    "date": "2026-03-28",
+    "time": "11:00AM to 4:00PM",
+    "price": "Free",
+    "desc": "Third annual Springfest featuring Great American Kites with record-breaking giant and colorful kites, live music, food trucks, and family-friendly fun",
+    "url": null,
+    "cat": "festivals",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎉",
+    "id": 1771877322426
+  },
+  {
+    "title": "Springfest at River's Edge",
+    "venue": "Tom Hanafan River's Edge Park",
+    "area": "Council Bluffs",
+    "date": "2026-03-29",
+    "time": "11:00AM to 4:00PM",
+    "price": "Free",
+    "desc": "Third annual Springfest featuring Great American Kites with record-breaking giant and colorful kites, live music, food trucks, and family-friendly fun",
+    "url": null,
+    "cat": "festivals",
+    "sourceId": "unleashcb",
+    "sourcePriority": 5,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎉",
+    "id": 1771877315526
+  },
+  {
+    "title": "LOVB Nebraska vs. LOVB Houston",
+    "venue": "Baxter Arena",
+    "area": "Omaha",
+    "date": "2026-04-01",
+    "time": "7:00 PM",
+    "price": "TBD",
+    "desc": "League One Volleyball match between Nebraska and Houston teams.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "baxter",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877321898
+  },
+  {
+    "title": "MEMBER EXCLUSIVE MEET + GREET WITH KAMBUI OLUJIMI",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-02",
+    "time": "5:00 PM",
+    "price": "Members Only",
+    "desc": "Exclusive meet and greet event for Bemis Center members with artist Kambui Olujimi.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877322650
+  },
+  {
+    "title": "IN CONVERSATION WITH KAMBUI OLUJIMI: 2025 REE KANEKO AWARD RECIPIENT",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-02",
+    "time": "6:00 PM",
+    "price": "Free",
+    "desc": "Conversation with 2025 Ree Kaneko Award recipient Kambui Olujimi.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317301
+  },
+  {
+    "title": "Heartland USA National Duals",
+    "venue": "Mid-America Center",
+    "area": "Council Bluffs",
+    "date": "2026-04-03",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Non-profit organization that promotes amateur wrestling to all Nebraska wrestlers from little kids to adults.",
+    "url": null,
+    "cat": "sports",
+    "sourceId": "midamerica",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🏆",
+    "id": 1771877313276
+  },
+  {
+    "title": "LIVE @ LOW END | EL KHAT",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-09",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Live music performance at Low End venue within Bemis Center.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877319562
+  },
+  {
+    "title": "LEARN ABOUT DIY INSTRUMENTS WITH EL KHAT",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-09",
+    "time": "6:00 PM",
+    "price": "Free",
+    "desc": "Educational workshop about DIY instrument making with El Khat.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877320857
+  },
+  {
+    "title": "INSANE CLOWN POSSE",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-04-13",
+    "time": "7:00 PM",
+    "price": "$49.50–$75",
+    "desc": "Insane Clown Posse performing live at The Admiral.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877313830
+  },
+  {
+    "title": "LIVE @ LOW END | RILEY MULHERKAR",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-16",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Live music performance at Low End venue within Bemis Center.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317654
+  },
+  {
+    "title": "CURATOR-LED TOUR WITH RACHEL ADAMS",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-16",
+    "time": "7:00 PM",
+    "price": "Free",
+    "desc": "Guided tour of exhibitions led by curator Rachel Adams.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877315824
+  },
+  {
+    "title": "Party for the Planet",
+    "venue": "Henry Doorly Zoo",
+    "area": "Omaha",
+    "date": "2026-04-19",
+    "time": "9:00 AM",
+    "price": "TBD",
+    "desc": "Earth Day celebration featuring a sustainability market, educational presentations, and scavenger hunt hosted by Zoo Academy students.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "zoo",
+    "sourcePriority": 2,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877314410
+  },
+  {
+    "title": "The Psychology of Serial Killers - And Why They Captivate Us",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-04-21",
+    "time": "8:00 PM",
+    "price": "Starting at $30.60",
+    "desc": "Educational presentation exploring the psychology behind serial killers and their cultural fascination.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877314573
+  },
+  {
+    "title": "Ethel Cain with 9million",
+    "venue": "The Astro Amphitheater",
+    "area": "La Vista",
+    "date": "2026-04-23",
+    "time": "7:00 PM",
+    "price": "Starting at $60.35",
+    "desc": "Musical performance by Ethel Cain with opening act 9million at the outdoor amphitheater.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877316118
+  },
+  {
+    "title": "Benson Improvement District Meeting",
+    "venue": "Benson Library",
+    "area": "Benson",
+    "date": "2026-04-24",
+    "time": "9:30 AM",
+    "price": "Free",
+    "desc": "Quarterly meeting of the Benson Business Improvement District.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "benson",
+    "sourcePriority": 6,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877321282
+  },
+  {
+    "title": "EXHIBITIONS HIGHLIGHTS TOUR",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-04-25",
+    "time": "3:00 PM",
+    "price": "Free",
+    "desc": "Guided tour highlighting current exhibitions at Bemis Center.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877317296
+  },
+  {
+    "title": "Youth Triathlon",
+    "venue": "Mockingbird Hills Community Center",
+    "area": "Omaha",
+    "date": "2026-04-25",
+    "time": "TBD",
+    "price": "$20",
+    "desc": "Fun backwards triathlon event for kids in 1st-6th grade featuring running, biking, and swimming activities.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "familyfun",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877315467
+  },
+  {
+    "title": "THE GROWLERS",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-04-29",
+    "time": "8:00 PM",
+    "price": "$40–$60",
+    "desc": "The Growlers performing live at The Admiral.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317364
+  },
+  {
+    "title": "Iron & Wine",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-04-29",
+    "time": "8:00 PM",
+    "price": "Starting at $50.40",
+    "desc": "Indie folk performance by Iron & Wine.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322271
+  },
+  {
+    "title": "Mammoth Presents: AFI",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-04-30",
+    "time": "8:00 PM",
+    "price": "$35–$75",
+    "desc": "AFI with Choir Boy performing live.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877323062
+  },
+  {
+    "title": "Black Veil Brides with From Ashes To New, TX2, & As December Falls",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-05-02",
+    "time": "6:35 PM",
+    "price": "Starting at $57.60",
+    "desc": "Rock concert featuring Black Veil Brides with supporting acts From Ashes To New, TX2, and As December Falls.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322329
+  },
+  {
+    "title": "VOLUMES PERFORMANCE WITH MARK GUILIANA",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-05-02",
+    "time": "4:00 PM",
+    "price": "Free",
+    "desc": "Performance event as part of the Volumes exhibition featuring Mark Guiliana.",
+    "url": null,
+    "cat": "arts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "🎨",
+    "id": 1771877323108
+  },
+  {
+    "title": "Gram and Gramp Camp",
+    "venue": "Hummel Park Nature Center",
+    "area": "Omaha",
+    "date": "2026-05-02",
+    "time": "9:30 AM",
+    "price": "$10",
+    "desc": "Morning activities for kids 5+ and their grandparents including archery, games, crafts, and making lunch over a campfire.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "familyfun",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877317483
+  },
+  {
+    "title": "Out & About Storytime: The Joslyn",
+    "venue": "The Joslyn",
+    "area": "Omaha",
+    "date": "2026-05-02",
+    "time": "11:00 AM",
+    "price": "Free",
+    "desc": "Storytime featuring stories, creative movement, music and art exploration as part of The Joslyn's monthly Art-tastic Saturdays.",
+    "url": null,
+    "cat": "family",
+    "sourceId": "familyfun",
+    "sourcePriority": 7,
+    "tags": [
+      "Event"
+    ],
+    "emoji": "👨‍👩‍👧",
+    "id": 1771877320015
+  },
+  {
+    "title": "The Amity Affliction & August Burns Red with Boundaries & Heavensgate",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-05-03",
+    "time": "6:30 PM",
+    "price": "Starting at $50.90",
+    "desc": "Metal/hardcore show featuring The Amity Affliction and August Burns Red with opening acts Boundaries and Heavensgate.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877320354
+  },
+  {
+    "title": "Mac DeMarco",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-05-05",
+    "time": "7:00 PM",
+    "price": "Starting at $55",
+    "desc": "Indie rock performance by Mac DeMarco.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317314
+  },
+  {
+    "title": "Sam Barber with Michael Marcagi & Bebe Stockwell",
+    "venue": "The Astro Amphitheater",
+    "area": "La Vista",
+    "date": "2026-05-07",
+    "time": "6:30 PM",
+    "price": "Starting at $59.25 + taxes",
+    "desc": "Musical performance by Sam Barber with supporting acts Michael Marcagi and Bebe Stockwell at the outdoor amphitheater.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317752
+  },
+  {
+    "title": "Jimmy Failla",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-05-09",
+    "time": "7:00 PM",
+    "price": "Starting at $61.75",
+    "desc": "Comedy performance by radio host and comedian Jimmy Failla.",
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877315966
+  },
+  {
+    "title": "Jo Dee Messina and Alexandra Kay",
+    "venue": "Stir Concert Cove",
+    "area": "Council Bluffs",
+    "date": "2026-05-09",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Jo Dee Messina & Alexandra Kay kick off the Stir Cove 2026 Season.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "stircove",
+    "sourcePriority": 2,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315304
+  },
+  {
+    "title": "ZZ Top",
+    "venue": "Stir Concert Cove",
+    "area": "Council Bluffs",
+    "date": "2026-05-14",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "With more than 50 years of delivering their iconic blend of rock, blues, and boogie--ZZ Top comes to Harrah's Council Bluffs.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "stircove",
+    "sourcePriority": 2,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877314971
+  },
+  {
+    "title": "LIVE @ LOW END | SARAH LUTKENHAUS",
+    "venue": "Bemis Center",
+    "area": "Omaha",
+    "date": "2026-05-14",
+    "time": "8:00 PM",
+    "price": "TBD",
+    "desc": "Live music performance at Low End venue within Bemis Center.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "bemis",
+    "sourcePriority": 3,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877322479
+  },
+  {
+    "title": "Jim Jefferies",
+    "venue": "The Astro Theater",
+    "area": "La Vista",
+    "date": "2026-05-15",
+    "time": "7:00 PM",
+    "price": "Starting at $89.65",
+    "desc": "Stand-up comedy show by Australian comedian Jim Jefferies.",
+    "url": null,
+    "cat": "comedy",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Comedy"
+    ],
+    "emoji": "😂",
+    "id": 1771877318233
+  },
+  {
+    "title": "Hairball",
+    "venue": "Stir Concert Cove",
+    "area": "Council Bluffs",
+    "date": "2026-05-15",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Hairball features spot on recreations of KISS, AC/DC, Motley Crue, Queen, and many more. It's like 20 concerts in one night.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "stircove",
+    "sourcePriority": 2,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877317766
+  },
+  {
+    "title": "George Thorogood and The Destroyers with The Marshall Tucker Band",
+    "venue": "The Astro Amphitheater",
+    "area": "La Vista",
+    "date": "2026-05-17",
+    "time": "7:00 PM",
+    "price": "Starting at $47.30",
+    "desc": "Classic rock performance featuring George Thorogood and The Destroyers with The Marshall Tucker Band at the outdoor amphitheater.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "astro",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877315646
+  },
+  {
+    "title": "Yellowcard",
+    "venue": "Stir Concert Cove",
+    "area": "Council Bluffs",
+    "date": "2026-05-19",
+    "time": "TBD",
+    "price": "TBD",
+    "desc": "Yellowcard brings their high-energy live show to Stir Cove with special guests New Found Glory and Plain White T's for a night packed with anthems.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "stircove",
+    "sourcePriority": 2,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877316982
+  },
+  {
+    "title": "Isle of Qveen Tour - QVEEN HERBY",
+    "venue": "The Admiral",
+    "area": "Omaha",
+    "date": "2026-05-21",
+    "time": "8:00 PM",
+    "price": "$41.66–$85.87",
+    "desc": "Qveen Herby with Thot Squad on the Isle of Qveen Tour.",
+    "url": null,
+    "cat": "concerts",
+    "sourceId": "admiral",
+    "sourcePriority": 1,
+    "tags": [
+      "Live Music"
+    ],
+    "emoji": "🎵",
+    "id": 1771877314370
+  }
+]

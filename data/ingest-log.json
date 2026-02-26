@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-02-26T21:19:25.906Z",
+  "timestamp": "2026-02-26T21:53:08.152Z",
   "durationSec": 2.1,
   "sourcesTotal": 52,
   "sourcesScraped": 0,
   "sourcesFailed": 0,
-  "rawEvents": 403,
-  "tmEvents": 403,
-  "finalEvents": 582,
+  "rawEvents": 361,
+  "tmEvents": 361,
+  "finalEvents": 566,
   "categories": {
-    "concerts": 242,
+    "concerts": 226,
     "sports": 61,
     "family": 5,
     "comedy": 7,
@@ -16,7 +16,7 @@
     "festivals": 10
   },
   "areas": {
-    "Omaha": 257,
+    "Omaha": 241,
     "Ralston": 8,
     "Council Bluffs": 44,
     "La Vista": 15,

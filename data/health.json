@@ -736,6 +736,20 @@
     "ticketmaster-api": {
       "history": [
         {
+          "timestamp": "2026-02-26T21:53:08.153Z",
+          "success": true,
+          "method": "api",
+          "events": 361,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-26T21:52:28.947Z",
+          "success": true,
+          "method": "api",
+          "events": 361,
+          "errors": []
+        },
+        {
           "timestamp": "2026-02-26T21:19:25.908Z",
           "success": true,
           "method": "api",
@@ -743,12 +757,30 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 403,
+      "totalRuns": 3,
+      "totalEvents": 1125,
       "failures": 0
     }
   },
   "runs": [
+    {
+      "timestamp": "2026-02-26T21:53:08.153Z",
+      "totalSources": 53,
+      "sourcesScraped": 1,
+      "sourcesFailed": 0,
+      "rawEvents": 361,
+      "finalEvents": 566,
+      "durationSec": 2.1
+    },
+    {
+      "timestamp": "2026-02-26T21:52:28.947Z",
+      "totalSources": 53,
+      "sourcesScraped": 1,
+      "sourcesFailed": 0,
+      "rawEvents": 361,
+      "finalEvents": 595,
+      "durationSec": 2.2
+    },
     {
       "timestamp": "2026-02-26T21:19:25.908Z",
       "totalSources": 53,

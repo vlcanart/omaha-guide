@@ -68,6 +68,7 @@ const IMG={rock:u("photo-1470229722913-7c0e2dbbafd3"),concert:u("photo-150138676
 const EV_IMG={1:u("photo-1493225457124-a3eb161ffa5f"),2:u("photo-1585699324551-f6c309eedeca"),4:u("photo-1470229722913-7c0e2dbbafd3"),6:u("photo-1603190287605-e6ade32fa852"),7:u("photo-1542751371-adc38448a05e"),16:u("photo-1518834107812-67b0b7c58434"),101:u("photo-1546519638-68e109498ffc"),106:u("photo-1529768167801-9173d94c2a42"),107:u("photo-1508098682722-e99c43a406b2"),203:u("photo-1555939594-58d7cb561ad1")};
 
 function pickImg(ev){
+  if(ev.image)return ev.image;
   if(EV_IMG[ev.id])return EV_IMG[ev.id];
   const ti=(ev.title||"").toLowerCase(),tags=(ev.tags||[]).map(t=>t.toLowerCase());
   for(const[k,v]of Object.entries(IMG)){if(tags.includes(k))return v;}

@@ -220,8 +220,37 @@ function mapArea(venue) {
   return null; // outside metro — will be filtered out
 }
 
+// ═══ PICK BEST IMAGE ═══
+// Prefer 16:9 ratio, width 640–1136 (ideal for card display)
+function pickImage(images) {
+  if (!images || !images.length) return null;
+
+  // Prefer 16_9 ratio in ideal width range
+  const ideal = images.find(
+    (img) => img.ratio === "16_9" && img.width >= 640 && img.width <= 1136
+  );
+  if (ideal) return ideal.url;
+
+  // Fallback: any 16_9 image
+  const any16x9 = images.find((img) => img.ratio === "16_9" && img.width >= 500);
+  if (any16x9) return any16x9.url;
+
+  // Fallback: any image >= 500px wide
+  const anyLarge = images.find((img) => img.width >= 500);
+  if (anyLarge) return anyLarge.url;
+
+  // Last resort: first image
+  return images[0].url || null;
+}
+
 // ═══ MAP SINGLE EVENT ═══
 function mapEvent(tmEvent) {
+  // Filter out non-ticket products (suites, vouchers, hotel packages)
+  const title = tmEvent.name || "";
+  if (/^Suites:/i.test(title)) return null;
+  if (/voucher/i.test(title)) return null;
+  if (/hotel\s+reservations?/i.test(title)) return null;
+
   const venue = tmEvent._embedded?.venues?.[0];
   const area = mapArea(venue);
   if (area === null) return null; // outside metro
@@ -261,8 +290,11 @@ function mapEvent(tmEvent) {
   // Category
   const cat = classifyTmEvent(tmEvent.classifications);
 
-  // URL — prefer the main event URL
-  const url = tmEvent.url || null;
+  // URL — prefer the main event URL, fallback to constructed URL
+  const url = tmEvent.url || `https://www.ticketmaster.com/event/${tmEvent.id}`;
+
+  // Image — pick best from TM images array
+  const image = pickImage(tmEvent.images);
 
   // Description — TM often doesn't have one, use info or pleaseNote
   const desc = tmEvent.info
@@ -283,6 +315,7 @@ function mapEvent(tmEvent) {
     price,
     desc: shortDesc,
     url,
+    image,
     cat,
     sourceId: "ticketmaster-api",
     sourcePriority: 1,

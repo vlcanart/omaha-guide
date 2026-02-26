@@ -133,9 +133,13 @@ async function main() {
   const rawEvents = await parseBatch(successfulScrapes, sources);
   console.log(`\n  Raw events extracted: ${rawEvents.length}`);
 
-  // Apply category classification
+  // Apply category classification + attach venue fallback URL from source config
   rawEvents.forEach(e => {
     e.cat = classifyEvent(e);
+    const src = sources.find(s => s.id === e.sourceId);
+    if (src) {
+      e.venueUrl = src.url; // fallback URL if event-specific URL is missing/dead
+    }
   });
 
   // ── 4. Validate ──

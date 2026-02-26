@@ -18,8 +18,10 @@ let ingested = [];
 if (fs.existsSync(INGESTED_PATH)) {
   try {
     const raw = JSON.parse(fs.readFileSync(INGESTED_PATH, "utf8"));
-    ingested = raw.filter((e) => e.date >= TODAY);
-    console.log(`📅 Loaded ${ingested.length} ingested events (${raw.length - ingested.length} expired, filtered out)`);
+    const future = raw.filter((e) => e.date >= TODAY);
+    const hidden = future.filter((e) => e.status === "hidden");
+    ingested = future.filter((e) => e.status !== "hidden");
+    console.log(`📅 Loaded ${ingested.length} active events (${raw.length - future.length} expired, ${hidden.length} hidden, filtered out)`);
   } catch (err) {
     console.warn(`⚠ Could not parse ${INGESTED_PATH}: ${err.message}`);
   }

@@ -233,6 +233,7 @@ async function validate(rawEvents, options = {}) {
     e.tags = inferTags(e.title, e.cat);
     e.emoji = catEmoji(e.cat);
     e.id = e.id || Date.now() + Math.floor(Math.random() * 10000);
+    e.status = e.status || "active";
   });
 
   // 4. URL validation (optional, slow — skip in dry-run)
@@ -246,7 +247,21 @@ async function validate(rawEvents, options = {}) {
   // 5. Affiliate URL rewriting
   validated = rewriteAffiliateUrls(validated);
 
-  // 6. Sort by date
+  // 6. Ensure every event has a URL (fallback to venue calendar URL)
+  let urlFallbacks = 0;
+  validated.forEach(e => {
+    if (!e.url || e.url === "#" || e.url === "null") {
+      if (e.venueUrl) {
+        e.url = e.venueUrl;
+        urlFallbacks++;
+      }
+    }
+  });
+  if (urlFallbacks > 0) {
+    console.log(`\n🔗 URL fallbacks: ${urlFallbacks} events assigned venue URL`);
+  }
+
+  // 7. Sort by date
   validated.sort((a, b) => a.date.localeCompare(b.date));
 
   console.log(`\n  ✅ Final: ${validated.length} validated events`);

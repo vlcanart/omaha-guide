@@ -652,7 +652,7 @@ export default function App(){
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:20}}>
               {(sel.tags||[]).map(t=><span key={t} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",color:T.textSec,fontWeight:500,letterSpacing:0.6}}>{t}</span>)}
             </div>
-            <a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>Get Tickets</a>
+            {sel.url&&sel.url!=="#"&&<a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>{sel.url.includes("/event")||sel.url.includes("/ticket")||sel.url.includes("ticketmaster")||sel.url.includes("etix.com")||sel.url.includes("axs.com")||sel.url.includes("eventbrite")?"Get Tickets":"Visit Venue"}</a>}
             {shareMsg&&<p style={{textAlign:"center",marginTop:8,fontSize:11,color:T.accent,letterSpacing:1,fontWeight:500,animation:"fadeIn 0.2s"}}>Event info copied to clipboard!</p>}
           </div>
         </div>

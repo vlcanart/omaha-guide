@@ -11,8 +11,21 @@ const INGESTED_PATH = path.join(__dirname, "..", "data", "events.json");
 const LOG_PATH = path.join(__dirname, "..", "data", "pipeline-log.json");
 const OUTPUT_PATH = path.join(__dirname, "..", "app", "events-data.js");
 
+const CONFIG_PATH = path.join(__dirname, "pipeline", "config.js");
+
 const TODAY = new Date().toISOString().split("T")[0];
 const BUILD_TIME = new Date().toISOString();
+
+// Load venue URL map from pipeline config (sourceId → calendar URL)
+let venueUrlMap = {};
+try {
+  const { SOURCES } = require(CONFIG_PATH);
+  for (const s of SOURCES) {
+    venueUrlMap[s.id] = s.url;
+  }
+} catch (err) {
+  console.warn(`⚠ Could not load pipeline config for venue URLs: ${err.message}`);
+}
 
 let ingested = [];
 if (fs.existsSync(INGESTED_PATH)) {
@@ -27,6 +40,69 @@ if (fs.existsSync(INGESTED_PATH)) {
   }
 } else {
   console.log("📅 No ingested events found — using seed data only");
+}
+
+// ═══ SMART DEDUP: merge TM data into scraped duplicates ═══
+// Normalize venue name for matching (lowercase, strip common suffixes)
+function normalizeVenue(v) {
+  return (v || "").toLowerCase().trim()
+    .replace(/\b(center|arena|theatre|theater|lounge|park)\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+// Group events by normalized venue + date
+const groups = {};
+for (const ev of ingested) {
+  const key = `${normalizeVenue(ev.venue)}|${ev.date}`;
+  if (!groups[key]) groups[key] = [];
+  groups[key].push(ev);
+}
+
+const dropIds = new Set();
+let mergeCount = 0;
+
+for (const [key, evs] of Object.entries(groups)) {
+  if (evs.length < 2) continue;
+
+  const tmEvents = evs.filter((e) => e.sourceId === "ticketmaster-api");
+  const scraped = evs.filter((e) => e.sourceId !== "ticketmaster-api");
+
+  if (tmEvents.length === 0 || scraped.length === 0) continue;
+
+  // For each scraped event missing url/image, merge from the best TM match
+  for (const sc of scraped) {
+    if (sc.url && sc.image) continue; // already has both, skip
+
+    // Pick the TM event (prefer one with image)
+    const tm = tmEvents.find((t) => t.image) || tmEvents[0];
+    if (!sc.url && tm.url) sc.url = tm.url;
+    if (!sc.image && tm.image) sc.image = tm.image;
+    if (tm.urlValid) sc.urlValid = true;
+    if (tm.affiliatePlatform) sc.affiliatePlatform = tm.affiliatePlatform;
+
+    // Mark all TM events in this group for removal (scraped event absorbed them)
+    for (const t of tmEvents) dropIds.add(t.id);
+    mergeCount++;
+  }
+}
+
+// Remove absorbed TM duplicates
+const beforeDedup = ingested.length;
+ingested = ingested.filter((e) => !dropIds.has(e.id));
+if (mergeCount > 0) {
+  console.log(`🔗 Merged ${mergeCount} scraped+TM duplicate pairs (dropped ${beforeDedup - ingested.length} TM dupes)`);
+}
+
+// ═══ VENUE URL FALLBACK: give URL-less events their venue calendar link ═══
+let fallbackCount = 0;
+for (const ev of ingested) {
+  if (!ev.url && ev.sourceId && venueUrlMap[ev.sourceId]) {
+    ev.url = venueUrlMap[ev.sourceId];
+    fallbackCount++;
+  }
+}
+if (fallbackCount > 0) {
+  console.log(`🔗 Added venue URL fallback for ${fallbackCount} events`);
 }
 
 // Get last pipeline run info

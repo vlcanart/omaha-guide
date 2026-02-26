@@ -236,7 +236,7 @@ const mapsSearch=q=>`https://www.google.com/maps/search/${encodeURIComponent(q+'
 function ImgCard({src,children,h=130,grad}){
   const[ok,setOk]=useState(false);
   return(<div style={{position:"relative",height:h,background:grad||CG._,overflow:"hidden"}}>
-    <img src={src} alt="" crossOrigin="anonymous" referrerPolicy="no-referrer" onLoad={()=>setOk(true)} onError={()=>{}} style={{width:"100%",height:"100%",objectFit:"cover",opacity:ok?0.55:0,transition:"opacity 0.5s"}}/>
+    <img src={src} alt="" referrerPolicy="no-referrer" onLoad={()=>setOk(true)} onError={()=>{}} style={{width:"100%",height:"100%",objectFit:"cover",opacity:ok?0.55:0,transition:"opacity 0.5s"}}/>
     <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.05) 0%,rgba(20,22,24,0.88) 100%)"}}/>
     {children}
   </div>);
@@ -626,7 +626,7 @@ export default function App(){
         <div onClick={e=>e.stopPropagation()} style={{background:T.surface,borderRadius:isD?22:"22px 22px 0 0",maxWidth:isD?500:560,width:"100%",maxHeight:isD?"85vh":"92vh",overflow:"auto",animation:isD?"zoomIn 0.3s cubic-bezier(0.16,1,0.3,1)":"sheetUp 0.4s cubic-bezier(0.16,1,0.3,1)",margin:isD?"0 20px":0}}>
           {!isD&&<div style={{width:32,height:3,borderRadius:99,background:T.textDim,margin:"10px auto 4px"}}/>}
           <div style={{position:"relative",margin:isD?"12px 16px 0":"6px 12px 0",borderRadius:16,overflow:"hidden",height:isD?230:isT?200:170,background:CG[sel.cat]||CG._}}>
-            <img src={pickImg(sel)} alt="" crossOrigin="anonymous" referrerPolicy="no-referrer" onError={e=>{e.target.style.display="none";}} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+            <img src={pickImg(sel)} alt="" referrerPolicy="no-referrer" onError={e=>{e.target.style.display="none";}} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.1) 0%,rgba(20,22,24,0.9) 100%)"}}/>
             <button onClick={()=>setSel(null)} className="hbtn" style={{position:"absolute",top:12,right:12,width:42,height:42,borderRadius:99,background:"rgba(30,32,36,0.7)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.15)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(242,239,233,0.85)",zIndex:2,fontSize:18,fontWeight:300}}>✕</button>
             <div style={{position:"absolute",top:12,left:12,display:"flex",gap:8,zIndex:2}}>

@@ -66,8 +66,15 @@ function deduplicate(events) {
   const sorted = [...events].sort((a, b) => (a.sourcePriority || 5) - (b.sourcePriority || 5));
   const kept = [];
   const seen = []; // {normTitle, date}
+  const seenTmIds = new Set(); // exact-match dedup for Ticketmaster API events
 
   for (const e of sorted) {
+    // Exact-match dedup on tmEventId (prevents TM API duplicates)
+    if (e.tmEventId) {
+      if (seenTmIds.has(e.tmEventId)) continue;
+      seenTmIds.add(e.tmEventId);
+    }
+
     const norm = normalizeTitle(e.title);
     const isDupe = seen.some(s =>
       s.date === e.date && similarity(s.normTitle, norm) > 0.7

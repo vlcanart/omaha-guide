@@ -39,7 +39,7 @@ const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 // Headers for the Google Sheet (column order matters)
 const HEADERS = [
   "id", "title", "date", "time", "venue", "cat", "price",
-  "url", "ytId", "imageUrl", "feat", "hidden", "desc",
+  "url", "ytId", "imageUrl", "feat", "hidden", "status", "desc",
   "tags", "confidence", "source", "emoji",
 ];
 
@@ -145,7 +145,7 @@ async function setup() {
   const token = await getAccessToken();
 
   // Write headers
-  await sheetsRequest("PUT", `${SHEET_NAME}!A1:Q1`, {
+  await sheetsRequest("PUT", `${SHEET_NAME}!A1:R1`, {
     values: [HEADERS.map(h => h.toUpperCase())],
   }, token);
 
@@ -174,7 +174,7 @@ async function push() {
   // Read existing sheet to preserve manual overrides
   let existingRows = [];
   try {
-    const existing = await sheetsRequest("GET", `${SHEET_NAME}!A2:Q`, null, token);
+    const existing = await sheetsRequest("GET", `${SHEET_NAME}!A2:R`, null, token);
     existingRows = existing.values || [];
   } catch {}
 
@@ -183,13 +183,14 @@ async function push() {
   existingRows.forEach(row => {
     const id = row[0];
     if (!id) return;
-    // Check if user has edited ytId, imageUrl, feat, or hidden columns
+    // Check if user has edited ytId, imageUrl, feat, hidden, or status columns
     const ytId = row[8] || "";
     const imageUrl = row[9] || "";
     const feat = row[10] || "";
     const hidden = row[11] || "";
-    if (ytId || imageUrl || feat === "TRUE" || hidden === "TRUE") {
-      overrideMap.set(String(id), { ytId, imageUrl, feat, hidden });
+    const status = row[12] || "";
+    if (ytId || imageUrl || feat === "TRUE" || hidden === "TRUE" || status) {
+      overrideMap.set(String(id), { ytId, imageUrl, feat, hidden, status });
     }
   });
 
@@ -209,6 +210,7 @@ async function push() {
       override?.imageUrl || e.imageUrl || "", // Preserve manual imageUrl
       override?.feat || (e.feat ? "TRUE" : "FALSE"),
       override?.hidden || "FALSE",
+      override?.status || e.status || "active", // New events default to "active"
       e.desc || "",
       (e.tags || []).join(", "),
       e.confidence || "",
@@ -219,10 +221,10 @@ async function push() {
 
   // Clear existing data and write new
   try {
-    await sheetsRequest("PUT", `${SHEET_NAME}!A2:Q`, { values: [] }, token); // Clear
+    await sheetsRequest("PUT", `${SHEET_NAME}!A2:R`, { values: [] }, token); // Clear
   } catch {}
 
-  await sheetsRequest("PUT", `${SHEET_NAME}!A2:Q${rows.length + 1}`, {
+  await sheetsRequest("PUT", `${SHEET_NAME}!A2:R${rows.length + 1}`, {
     values: rows,
   }, token);
 
@@ -236,11 +238,11 @@ async function pull() {
   console.log("Pulling overrides from Google Sheet...");
   const token = await getAccessToken();
 
-  const result = await sheetsRequest("GET", `${SHEET_NAME}!A2:Q`, null, token);
+  const result = await sheetsRequest("GET", `${SHEET_NAME}!A2:R`, null, token);
   const rows = result.values || [];
 
   const overrides = {};
-  let edited = 0, hidden = 0, featured = 0;
+  let edited = 0, hidden = 0, featured = 0, deactivated = 0;
 
   rows.forEach(row => {
     const id = row[0];
@@ -254,6 +256,10 @@ async function pull() {
     if (row[9]) { changes.imageUrl = row[9]; hasChanges = true; }       // Image URL
     if (row[10] === "TRUE") { changes.feat = true; hasChanges = true; featured++; }
     if (row[11] === "TRUE") { changes.hidden = true; hasChanges = true; hidden++; }
+    // Status column — "hidden" status deactivates the event
+    const status = (row[12] || "active").toLowerCase().trim();
+    if (status === "hidden" || status === "inactive") { changes.hidden = true; hasChanges = true; deactivated++; }
+    changes.status = status === "hidden" || status === "inactive" ? "hidden" : "active";
 
     // Also check if user edited title, venue, time, price, desc, cat
     // (compare only if values look manually edited — non-empty and different patterns)
@@ -267,7 +273,7 @@ async function pull() {
 
   // Save overrides
   fs.writeFileSync(OVERRIDES_PATH, JSON.stringify(overrides, null, 2));
-  console.log(`✓ Pulled ${edited} overrides (${featured} featured, ${hidden} hidden)`);
+  console.log(`✓ Pulled ${edited} overrides (${featured} featured, ${hidden} hidden, ${deactivated} deactivated)`);
   console.log(`  Saved to ${OVERRIDES_PATH}`);
 
   // Apply overrides to events.json
@@ -299,20 +305,23 @@ async function status() {
   if (!SHEET_ID) { console.log("Missing GOOGLE_SHEET_ID. Run --setup first."); return; }
 
   const token = await getAccessToken();
-  const result = await sheetsRequest("GET", `${SHEET_NAME}!A1:Q`, null, token);
+  const result = await sheetsRequest("GET", `${SHEET_NAME}!A1:R`, null, token);
   const rows = result.values || [];
 
   console.log(`Sheet: ${rows.length - 1} events (including header)`);
 
   // Count overrides
-  let featured = 0, hidden = 0, ytOverrides = 0, imgOverrides = 0;
+  let featured = 0, hidden = 0, ytOverrides = 0, imgOverrides = 0, active = 0;
   rows.slice(1).forEach(r => {
     if (r[8]) ytOverrides++;
     if (r[9]) imgOverrides++;
     if (r[10] === "TRUE") featured++;
     if (r[11] === "TRUE") hidden++;
+    const status = (r[12] || "active").toLowerCase().trim();
+    if (status === "active") active++;
   });
 
+  console.log(`  Active: ${active}`);
   console.log(`  Featured: ${featured}`);
   console.log(`  Hidden: ${hidden}`);
   console.log(`  YouTube overrides: ${ytOverrides}`);

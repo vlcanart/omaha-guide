@@ -16,6 +16,7 @@
     "pipeline:cached": "node scripts/run-pipeline.js --merge --skip-scrape",
     "pipeline:omaha": "node scripts/run-pipeline.js --merge --area Omaha",
     "pipeline:cb": "node scripts/run-pipeline.js --merge --area \"Council Bluffs\"",
+    "pipeline:tm": "node scripts/run-pipeline.js --ticketmaster-only --merge --skip-url-check",
     "health": "node scripts/run-pipeline.js --report",
 
     "review": "node scripts/review-events.js",

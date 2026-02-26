@@ -66,8 +66,15 @@ function deduplicate(events) {
   const sorted = [...events].sort((a, b) => (a.sourcePriority || 5) - (b.sourcePriority || 5));
   const kept = [];
   const seen = []; // {normTitle, date}
+  const seenTmIds = new Set(); // exact-match dedup for Ticketmaster API events
 
   for (const e of sorted) {
+    // Exact-match dedup on tmEventId (prevents TM API duplicates)
+    if (e.tmEventId) {
+      if (seenTmIds.has(e.tmEventId)) continue;
+      seenTmIds.add(e.tmEventId);
+    }
+
     const norm = normalizeTitle(e.title);
     const isDupe = seen.some(s =>
       s.date === e.date && similarity(s.normTitle, norm) > 0.7
@@ -233,6 +240,7 @@ async function validate(rawEvents, options = {}) {
     e.tags = inferTags(e.title, e.cat);
     e.emoji = catEmoji(e.cat);
     e.id = e.id || Date.now() + Math.floor(Math.random() * 10000);
+    e.status = e.status || "active";
   });
 
   // 4. URL validation (optional, slow — skip in dry-run)
@@ -246,7 +254,21 @@ async function validate(rawEvents, options = {}) {
   // 5. Affiliate URL rewriting
   validated = rewriteAffiliateUrls(validated);
 
-  // 6. Sort by date
+  // 6. Ensure every event has a URL (fallback to venue calendar URL)
+  let urlFallbacks = 0;
+  validated.forEach(e => {
+    if (!e.url || e.url === "#" || e.url === "null") {
+      if (e.venueUrl) {
+        e.url = e.venueUrl;
+        urlFallbacks++;
+      }
+    }
+  });
+  if (urlFallbacks > 0) {
+    console.log(`\n🔗 URL fallbacks: ${urlFallbacks} events assigned venue URL`);
+  }
+
+  // 7. Sort by date
   validated.sort((a, b) => a.date.localeCompare(b.date));
 
   console.log(`\n  ✅ Final: ${validated.length} validated events`);

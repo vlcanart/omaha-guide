@@ -17,6 +17,8 @@
  *    --dry-run              Print results without saving
  *    --skip-url-check       Skip URL validation (faster)
  *    --skip-scrape          Use cached content only (re-parse)
+ *    --skip-ticketmaster    Skip Ticketmaster API fetch
+ *    --ticketmaster-only    Only fetch from Ticketmaster API (skip Jina+Claude)
  *    --report               Print health report and exit
  *    --merge                Merge with existing events.json
  *    --concurrency 3        Scrape concurrency (default: 3)
@@ -30,6 +32,7 @@ const { parseBatch, classifyEvent } = require("./pipeline/parser");
 const { validate } = require("./pipeline/validator");
 const { recordRun, generateReport } = require("./pipeline/health");
 const { evaluateAndAlert, alertCritical } = require("./pipeline/alerts");
+const { fetchTicketmasterEvents } = require("./pipeline/ticketmaster");
 
 const EVENTS_PATH = path.join(__dirname, "..", "data", "events.json");
 const LOG_PATH = path.join(__dirname, "..", "data", "ingest-log.json");
@@ -45,6 +48,8 @@ const FILTER_TIER = getArg("--tier");
 const DRY_RUN = hasFlag("--dry-run");
 const SKIP_URL_CHECK = hasFlag("--skip-url-check");
 const SKIP_SCRAPE = hasFlag("--skip-scrape");
+const SKIP_TM = hasFlag("--skip-ticketmaster");
+const TM_ONLY = hasFlag("--ticketmaster-only");
 const SHOW_REPORT = hasFlag("--report");
 const MERGE = hasFlag("--merge");
 const CONCURRENCY = parseInt(getArg("--concurrency") || "3", 10);
@@ -66,11 +71,18 @@ async function main() {
     return;
   }
 
-  // Validate env
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("\n✗ Missing ANTHROPIC_API_KEY");
-    console.error("  Run: ANTHROPIC_API_KEY=sk-ant-... node scripts/run-pipeline.js");
+  // Validate env — allow TM-only mode without Anthropic key
+  const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
+  const hasTmKey = !!process.env.TICKETMASTER_API_KEY;
+  const tmOnly = TM_ONLY || (!hasAnthropicKey && hasTmKey);
+
+  if (!hasAnthropicKey && !hasTmKey) {
+    console.error("\n✗ Missing API keys");
+    console.error("  Need at least one of: ANTHROPIC_API_KEY, TICKETMASTER_API_KEY");
     process.exit(1);
+  }
+  if (tmOnly && !hasAnthropicKey) {
+    console.log("\n  ⚠ No ANTHROPIC_API_KEY — running Ticketmaster-only mode");
   }
 
   const startTime = Date.now();
@@ -96,47 +108,74 @@ async function main() {
   console.log(`  Merge: ${MERGE}`);
 
   // ── 2. Scrape ──
-  console.log("\n═══════════════════════════════════════");
-  console.log("  PHASE 1: SCRAPING");
-  console.log("═══════════════════════════════════════");
+  let scraped = [];
+  let successfulScrapes = [];
+  let failedScrapes = [];
+  const rawEvents = [];
 
-  let scraped;
-  if (SKIP_SCRAPE) {
-    console.log("  ⏭ Skipping scrape (--skip-scrape), using cached content...");
-    const { readCache } = require("./pipeline/scraper");
-    scraped = sources.map(s => {
-      const cached = readCache(s.id);
-      return { source: s, content: cached?.content || null, method: cached ? "cache" : "none" };
-    }).filter(s => s.content);
-    console.log(`  📦 Loaded ${scraped.length} cached sources`);
+  if (!tmOnly) {
+    console.log("\n═══════════════════════════════════════");
+    console.log("  PHASE 1: SCRAPING");
+    console.log("═══════════════════════════════════════");
+
+    if (SKIP_SCRAPE) {
+      console.log("  ⏭ Skipping scrape (--skip-scrape), using cached content...");
+      const { readCache } = require("./pipeline/scraper");
+      scraped = sources.map(s => {
+        const cached = readCache(s.id);
+        return { source: s, content: cached?.content || null, method: cached ? "cache" : "none" };
+      }).filter(s => s.content);
+      console.log(`  📦 Loaded ${scraped.length} cached sources`);
+    } else {
+      scraped = await scrapeAll(sources, CONCURRENCY);
+    }
+
+    successfulScrapes = scraped.filter(s => s.content);
+    failedScrapes = scraped.filter(s => !s.content);
+    console.log(`\n  Scraped: ${successfulScrapes.length}/${sources.length} successful`);
+    if (failedScrapes.length > 0) {
+      console.log(`  Failed: ${failedScrapes.map(s => s.source?.id || s.sourceId).join(", ")}`);
+    }
+
+    if (successfulScrapes.length === 0 && !hasTmKey) {
+      console.error("\n✗ No sources scraped successfully. Check network and source URLs.");
+      process.exit(1);
+    }
+
+    // ── 3. Parse ──
+    if (successfulScrapes.length > 0) {
+      console.log("\n═══════════════════════════════════════");
+      console.log("  PHASE 2: PARSING (Claude AI)");
+      console.log("═══════════════════════════════════════");
+
+      const jinaEvents = await parseBatch(successfulScrapes, sources);
+      console.log(`\n  Raw events extracted: ${jinaEvents.length}`);
+
+      // Apply category classification + attach venue fallback URL from source config
+      jinaEvents.forEach(e => {
+        e.cat = classifyEvent(e);
+        const src = sources.find(s => s.id === e.sourceId);
+        if (src) {
+          e.venueUrl = src.url; // fallback URL if event-specific URL is missing/dead
+        }
+      });
+
+      rawEvents.push(...jinaEvents);
+    }
   } else {
-    scraped = await scrapeAll(sources, CONCURRENCY);
+    console.log("\n  ⏭ Skipping Jina scraping + Claude parsing (TM-only mode)");
   }
 
-  const successfulScrapes = scraped.filter(s => s.content);
-  const failedScrapes = scraped.filter(s => !s.content);
-  console.log(`\n  Scraped: ${successfulScrapes.length}/${sources.length} successful`);
-  if (failedScrapes.length > 0) {
-    console.log(`  Failed: ${failedScrapes.map(s => s.source?.id || s.sourceId).join(", ")}`);
+  // ── 3b. Ticketmaster API ──
+  let tmEvents = [];
+  if (!SKIP_TM) {
+    tmEvents = await fetchTicketmasterEvents();
+    rawEvents.push(...tmEvents);
+  } else {
+    console.log("\n  ⏭ Skipping Ticketmaster API (--skip-ticketmaster)");
   }
 
-  if (successfulScrapes.length === 0) {
-    console.error("\n✗ No sources scraped successfully. Check network and source URLs.");
-    process.exit(1);
-  }
-
-  // ── 3. Parse ──
-  console.log("\n═══════════════════════════════════════");
-  console.log("  PHASE 2: PARSING (Claude AI)");
-  console.log("═══════════════════════════════════════");
-
-  const rawEvents = await parseBatch(successfulScrapes, sources);
-  console.log(`\n  Raw events extracted: ${rawEvents.length}`);
-
-  // Apply category classification
-  rawEvents.forEach(e => {
-    e.cat = classifyEvent(e);
-  });
+  console.log(`\n  Total raw events: ${rawEvents.length} (Jina: ${rawEvents.length - tmEvents.length}, TM API: ${tmEvents.length})`);
 
   // ── 4. Validate ──
   const validated = await validate(rawEvents, { skipUrlCheck: SKIP_URL_CHECK });
@@ -186,6 +225,7 @@ async function main() {
       sourcesScraped: successfulScrapes.length,
       sourcesFailed: failedScrapes.length,
       rawEvents: rawEvents.length,
+      tmEvents: tmEvents.length,
       finalEvents: finalEvents.length,
       categories: catCounts,
       areas: areaCounts,
@@ -195,21 +235,32 @@ async function main() {
     console.log(`  ✓ Saved log → ${LOG_PATH}`);
 
     // Record health
+    const sourceResults = scraped.map(s => ({
+      sourceId: s.source?.id || s.sourceId,
+      tier: s.source?.tier,
+      content: !!s.content,
+      method: s.method,
+      eventCount: rawEvents.filter(e => e.sourceId === (s.source?.id || s.sourceId)).length,
+      errors: s.errors,
+    }));
+    // Add Ticketmaster API as a source in health tracking
+    if (tmEvents.length > 0) {
+      sourceResults.push({
+        sourceId: "ticketmaster-api",
+        tier: 1,
+        content: true,
+        method: "api",
+        eventCount: tmEvents.length,
+      });
+    }
     const runData = {
-      totalSources: sources.length,
-      sourcesScraped: successfulScrapes.length,
+      totalSources: sources.length + (tmEvents.length > 0 ? 1 : 0),
+      sourcesScraped: successfulScrapes.length + (tmEvents.length > 0 ? 1 : 0),
       sourcesFailed: failedScrapes.length,
       rawEvents: rawEvents.length,
       finalEvents: finalEvents.length,
       durationSec: parseFloat(durationSec),
-      sourceResults: scraped.map(s => ({
-        sourceId: s.source?.id || s.sourceId,
-        tier: s.source?.tier,
-        content: !!s.content,
-        method: s.method,
-        eventCount: rawEvents.filter(e => e.sourceId === (s.source?.id || s.sourceId)).length,
-        errors: s.errors,
-      })),
+      sourceResults,
     };
     recordRun(runData);
 
@@ -226,17 +277,23 @@ async function main() {
   }
 
   // ── API cost estimate ──
-  const claudeCalls = Math.ceil(successfulScrapes.length / 3) + (failedScrapes.length > 0 ? failedScrapes.length : 0);
-  const estInputTokens = claudeCalls * 4000;
-  const estOutputTokens = claudeCalls * 2000;
-  const estCost = ((estInputTokens / 1000000) * 3 + (estOutputTokens / 1000000) * 15).toFixed(3);
-  console.log(`\n  💲 Est. API cost this run: ~$${estCost} (${claudeCalls} Claude calls)`);
-  console.log(`     Monthly @ 2x/day: ~$${(parseFloat(estCost) * 60).toFixed(2)}`);
+  if (successfulScrapes.length > 0) {
+    const claudeCalls = Math.ceil(successfulScrapes.length / 3) + (failedScrapes.length > 0 ? failedScrapes.length : 0);
+    const estInputTokens = claudeCalls * 4000;
+    const estOutputTokens = claudeCalls * 2000;
+    const estCost = ((estInputTokens / 1000000) * 3 + (estOutputTokens / 1000000) * 15).toFixed(3);
+    console.log(`\n  💲 Est. Claude API cost: ~$${estCost} (${claudeCalls} calls)`);
+    console.log(`     Monthly @ 2x/day: ~$${(parseFloat(estCost) * 60).toFixed(2)}`);
+  }
+  if (tmEvents.length > 0) {
+    console.log(`  🎫 Ticketmaster API: ${tmEvents.length} events (free)`);
+  }
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log("\n═══════════════════════════════════════════════════════");
   console.log(`  ✅ Pipeline complete in ${elapsed}s`);
-  console.log(`     ${validated.length} events from ${successfulScrapes.length} sources`);
+  const totalSources = successfulScrapes.length + (tmEvents.length > 0 ? 1 : 0);
+  console.log(`     ${validated.length} events from ${totalSources} sources`);
   console.log("═══════════════════════════════════════════════════════\n");
 }
 

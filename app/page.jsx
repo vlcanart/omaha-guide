@@ -68,6 +68,7 @@ const IMG={rock:u("photo-1470229722913-7c0e2dbbafd3"),concert:u("photo-150138676
 const EV_IMG={1:u("photo-1493225457124-a3eb161ffa5f"),2:u("photo-1585699324551-f6c309eedeca"),4:u("photo-1470229722913-7c0e2dbbafd3"),6:u("photo-1603190287605-e6ade32fa852"),7:u("photo-1542751371-adc38448a05e"),16:u("photo-1518834107812-67b0b7c58434"),101:u("photo-1546519638-68e109498ffc"),106:u("photo-1529768167801-9173d94c2a42"),107:u("photo-1508098682722-e99c43a406b2"),203:u("photo-1555939594-58d7cb561ad1")};
 
 function pickImg(ev){
+  if(ev.image)return ev.image;
   if(EV_IMG[ev.id])return EV_IMG[ev.id];
   const ti=(ev.title||"").toLowerCase(),tags=(ev.tags||[]).map(t=>t.toLowerCase());
   for(const[k,v]of Object.entries(IMG)){if(tags.includes(k))return v;}
@@ -652,7 +653,7 @@ export default function App(){
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:20}}>
               {(sel.tags||[]).map(t=><span key={t} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",color:T.textSec,fontWeight:500,letterSpacing:0.6}}>{t}</span>)}
             </div>
-            <a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>Get Tickets</a>
+            {sel.url&&sel.url!=="#"&&<a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>{sel.url.includes("/event")||sel.url.includes("/ticket")||sel.url.includes("ticketmaster")||sel.url.includes("etix.com")||sel.url.includes("axs.com")||sel.url.includes("eventbrite")?"Get Tickets":"Visit Venue"}</a>}
             {shareMsg&&<p style={{textAlign:"center",marginTop:8,fontSize:11,color:T.accent,letterSpacing:1,fontWeight:500,animation:"fadeIn 0.2s"}}>Event info copied to clipboard!</p>}
           </div>
         </div>

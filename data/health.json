@@ -732,9 +732,73 @@
       "totalRuns": 1,
       "totalEvents": 22,
       "failures": 0
+    },
+    "ticketmaster-api": {
+      "history": [
+        {
+          "timestamp": "2026-02-26T21:53:08.153Z",
+          "success": true,
+          "method": "api",
+          "events": 361,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-26T21:52:28.947Z",
+          "success": true,
+          "method": "api",
+          "events": 361,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-26T21:19:25.908Z",
+          "success": true,
+          "method": "api",
+          "events": 403,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
+      "totalEvents": 1125,
+      "failures": 0
     }
   },
   "runs": [
+    {
+      "timestamp": "2026-02-26T21:53:08.153Z",
+      "totalSources": 53,
+      "sourcesScraped": 1,
+      "sourcesFailed": 0,
+      "rawEvents": 361,
+      "finalEvents": 566,
+      "durationSec": 2.1
+    },
+    {
+      "timestamp": "2026-02-26T21:52:28.947Z",
+      "totalSources": 53,
+      "sourcesScraped": 1,
+      "sourcesFailed": 0,
+      "rawEvents": 361,
+      "finalEvents": 595,
+      "durationSec": 2.2
+    },
+    {
+      "timestamp": "2026-02-26T21:19:25.908Z",
+      "totalSources": 53,
+      "sourcesScraped": 1,
+      "sourcesFailed": 0,
+      "rawEvents": 403,
+      "finalEvents": 582,
+      "durationSec": 2.1
+    },
+    {
+      "timestamp": "2026-02-26T21:18:05.081Z",
+      "totalSources": 52,
+      "sourcesScraped": 0,
+      "sourcesFailed": 0,
+      "rawEvents": 0,
+      "finalEvents": 241,
+      "durationSec": 3.2
+    },
     {
       "timestamp": "2026-02-23T20:08:33.236Z",
       "totalSources": 52,

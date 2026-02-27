@@ -232,7 +232,7 @@ const CATS=[{id:"all",label:"All",dot:null},{id:"concerts",label:"Concerts",dot:
 const mapsDir=(lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 const mapsSearch=q=>`https://www.google.com/maps/search/${encodeURIComponent(q+' Omaha NE')}`;
 
-const isTicketUrl=(u)=>u&&/\/(event|ticket)|ticketmaster|ticketomaha|etix\.com|axs\.com|eventbrite|seetickets/.test(u);
+const isTicketUrl=(u)=>u&&/\/(event|ticket)|ticketmaster|ticketomaha|etix\.com|axs\.com|eventbrite|seetickets|stubhub\.com/.test(u);
 const showPrice=(ev)=>ev.price==="TBD"&&ev.url&&ev.url!=="#"?(isTicketUrl(ev.url)?"See Tickets →":"Visit Venue →"):ev.price;
 
 /* ═══ HOOKS-SAFE COMPONENTS ═══ */
@@ -727,7 +727,7 @@ export default function App(){
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:20}}>
               {(sel.tags||[]).map(t=><span key={t} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",color:T.textSec,fontWeight:500,letterSpacing:0.6}}>{t}</span>)}
             </div>
-            {sel.url&&sel.url!=="#"&&<a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>{sel.url.includes("/event")||sel.url.includes("/ticket")||sel.url.includes("ticketmaster")||sel.url.includes("etix.com")||sel.url.includes("axs.com")||sel.url.includes("eventbrite")?"Get Tickets":"Visit Venue"}</a>}
+            {sel.url&&sel.url!=="#"&&<a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>{isTicketUrl(sel.url)?(sel.url.includes("stubhub.com")?"Find Tickets on StubHub":"Get Tickets"):"Visit Venue"}</a>}
             {shareMsg&&<p style={{textAlign:"center",marginTop:8,fontSize:11,color:T.accent,letterSpacing:1,fontWeight:500,animation:"fadeIn 0.2s"}}>Event info copied to clipboard!</p>}
           </div>
         </div>

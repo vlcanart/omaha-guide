@@ -346,6 +346,20 @@ if (urlUpgradeCount > 0) {
   console.log(`🔗 URL upgrade pass: ${urlUpgradeCount} events upgraded from venue calendar → real ticket URLs`);
 }
 
+// ═══ STUBHUB FALLBACK PASS ═══
+// Events STILL stuck with venue calendar URLs get a StubHub search link
+let stubhubCount = 0;
+for (const ev of ingested) {
+  if (!ev.url || !venueCalendarUrls.has(ev.url)) continue;
+  const q = encodeURIComponent(`${ev.title} ${ev.venue} Omaha`);
+  ev.url = `https://www.stubhub.com/find/s/?q=${q}`;
+  ev.stubhubFallback = true;
+  stubhubCount++;
+}
+if (stubhubCount > 0) {
+  console.log(`🎫 StubHub fallback: ${stubhubCount} events linked to StubHub search`);
+}
+
 // ═══ VENUE URL FALLBACK ═══
 let fallbackCount = 0;
 for (const ev of ingested) {

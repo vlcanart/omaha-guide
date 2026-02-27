@@ -124,7 +124,7 @@ if (imgStripCount > 0) {
 
 // ═══ FIX 3: VENUE EXCLUSIONS ═══
 // Filter out events from venues that are too small or irrelevant
-const EXCLUDED_VENUES = ["prairie meadows", "finish line", "la vista public library"];
+const EXCLUDED_VENUES = ["prairie meadows", "finish line", "library"];
 const beforeExclude = ingested.length;
 ingested = ingested.filter((ev) => {
   const v = (ev.venue || "").toLowerCase();
@@ -346,18 +346,31 @@ if (urlUpgradeCount > 0) {
   console.log(`🔗 URL upgrade pass: ${urlUpgradeCount} events upgraded from venue calendar → real ticket URLs`);
 }
 
-// ═══ STUBHUB FALLBACK PASS ═══
-// Events STILL stuck with venue calendar URLs get a StubHub search link
+// ═══ STUBHUB PERFORMER FALLBACK ═══
+// Events stuck with venue calendar URLs get linked to known StubHub performer pages
+const STUBHUB_MAP = [
+  { match: /omaha.*(hockey|maverick)/i, url: "https://www.stubhub.com/omaha-mavericks-men-s-hockey-tickets/performer/180988" },
+  { match: /omaha.*(basketball|women.*basket)/i, url: "https://www.stubhub.com/omaha-mavericks-men-s-basketball-tickets/performer/170810" },
+  { match: /creighton.*basketball/i, url: "https://www.stubhub.com/creighton-bluejays-mens-basketball-tickets/performer/3410" },
+  { match: /creighton.*baseball/i, url: "https://www.stubhub.com/creighton-bluejays-baseball-tickets/performer/100291" },
+  { match: /storm\s*chasers/i, url: "https://www.stubhub.com/omaha-storm-chasers-tickets/performer/3906" },
+  { match: /union\s*omaha/i, url: "https://www.stubhub.com/union-omaha-tickets/performer/100623" },
+  { match: /omaha.*lancers/i, url: "https://www.stubhub.com/omaha-lancers-tickets/performer/9488" },
+  { match: /supernova|lovb.*nebraska/i, url: "https://www.stubhub.com/lovb-omaha-supernovas-tickets/performer/102118" },
+];
+
 let stubhubCount = 0;
 for (const ev of ingested) {
   if (!ev.url || !venueCalendarUrls.has(ev.url)) continue;
-  const q = encodeURIComponent(`${ev.title} ${ev.venue} Omaha`);
-  ev.url = `https://www.stubhub.com/find/s/?q=${q}`;
-  ev.stubhubFallback = true;
-  stubhubCount++;
+  const text = `${ev.title} ${ev.venue}`;
+  const match = STUBHUB_MAP.find(m => m.match.test(text));
+  if (match) {
+    ev.url = match.url;
+    stubhubCount++;
+  }
 }
 if (stubhubCount > 0) {
-  console.log(`🎫 StubHub fallback: ${stubhubCount} events linked to StubHub search`);
+  console.log(`🎫 StubHub fallback: ${stubhubCount} events linked to StubHub performer pages`);
 }
 
 // ═══ VENUE URL FALLBACK ═══

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Load .env.local so pipeline scripts can read API keys
+require("dotenv").config({ path: require("path").join(__dirname, "..", ".env.local") });
 /**
  * ═══════════════════════════════════════════════════════════
  *  GO: Guide to Omaha — Event Ingestion Pipeline v2

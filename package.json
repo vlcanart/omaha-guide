@@ -7,7 +7,6 @@
     "prebuild": "node scripts/prebuild-events.js",
     "build": "node scripts/prebuild-events.js && node scripts/generate-sitemap.js && next build",
     "start": "next start",
-
     "pipeline": "node scripts/run-pipeline.js --merge",
     "pipeline:full": "node scripts/run-pipeline.js --merge --concurrency 5",
     "pipeline:fast": "node scripts/run-pipeline.js --merge --skip-url-check",
@@ -18,27 +17,24 @@
     "pipeline:cb": "node scripts/run-pipeline.js --merge --area \"Council Bluffs\"",
     "pipeline:tm": "node scripts/run-pipeline.js --ticketmaster-only --merge --skip-url-check",
     "health": "node scripts/run-pipeline.js --report",
-
     "review": "node scripts/review-events.js",
     "review:stats": "node scripts/review-events.js --stats",
     "review:low": "node scripts/review-events.js --low",
     "review:dupes": "node scripts/review-events.js --dupes",
     "review:expired": "node scripts/review-events.js --expired",
     "review:prune": "node scripts/review-events.js --prune",
-
     "sitemap": "node scripts/generate-sitemap.js",
     "icons": "node scripts/generate-icons.js",
-
     "sheets:setup": "node scripts/sheets-sync.js --setup",
     "sheets:push": "node scripts/sheets-sync.js --push",
     "sheets:pull": "node scripts/sheets-sync.js --pull",
     "sheets:status": "node scripts/sheets-sync.js --status",
-
     "ingest": "node scripts/ingest-events.js",
     "ingest:merge": "node scripts/ingest-events.js --merge",
     "ingest:dry": "node scripts/ingest-events.js --dry-run"
   },
   "dependencies": {
+    "dotenv": "^17.3.1",
     "next": "^14.2.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0"

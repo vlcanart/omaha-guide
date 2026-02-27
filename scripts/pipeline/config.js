@@ -52,7 +52,7 @@ const SOURCES = [
   { id:"paceevents", name:"PACE – Events", url:"https://www.paceartsiowa.org/events", area:"Council Bluffs", tier:2, priority:5, cats:["arts"], strategy:"jina" },
   { id:"pacecal", name:"PACE – Calendar", url:"https://www.paceartsiowa.org/calendar", area:"Council Bluffs", tier:2, priority:5, cats:["arts"], strategy:"jina" },
   { id:"iwcc", name:"Iowa Western Arts Center", url:"https://artscenter.iwcc.edu/calendar-of-events/", area:"Council Bluffs", tier:2, priority:5, cats:["arts"], strategy:"jina" },
-  { id:"cblibrary", name:"CB Public Library", url:"https://www.councilbluffslibrary.org/events/upcoming", area:"Council Bluffs", tier:2, priority:7, cats:["family"], strategy:"jina" },
+  // { id:"cblibrary", name:"CB Public Library", url:"https://www.councilbluffslibrary.org/events/upcoming", area:"Council Bluffs", tier:2, priority:7, cats:["family"], strategy:"jina" }, // paused — too small/irrelevant
 
   // ═══ PAPILLION / LA VISTA / RALSTON ═══
   { id:"papillion", name:"City of Papillion", url:"https://www.papillion.org/calendar.aspx", area:"Papillion", tier:2, priority:5, cats:["family","festivals"], strategy:"jina" },

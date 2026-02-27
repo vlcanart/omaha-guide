@@ -232,6 +232,9 @@ const CATS=[{id:"all",label:"All",dot:null},{id:"concerts",label:"Concerts",dot:
 const mapsDir=(lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 const mapsSearch=q=>`https://www.google.com/maps/search/${encodeURIComponent(q+' Omaha NE')}`;
 
+const isTicketUrl=(u)=>u&&/\/(event|ticket)|ticketmaster|ticketomaha|etix\.com|axs\.com|eventbrite|seetickets/.test(u);
+const showPrice=(ev)=>ev.price==="TBD"&&ev.url&&ev.url!=="#"?(isTicketUrl(ev.url)?"See Tickets →":"Visit Venue →"):ev.price;
+
 /* ═══ HOOKS-SAFE COMPONENTS ═══ */
 function ImgCard({src,children,h=130,grad}){
   const[ok,setOk]=useState(false);
@@ -258,7 +261,7 @@ function FeatSlide({ev,isD,isT,favs,tog,setSel,playVideo}){
       <div style={{padding:"12px 14px 14px"}}>
         <p style={{margin:0,fontSize:12,color:T.textBody,letterSpacing:0.4,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{ev.desc}</p>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-          <span style={{fontSize:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{ev.price==="TBD"&&ev.url&&ev.url!=="#"?"See Tickets →":ev.price}</span>
+          <span style={{fontSize:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{showPrice(ev)}</span>
           <div style={{display:"flex",alignItems:"center",gap:6}}>
             {ev.ytId&&<button onClick={e=>{e.stopPropagation();playVideo(ev);}} className="hbtn" style={{background:"rgba(232,54,79,0.15)",border:"none",borderRadius:99,width:28,height:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.play("#E8364F",10)}</button>}
             <span style={{fontSize:11,color:T.venue,letterSpacing:1}}>{ev.time}</span>
@@ -270,9 +273,9 @@ function FeatSlide({ev,isD,isT,favs,tog,setSel,playVideo}){
   );
 }
 
-function VenueCard({v,cnt,isD,isT,i=0}){
+function VenueCard({v,cnt,isD,isT,i=0,onSelect}){
   return(
-    <div className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:10,animation:`cardIn 0.3s ${i*0.04}s both`}}>
+    <div onClick={()=>onSelect&&onSelect(v)} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:10,cursor:"pointer",animation:`cardIn 0.3s ${i*0.04}s both`}}>
       <ImgCard src={v.img} h={isD?155:isT?135:115} grad={CG._}>
         {cnt>0&&<div style={{position:"absolute",top:10,right:10,padding:"3px 11px",borderRadius:99,background:"rgba(94,196,182,0.15)",border:"1px solid rgba(94,196,182,0.2)"}}>
           <span style={{fontSize:10,fontWeight:700,color:T.accent,letterSpacing:0.8}}>{cnt} event{cnt>1?"s":""}</span>
@@ -285,8 +288,77 @@ function VenueCard({v,cnt,isD,isT,i=0}){
       <div style={{padding:"12px 14px 14px"}}>
         <p style={{margin:0,fontSize:12,color:T.textBody,letterSpacing:0.3,lineHeight:1.5}}>{v.desc}</p>
         <div style={{display:"flex",gap:7,marginTop:12}}>
-          {v.url&&v.url!=="#"&&<a href={v.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"9px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.accent,fontSize:11,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>{I.link(T.accent,12)} Website</a>}
-          <a href={mapsDir(v.lat,v.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"9px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:11,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>{I.dir(T.textBody,12)} Directions</a>
+          {v.url&&v.url!=="#"&&<a href={v.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} className="hbtn" style={{flex:1,padding:"9px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.accent,fontSize:11,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>{I.link(T.accent,12)} Website</a>}
+          <a href={mapsDir(v.lat,v.lng)} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} className="hbtn" style={{flex:1,padding:"9px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:11,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>{I.dir(T.textBody,12)} Directions</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ VENUE DETAIL MODAL ═══ */
+function VenueDetail({v,events,isD,isT,isM,onClose,onSelectEvent}){
+  const venueEvents=events.filter(e=>e.venue===v.name).sort((a,b)=>a.date.localeCompare(b.date));
+  return(
+    <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(12px)",zIndex:100,display:"flex",alignItems:isD?"center":"flex-end",justifyContent:"center",animation:"fadeIn 0.2s"}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:T.surface,borderRadius:isD?22:"22px 22px 0 0",maxWidth:isD?540:560,width:"100%",maxHeight:isD?"88vh":"92vh",overflow:"auto",animation:isD?"zoomIn 0.3s cubic-bezier(0.16,1,0.3,1)":"sheetUp 0.4s cubic-bezier(0.16,1,0.3,1)",margin:isD?"0 20px":0}}>
+        {!isD&&<div style={{width:32,height:3,borderRadius:99,background:T.textDim,margin:"10px auto 4px"}}/>}
+        {/* Hero */}
+        <div style={{position:"relative",margin:isD?"12px 16px 0":"6px 12px 0",borderRadius:16,overflow:"hidden",height:isD?250:isT?210:180,background:CG._}}>
+          <img src={v.img} alt="" referrerPolicy="no-referrer" onError={e=>{e.target.style.display="none";}} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.55}}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.05) 0%,rgba(20,22,24,0.9) 100%)"}}/>
+          <button onClick={onClose} className="hbtn" style={{position:"absolute",top:12,right:12,width:42,height:42,borderRadius:99,background:"rgba(30,32,36,0.7)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.15)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(242,239,233,0.85)",zIndex:2,fontSize:18,fontWeight:300}}>✕</button>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 18px 14px"}}>
+            <p style={{margin:"0 0 3px",fontSize:10,fontWeight:700,color:T.accent,letterSpacing:2.5,textTransform:"uppercase"}}>{v.type}</p>
+            <h2 style={{fontSize:isD?26:22,fontWeight:600,margin:0,color:T.textHi,letterSpacing:0.5,lineHeight:1.2}}>{v.name}</h2>
+          </div>
+        </div>
+        <div style={{padding:isD?"18px 22px 24px":"14px 18px 24px"}}>
+          {/* Info pills */}
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:14}}>
+            {[v.cap&&`Capacity: ${v.cap}`,v.area,v.type].filter(Boolean).map(p=>(
+              <span key={p} style={{fontSize:10,padding:"5px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",border:`1px solid ${T.border}`,color:T.textSec,fontWeight:500,letterSpacing:0.6}}>{p}</span>
+            ))}
+          </div>
+          {/* Description */}
+          <p style={{fontSize:14,color:T.textBody,lineHeight:1.7,margin:"0 0 16px",letterSpacing:0.3}}>{v.desc}</p>
+          {/* Action buttons */}
+          <div style={{display:"flex",gap:8,marginBottom:20}}>
+            {v.url&&v.url!=="#"&&<a href={v.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"11px 0",borderRadius:99,background:"rgba(94,196,182,0.1)",border:`1px solid rgba(94,196,182,0.25)`,color:T.accent,fontSize:12,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{I.link(T.accent,13)} Website</a>}
+            <a href={mapsDir(v.lat,v.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"11px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:12,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{I.dir(T.textBody,13)} Directions</a>
+          </div>
+          {/* Upcoming Events */}
+          <div style={{borderTop:`1px solid ${T.border}`,paddingTop:16}}>
+            <h3 style={{margin:"0 0 12px",fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase"}}>Upcoming Events{venueEvents.length>0&&<span style={{color:T.textDim,fontWeight:400,marginLeft:8}}>({venueEvents.length})</span>}</h3>
+            {venueEvents.length===0?(
+              <div style={{textAlign:"center",padding:"24px 0"}}>
+                {I.events(T.textDim,28)}
+                <p style={{fontSize:12,color:T.textDim,letterSpacing:0.6,marginTop:8}}>No upcoming events found for this venue</p>
+              </div>
+            ):(
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                {venueEvents.map((ev,i)=>{
+                  const accent=CA[ev.cat]||T.accent;const icon=CATICON[ev.cat];const hasTicket=isTicketUrl(ev.url);
+                  return(
+                    <div key={ev.id||i} onClick={()=>onSelectEvent(ev)} className="ecard" style={{display:"flex",alignItems:"center",gap:isM?10:12,padding:"11px 12px",borderRadius:14,background:CG[ev.cat]||CG._,border:`1px solid ${T.border}`,cursor:"pointer"}}>
+                      <div style={{width:36,height:36,borderRadius:10,background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                        {icon?icon(accent,16):<div style={{width:6,height:6,borderRadius:99,background:accent}}/>}
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <p style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi,letterSpacing:0.4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ev.title}</p>
+                        <p style={{margin:"2px 0 0",fontSize:10,color:T.textSec,letterSpacing:0.8}}>
+                          {fmtFull(ev.date).split(",")[0]} · {ev.time}{ev.price&&ev.price!=="TBD"&&` · ${ev.price}`}
+                        </p>
+                      </div>
+                      {ev.url&&ev.url!=="#"&&(
+                        <a href={ev.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} className="hbtn" style={{padding:"6px 12px",borderRadius:99,background:hasTicket?"rgba(94,196,182,0.12)":"rgba(255,255,255,0.05)",border:`1px solid ${hasTicket?"rgba(94,196,182,0.25)":T.border}`,color:hasTicket?T.accent:T.textSec,fontSize:10,fontWeight:600,letterSpacing:0.8,textDecoration:"none",whiteSpace:"nowrap"}}>{hasTicket?"Tickets":"Visit"}</a>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -394,6 +466,7 @@ export default function App(){
   const[shareMsg,setShareMsg]=useState(false);
   const[venCat,setVenCat]=useState("all");
   const[activeVideo,setActiveVideo]=useState(null); // {ytId, title, venue, date}
+  const[selVenue,setSelVenue]=useState(null);
   const playVideo=(ev)=>{if(ev.ytId)setActiveVideo({ytId:ev.ytId,title:ev.title,venue:ev.venue,date:ev.date});};
 
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
@@ -421,7 +494,7 @@ export default function App(){
   const dayFiltered=all.filter(e=>selDays.includes(e.date));
   const catFiltered=dayFiltered.filter(e=>cat==="all"||e.cat===cat);
   const tagFiltered=catFiltered.filter(e=>!subTag||(e.tags||[]).includes(subTag));
-  const filtered=tagFiltered.filter(e=>!q||(e.title+e.venue+(e.tags||[]).join("")).toLowerCase().includes(q.toLowerCase()));
+  const filtered=tagFiltered.filter(e=>!q||(e.title+e.venue+(e.tags||[]).join("")).toLowerCase().includes(q.toLowerCase())).sort((a,b)=>{const aT=isTicketUrl(a.url)?0:1;const bT=isTicketUrl(b.url)?0:1;if(aT!==bT)return aT-bT;return a.date.localeCompare(b.date);});
   const featured=dayFiltered.filter(e=>e.feat);
   const availTags=cat!=="all"?[...new Set(dayFiltered.filter(e=>e.cat===cat).flatMap(e=>e.tags||[]).filter(t=>t!=="Free"))]:[];
   const allCatTags=cat!=="all"?[...new Set(all.filter(e=>e.cat===cat).flatMap(e=>e.tags||[]).filter(t=>t!=="Free"))]:[];
@@ -446,7 +519,6 @@ export default function App(){
   const mx=isD?860:isT?680:600;const px=isD?32:isT?24:16;const sec={maxWidth:mx,margin:"0 auto",padding:`0 ${px}px`};
   const Head=({text,count,mt=24})=>(<div style={{display:"flex",alignItems:"baseline",gap:10,margin:`${mt}px 0 10px`}}><h2 style={{fontSize:isD?13:12,fontWeight:600,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:0}}>{text}</h2>{count!=null&&<span style={{fontSize:11,color:T.textDim,letterSpacing:1}}>{count}</span>}</div>);
 
-  const showPrice=(ev)=>ev.price==="TBD"&&ev.url&&ev.url!=="#"?"See Tickets →":ev.price;
 
   const EventCard=({ev,i=0})=>{
     const fav=favs.includes(ev.id),free=ev.price?.includes("Free"),accent=CA[ev.cat]||T.accent,grad=CG[ev.cat]||CG._,icon=CATICON[ev.cat];
@@ -611,8 +683,8 @@ export default function App(){
               </button>);})}
           </div>
           <Head text={venCat==="all"?"Venues":VCATS.find(c=>c.id===venCat)?.label||"Venues"} count={fv.length} mt={14}/>
-          {isD?<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>{fv.map((v,i)=><VenueCard key={v.id} v={v} cnt={vCnt[v.name]||0} isD={isD} isT={isT} i={i}/>)}</div>
-            :fv.map((v,i)=><VenueCard key={v.id} v={v} cnt={vCnt[v.name]||0} isD={isD} isT={isT} i={i}/>)}
+          {isD?<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>{fv.map((v,i)=><VenueCard key={v.id} v={v} cnt={vCnt[v.name]||0} isD={isD} isT={isT} i={i} onSelect={setSelVenue}/>)}</div>
+            :fv.map((v,i)=><VenueCard key={v.id} v={v} cnt={vCnt[v.name]||0} isD={isD} isT={isT} i={i} onSelect={setSelVenue}/>)}
         </>);})()}
       </div>}
 
@@ -660,6 +732,12 @@ export default function App(){
           </div>
         </div>
       </div>)}
+
+      {/* ═══ VENUE DETAIL MODAL ═══ */}
+      {selVenue&&<VenueDetail v={selVenue} events={all} isD={isD} isT={isT} isM={isM}
+        onClose={()=>setSelVenue(null)}
+        onSelectEvent={(ev)=>{setSelVenue(null);setSel(ev);}}
+      />}
 
       {/* ═══ FOOTER ═══ */}
       <div style={{maxWidth:mx,margin:"32px auto 100px",padding:`0 ${px}px`,textAlign:"center"}}>

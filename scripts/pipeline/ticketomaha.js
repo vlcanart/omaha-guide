@@ -326,9 +326,28 @@ function formatTime(isoDate) {
   }
 }
 
+// ═══ CLEAN TITLE ═══
+// Strip date suffixes: "Bob Dylan | Mar. 21, 2026" → "Bob Dylan"
+// Also strips "| Orpheum Theater" venue suffixes
+function cleanTitle(raw) {
+  if (!raw) return raw;
+  // Strip " | Mon. DD, YYYY" or " | Month DD, YYYY" date suffixes
+  let t = raw.replace(/\s*\|\s*(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?\s+\d{1,2},?\s*\d{4}\s*$/i, "");
+  // Strip " | Venue Name" suffixes (anything after last pipe that looks like a venue)
+  // Only strip if the pipe-separated part matches a known venue
+  const parts = t.split(/\s*\|\s*/);
+  if (parts.length > 1) {
+    const lastPart = parts[parts.length - 1].toLowerCase().trim();
+    if (VENUE_ALIASES[lastPart]) {
+      t = parts.slice(0, -1).join(" | ");
+    }
+  }
+  return t.trim();
+}
+
 // ═══ MAP SINGLE JSON-LD EVENT ═══
 function mapEvent(jsonLdEvent, pageUrl, pageHtml) {
-  const title = jsonLdEvent.name;
+  const title = cleanTitle(jsonLdEvent.name);
   if (!title) return null;
 
   // Date

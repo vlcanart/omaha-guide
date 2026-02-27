@@ -258,7 +258,7 @@ function FeatSlide({ev,isD,isT,favs,tog,setSel,playVideo}){
       <div style={{padding:"12px 14px 14px"}}>
         <p style={{margin:0,fontSize:12,color:T.textBody,letterSpacing:0.4,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{ev.desc}</p>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-          <span style={{fontSize:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{ev.price}</span>
+          <span style={{fontSize:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{ev.price==="TBD"&&ev.url&&ev.url!=="#"?"See Tickets →":ev.price}</span>
           <div style={{display:"flex",alignItems:"center",gap:6}}>
             {ev.ytId&&<button onClick={e=>{e.stopPropagation();playVideo(ev);}} className="hbtn" style={{background:"rgba(232,54,79,0.15)",border:"none",borderRadius:99,width:28,height:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.play("#E8364F",10)}</button>}
             <span style={{fontSize:11,color:T.venue,letterSpacing:1}}>{ev.time}</span>
@@ -446,6 +446,8 @@ export default function App(){
   const mx=isD?860:isT?680:600;const px=isD?32:isT?24:16;const sec={maxWidth:mx,margin:"0 auto",padding:`0 ${px}px`};
   const Head=({text,count,mt=24})=>(<div style={{display:"flex",alignItems:"baseline",gap:10,margin:`${mt}px 0 10px`}}><h2 style={{fontSize:isD?13:12,fontWeight:600,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:0}}>{text}</h2>{count!=null&&<span style={{fontSize:11,color:T.textDim,letterSpacing:1}}>{count}</span>}</div>);
 
+  const showPrice=(ev)=>ev.price==="TBD"&&ev.url&&ev.url!=="#"?"See Tickets →":ev.price;
+
   const EventCard=({ev,i=0})=>{
     const fav=favs.includes(ev.id),free=ev.price?.includes("Free"),accent=CA[ev.cat]||T.accent,grad=CG[ev.cat]||CG._,icon=CATICON[ev.cat];
     return(
@@ -465,7 +467,7 @@ export default function App(){
           </div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <span style={{fontSize:isD?21:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{ev.price}</span>
+              <span style={{fontSize:isD?21:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{showPrice(ev)}</span>
               {free&&<span style={{fontSize:9,fontWeight:700,letterSpacing:1.5,color:T.green,background:"rgba(125,212,160,0.1)",padding:"2px 8px",borderRadius:99}}>FREE</span>}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:5}}>
@@ -522,7 +524,7 @@ export default function App(){
           })}
         </div>
         {/* Date strip */}
-        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none"}}>
           {dateDays.map(d=>{
             const ds=toDS(d);const isTd=d.getTime()===today.getTime();const active=selDays.includes(ds);const cnt=dayCnts[ds]||0;
             return(<button key={ds} onClick={()=>toggleDay(ds)} className="daybtn" style={{
@@ -553,7 +555,7 @@ export default function App(){
         </div>
 
         {/* Category pills with icons */}
-        <div style={{display:"flex",gap:5,overflowX:"auto",marginTop:8,paddingBottom:2,WebkitOverflowScrolling:"touch"}}>
+        <div style={{display:"flex",gap:5,overflowX:"auto",marginTop:8,paddingBottom:2,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none"}}>
           {CATS.map(c=>{const active=cat===c.id;const cnt=dayFiltered.filter(e=>c.id==="all"||e.cat===c.id).length;const icon=CATICON[c.id];return(
             <button key={c.id} onClick={()=>{setCat(c.id);setSubTag(null);}} className="pill" style={{padding:"6px 13px",borderRadius:99,display:"flex",alignItems:"center",gap:5,background:active?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.12)",border:active?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.25)",color:active?T.accent:"rgba(235,230,220,0.85)",cursor:"pointer",fontSize:11,fontWeight:active?600:500,whiteSpace:"nowrap",letterSpacing:1.2,textTransform:"uppercase"}}>
               {icon?icon(active?c.dot||T.accent:"rgba(235,230,220,0.6)",13):null}{c.label}<span style={{fontSize:10,color:active?T.accent:"rgba(235,230,220,0.5)",fontWeight:400}}>({cnt})</span>
@@ -561,14 +563,14 @@ export default function App(){
         </div>
 
         {/* Sub-tags */}
-        {cat!=="all"&&allCatTags.length>0&&<div style={{display:"flex",gap:4,overflowX:"auto",marginTop:6,WebkitOverflowScrolling:"touch"}}>
+        {cat!=="all"&&allCatTags.length>0&&<div style={{display:"flex",gap:4,overflowX:"auto",marginTop:6,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none"}}>
           <button onClick={()=>setSubTag(null)} className="pill" style={{padding:"4px 10px",borderRadius:99,background:!subTag?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.10)",border:!subTag?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.2)",color:!subTag?T.accent:"rgba(235,230,220,0.7)",cursor:"pointer",fontSize:10,fontWeight:!subTag?600:500,letterSpacing:0.8,whiteSpace:"nowrap"}}>All</button>
           {allCatTags.map(tag=>{const avail=availTags.includes(tag);const active=subTag===tag;return(<button key={tag} onClick={()=>avail&&setSubTag(active?null:tag)} className="pill" style={{padding:"4px 10px",borderRadius:99,background:active?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.10)",border:active?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.2)",color:active?T.accent:avail?"rgba(235,230,220,0.7)":"rgba(235,230,220,0.15)",cursor:avail?"pointer":"default",opacity:avail?1:0.5,fontSize:10,fontWeight:active?600:500,letterSpacing:0.8,whiteSpace:"nowrap"}}>{tag}</button>);})}
         </div>}
 
         {!q&&featured.length>0&&cat==="all"&&!subTag&&<>
           <Head text="Featured" count={featured.length} mt={16}/>
-          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none",scrollSnapType:"x mandatory"}}>
             {featured.map(ev=><FeatSlide key={ev.id} ev={ev} isD={isD} isT={isT} favs={favs} tog={tog} setSel={setSel} playVideo={playVideo}/>)}
           </div>
         </>}
@@ -644,7 +646,7 @@ export default function App(){
               <VideoFacade ytId={sel.ytId} h={isD?220:isT?190:160} onPlay={()=>{playVideo(sel);setSel(null);}}/>
             </div>}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:16}}>
-              {[{l:"Date",v:fmtFull(sel.date)},{l:"Time",v:sel.time},{l:"Venue",v:sel.venue},{l:"Price",v:sel.price}].map(r=>(
+              {[{l:"Date",v:fmtFull(sel.date)},{l:"Time",v:sel.time},{l:"Venue",v:sel.venue},{l:"Price",v:showPrice(sel)}].map(r=>(
                 <div key={r.l} style={{padding:"10px 12px",borderRadius:12,background:CG._,border:`1px solid ${T.border}`}}>
                   <p style={{margin:0,fontSize:9,color:T.textDim,fontWeight:600,letterSpacing:1.8,textTransform:"uppercase"}}>{r.l}</p>
                   <p style={{margin:"4px 0 0",fontSize:13,fontWeight:500,color:T.textHi,letterSpacing:0.3}}>{r.v}</p>

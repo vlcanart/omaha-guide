@@ -18,6 +18,7 @@
  *    --skip-url-check       Skip URL validation (faster)
  *    --skip-scrape          Use cached content only (re-parse)
  *    --skip-ticketmaster    Skip Ticketmaster API fetch
+ *    --skip-ticketomaha     Skip Ticket Omaha JSON-LD fetch
  *    --ticketmaster-only    Only fetch from Ticketmaster API (skip Jina+Claude)
  *    --report               Print health report and exit
  *    --merge                Merge with existing events.json
@@ -33,6 +34,7 @@ const { validate } = require("./pipeline/validator");
 const { recordRun, generateReport } = require("./pipeline/health");
 const { evaluateAndAlert, alertCritical } = require("./pipeline/alerts");
 const { fetchTicketmasterEvents } = require("./pipeline/ticketmaster");
+const { fetchTicketOmahaEvents } = require("./pipeline/ticketomaha");
 
 const EVENTS_PATH = path.join(__dirname, "..", "data", "events.json");
 const LOG_PATH = path.join(__dirname, "..", "data", "ingest-log.json");
@@ -49,6 +51,7 @@ const DRY_RUN = hasFlag("--dry-run");
 const SKIP_URL_CHECK = hasFlag("--skip-url-check");
 const SKIP_SCRAPE = hasFlag("--skip-scrape");
 const SKIP_TM = hasFlag("--skip-ticketmaster");
+const SKIP_TO = hasFlag("--skip-ticketomaha");
 const TM_ONLY = hasFlag("--ticketmaster-only");
 const SHOW_REPORT = hasFlag("--report");
 const MERGE = hasFlag("--merge");
@@ -175,7 +178,16 @@ async function main() {
     console.log("\n  ⏭ Skipping Ticketmaster API (--skip-ticketmaster)");
   }
 
-  console.log(`\n  Total raw events: ${rawEvents.length} (Jina: ${rawEvents.length - tmEvents.length}, TM API: ${tmEvents.length})`);
+  // ── 3c. Ticket Omaha JSON-LD ──
+  let toEvents = [];
+  if (!SKIP_TO && !TM_ONLY) {
+    toEvents = await fetchTicketOmahaEvents();
+    rawEvents.push(...toEvents);
+  } else if (SKIP_TO) {
+    console.log("\n  ⏭ Skipping Ticket Omaha (--skip-ticketomaha)");
+  }
+
+  console.log(`\n  Total raw events: ${rawEvents.length} (Jina: ${rawEvents.length - tmEvents.length - toEvents.length}, TM API: ${tmEvents.length}, Ticket Omaha: ${toEvents.length})`);
 
   // ── 4. Validate ──
   const validated = await validate(rawEvents, { skipUrlCheck: SKIP_URL_CHECK });
@@ -226,6 +238,7 @@ async function main() {
       sourcesFailed: failedScrapes.length,
       rawEvents: rawEvents.length,
       tmEvents: tmEvents.length,
+      toEvents: toEvents.length,
       finalEvents: finalEvents.length,
       categories: catCounts,
       areas: areaCounts,
@@ -253,9 +266,20 @@ async function main() {
         eventCount: tmEvents.length,
       });
     }
+    // Add Ticket Omaha as a source in health tracking
+    if (toEvents.length > 0) {
+      sourceResults.push({
+        sourceId: "ticketomaha-api",
+        tier: 2,
+        content: true,
+        method: "json-ld",
+        eventCount: toEvents.length,
+      });
+    }
+    const apiSourceCount = (tmEvents.length > 0 ? 1 : 0) + (toEvents.length > 0 ? 1 : 0);
     const runData = {
-      totalSources: sources.length + (tmEvents.length > 0 ? 1 : 0),
-      sourcesScraped: successfulScrapes.length + (tmEvents.length > 0 ? 1 : 0),
+      totalSources: sources.length + apiSourceCount,
+      sourcesScraped: successfulScrapes.length + apiSourceCount,
       sourcesFailed: failedScrapes.length,
       rawEvents: rawEvents.length,
       finalEvents: finalEvents.length,
@@ -288,11 +312,14 @@ async function main() {
   if (tmEvents.length > 0) {
     console.log(`  🎫 Ticketmaster API: ${tmEvents.length} events (free)`);
   }
+  if (toEvents.length > 0) {
+    console.log(`  🎟  Ticket Omaha: ${toEvents.length} events (JSON-LD)`);
+  }
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   console.log("\n═══════════════════════════════════════════════════════");
   console.log(`  ✅ Pipeline complete in ${elapsed}s`);
-  const totalSources = successfulScrapes.length + (tmEvents.length > 0 ? 1 : 0);
+  const totalSources = successfulScrapes.length + (tmEvents.length > 0 ? 1 : 0) + (toEvents.length > 0 ? 1 : 0);
   console.log(`     ${validated.length} events from ${totalSources} sources`);
   console.log("═══════════════════════════════════════════════════════\n");
 }

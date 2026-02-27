@@ -10,7 +10,8 @@ const SOURCES = [
   { id:"reader", name:"The Reader – Events", url:"https://onebox.scenethink.com/the-reader", area:"All Metro", tier:2, priority:6, cats:["arts","concerts"], strategy:"jina" },
   { id:"familyfun", name:"Family Fun in Omaha", url:"https://familyfuninomaha.com/events/", area:"All Metro", tier:2, priority:7, cats:["family"], strategy:"jina" },
   { id:"eventbrite", name:"Eventbrite – Omaha", url:"https://www.eventbrite.com/d/ne--omaha/events/", area:"All Metro", tier:2, priority:8, cats:["all"], strategy:"jina", ticketPlatform:"eventbrite" },
-  { id:"ticketomaha", name:"Ticket Omaha", url:"https://ticketomaha.com/events", area:"All Metro", tier:2, priority:4, cats:["concerts","arts"], strategy:"jina", ticketPlatform:"ticketomaha" },
+  // Ticket Omaha — now handled by dedicated JSON-LD scraper (scripts/pipeline/ticketomaha.js)
+  // { id:"ticketomaha", name:"Ticket Omaha", url:"https://ticketomaha.com/events", area:"All Metro", tier:2, priority:4, cats:["concerts","arts"], strategy:"jina", ticketPlatform:"ticketomaha" },
 
   // ═══ MAJOR VENUES ═══
   { id:"chi", name:"CHI Health Center", url:"https://chihealthcenteromaha.com/calendar/", area:"Omaha", tier:1, priority:1, cats:["concerts","sports"], strategy:"jina", ticketPlatform:"ticketmaster", venue:"CHI Health Center" },

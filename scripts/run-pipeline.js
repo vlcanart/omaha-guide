@@ -74,12 +74,13 @@ async function main() {
     return;
   }
 
-  // Validate env — allow TM-only mode without Anthropic key
+  // Validate env — allow TM-only mode or Ticket Omaha-only mode without Anthropic key
   const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
   const hasTmKey = !!process.env.TICKETMASTER_API_KEY;
+  const hasTicketOmaha = !SKIP_TO; // Ticket Omaha needs no API key
   const tmOnly = TM_ONLY || (!hasAnthropicKey && hasTmKey);
 
-  if (!hasAnthropicKey && !hasTmKey) {
+  if (!hasAnthropicKey && !hasTmKey && !hasTicketOmaha) {
     console.error("\n✗ Missing API keys");
     console.error("  Need at least one of: ANTHROPIC_API_KEY, TICKETMASTER_API_KEY");
     process.exit(1);
@@ -140,7 +141,7 @@ async function main() {
       console.log(`  Failed: ${failedScrapes.map(s => s.source?.id || s.sourceId).join(", ")}`);
     }
 
-    if (successfulScrapes.length === 0 && !hasTmKey) {
+    if (successfulScrapes.length === 0 && !hasTmKey && !hasTicketOmaha) {
       console.error("\n✗ No sources scraped successfully. Check network and source URLs.");
       process.exit(1);
     }

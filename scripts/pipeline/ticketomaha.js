@@ -183,18 +183,17 @@ async function fetchWithRetry(url, retries = 2) {
 }
 
 // ═══ PARSE SITEMAP FOR EVENT URLS ═══
-function extractEventUrls(html) {
+function extractEventUrls(sitemapXml) {
   const urls = [];
-  // Match href="/events/..." links — event detail pages
-  const hrefRegex = /href=["']\/events\/([^"'?#]+)["']/g;
+  // Sitemap is XML with <loc> tags: <loc>https://ticketomaha.com/events/slug</loc>
+  const locRegex = /<loc>\s*(https?:\/\/ticketomaha\.com\/events\/([^<\s]+))\s*<\/loc>/gi;
   let match;
-  while ((match = hrefRegex.exec(html)) !== null) {
-    const slug = match[1];
-    // Skip category/genre filter pages and non-event paths
-    if (slug.includes("?") || slug.includes("#")) continue;
-    // Event slugs are typically alphanumeric with hyphens
-    if (/^[a-z0-9-]+$/i.test(slug)) {
-      const fullUrl = `${BASE_URL}/events/${slug}`;
+  while ((match = locRegex.exec(sitemapXml)) !== null) {
+    const fullUrl = match[1];
+    const slug = match[2];
+    // Skip category/theme pages (e.g., /events/opera, /events?genres=...)
+    // Valid event slugs have a short alphanumeric code suffix like "wicked-jhby"
+    if (!slug.includes("?") && !slug.includes("#") && /^[a-z0-9-]+$/i.test(slug) && slug.includes("-")) {
       if (!urls.includes(fullUrl)) urls.push(fullUrl);
     }
   }

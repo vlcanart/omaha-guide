@@ -77,6 +77,7 @@ for (const [key, evs] of Object.entries(groups)) {
     const tm = tmEvents.find((t) => t.image) || tmEvents[0];
     if (!sc.url && tm.url) sc.url = tm.url;
     if (!sc.image && tm.image) sc.image = tm.image;
+    if ((!sc.price || sc.price === "TBD") && tm.price && tm.price !== "TBD") sc.price = tm.price;
     if (tm.urlValid) sc.urlValid = true;
     if (tm.affiliatePlatform) sc.affiliatePlatform = tm.affiliatePlatform;
 

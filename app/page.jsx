@@ -99,7 +99,7 @@ const CG = {
   water: "linear-gradient(135deg,#1A2730 0%,#1E3038 60%,#1A2830 100%)",
   _: "linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
 };
-const CA = { concerts:"#5EC4B6", sports:"#64B5F6", comedy:"#FFB74D" };
+const CA = { concerts:"#5EC4B6", sports:"#64B5F6", comedy:"#FFB74D", family:"#81C784", arts:"#CE93D8", festivals:"#FF8A65" };
 
 /* ═══ COLOR MATH ═══ */
 const h2r=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
@@ -741,6 +741,12 @@ const VENUES=[
 ];
 const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
 
+/* ═══ EVENT FILTER CONSTANTS ═══ */
+const ECATS=[{id:"all",label:"All",emoji:"📅"},{id:"concerts",label:"Concerts",emoji:"🎵"},{id:"sports",label:"Sports",emoji:"🏟️"},{id:"comedy",label:"Comedy",emoji:"😂"},{id:"family",label:"Family",emoji:"👨‍👩‍👧"},{id:"arts",label:"Arts",emoji:"🎭"},{id:"festivals",label:"Festivals",emoji:"🎪"}];
+const ESUBS={concerts:["Rock","Country","Hip-Hop","Jazz","Electronic","Pop","Metal","Folk","R&B","Indie","Classical","Tribute","Live Music"],sports:["Basketball","Football","Baseball","Volleyball","Hockey","Soccer","Wrestling"],comedy:["Stand-Up","Improv","Open Mic"],family:["Museum","Zoo","Science","Outdoor","Workshop"],arts:["Theater","Musical","Dance","Orchestra","Film","Gallery","Opera"],festivals:["Food","Music","Cultural","Holiday"]};
+const DATE_PRESETS=[{id:"all",label:"All Dates"},{id:"today",label:"Today"},{id:"week",label:"This Week"},{id:"month",label:"This Month"}];
+function matchDate(ev,range){if(range==="all")return true;const d=ev.date?.match(/^\d{4}-\d{2}-\d{2}$/)?new Date(ev.date+"T12:00:00"):null;if(!d)return range==="today";const now=new Date();now.setHours(0,0,0,0);if(range==="today")return d.toDateString()===now.toDateString();if(range==="week"){const end=new Date(now);end.setDate(end.getDate()+7);return d>=now&&d<=end;}if(range==="month"){const end=new Date(now);end.setMonth(end.getMonth()+1);return d>=now&&d<=end;}return true;}
+function matchSub(ev,sub){if(sub==="all")return true;const haystack=[...(ev.tags||[]),ev.title||"",ev.desc||""].join(" ").toLowerCase();return haystack.includes(sub.toLowerCase());}
 
 /* ═══ REAL-TIME SUN POSITION ═══ */
 const SUN_TABLE=[
@@ -774,6 +780,9 @@ export default function GOPrototype(){
   const[tab,setTab]=useState("today");
   const[prevTab,setPrevTab]=useState("today");
   const[favs,setFavs]=useState([]);
+  const[evCat,setEvCat]=useState("all");
+  const[evSub,setEvSub]=useState("all");
+  const[dateRange,setDateRange]=useState("all");
   useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
   useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
@@ -788,6 +797,8 @@ export default function GOPrototype(){
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);};
+  useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");}},[tab]);
+  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>evCat==="all"||e.cat===evCat).filter(e=>matchDate(e,dateRange)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,dateRange,cities]);
   const nb=Math.max(0,Math.min(1,(tv-50)/20));
   const isDay=tv<60,isNite=tv>=60;
   const mLabel=isDay?"Today":"Tonight";
@@ -827,7 +838,7 @@ export default function GOPrototype(){
      All other tabs get compact strip (95-135px) showing bottom third of skyline.
      SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
      GO: title stays visible at reduced size. No celestial or weather elements. */
-  const fullHero=tab==="today"||tab==="events";
+  const fullHero=tab==="today";
   const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:");
   const heroH=isTrailPage?"0px":fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
   const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
@@ -1028,9 +1039,29 @@ export default function GOPrototype(){
 
       {/* ═══ EVENTS TAB ═══ */}
       {tab==="events"&&<div style={sec}>
-        <Head text="Upcoming Events" count={EVENTS.filter(e=>cityMatch(e)).length} mt={16} color={T.accent}/>
-        {EVENTS.filter(e=>cityMatch(e)).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
-          <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
+        {/* City filter */}
+        <div style={{display:"flex",gap:6,flexWrap:"nowrap",overflowX:"auto",paddingTop:16,paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
+          {[["omaha","Omaha"],["cb","Council Bluffs"],["lincoln","Lincoln"]].map(([k,label])=><button key={k} onClick={()=>togCity(k)} style={{background:cities.has(k)?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${cities.has(k)?T.accent+"40":T.border}`,borderRadius:99,padding:"4px 12px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:10,fontWeight:600,color:cities.has(k)?T.accent:T.textSec,letterSpacing:1,textTransform:"uppercase"}}>{label}</span></button>)}
+        </div>
+        {/* Date presets */}
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
+          {DATE_PRESETS.map(dp=><button key={dp.id} onClick={()=>setDateRange(dp.id)} style={{background:dateRange===dp.id?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${dateRange===dp.id?T.accent+"40":T.border}`,borderRadius:99,padding:"4px 12px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:10,fontWeight:600,color:dateRange===dp.id?T.accent:T.textSec,letterSpacing:.8}}>{dp.label}</span></button>)}
+        </div>
+        {/* Category pills */}
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
+          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"4px 12px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:4}}><span style={{fontSize:12}}>{ec.emoji}</span><span style={{fontSize:10,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
+        </div>
+        {/* Subcategory pills */}
+        {evCat!=="all"&&ESUBS[evCat]&&<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
+          <button onClick={()=>setEvSub("all")} style={{background:evSub==="all"?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub==="all"?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"3px 10px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:9,fontWeight:600,color:evSub==="all"?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>All</span></button>
+          {ESUBS[evCat].map(s=><button key={s} onClick={()=>setEvSub(s)} style={{background:evSub===s?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub===s?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"3px 10px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:9,fontWeight:600,color:evSub===s?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>{s}</span></button>)}
+        </div>}
+        {/* Events heading */}
+        <Head text={evCat==="all"?"All Events":ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
+        {/* Event cards */}
+        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvCat("all");setEvSub("all");setDateRange("all");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"8px 20px",cursor:"pointer",color:T.accent,fontSize:12,fontWeight:600}}>Clear Filters</button></div>:
+        filteredEvents.map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+          <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${Math.min(i,.15/.04)*.04}s both`,cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
               <div style={{flex:1}}>
@@ -1696,7 +1727,7 @@ export default function GOPrototype(){
 
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
       <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 14px max(4px,env(safe-area-inset-bottom))",display:"flex",flexDirection:"column",alignItems:"center"}}>
-        <div style={{width:"100%",maxWidth:isD?480:isT?400:360,padding:"8px 14px 4px",background:"rgba(20,22,24,.95)",backdropFilter:"blur(22px)",borderRadius:"14px 14px 0 0",borderTop:`1px solid ${T.border}`,borderLeft:`1px solid ${T.border}`,borderRight:`1px solid ${T.border}`}}>
+        {tab==="today"&&<div style={{width:"100%",maxWidth:isD?480:isT?400:360,padding:"8px 14px 4px",background:"rgba(20,22,24,.95)",backdropFilter:"blur(22px)",borderRadius:"14px 14px 0 0",borderTop:`1px solid ${T.border}`,borderLeft:`1px solid ${T.border}`,borderRight:`1px solid ${T.border}`}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>
             <div style={{flex:1,position:"relative",height:36,borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,overflow:"hidden",cursor:"pointer"}}>
@@ -1713,8 +1744,8 @@ export default function GOPrototype(){
               <span style={{fontSize:9,fontWeight:600,color:isLive?T.accent:T.textSec,letterSpacing:.6}}>{timeLabel}</span>
             </button>
           </div>
-        </div>
-        <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:"0 0 16px 16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:"none"}}>
+        </div>}
+        <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:tab==="today"?"0 0 16px 16px":"16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:tab==="today"?"none":`1px solid ${T.border}`}}>
           {tabsD.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
               <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>

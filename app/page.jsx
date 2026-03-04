@@ -76,6 +76,8 @@ const CG = {
   trail: "linear-gradient(135deg,#1A2B20 0%,#233D2A 60%,#1E3224 100%)",
   hood: "linear-gradient(135deg,#22201A 0%,#2E2A20 60%,#282418 100%)",
   sunset: "linear-gradient(135deg,#2A1E1A 0%,#3A2818 60%,#302216 100%)",
+  park: "linear-gradient(135deg,#1C2E20 0%,#213828 60%,#1D3022 100%)",
+  water: "linear-gradient(135deg,#1A2730 0%,#1E3038 60%,#1A2830 100%)",
   _: "linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
 };
 const CA = { concerts:"#5EC4B6", sports:"#64B5F6", comedy:"#FFB74D" };
@@ -150,6 +152,24 @@ const IC={
   explore:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill={c} opacity=".5"/></svg>,
   venues:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
   saved:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>,
+  fish:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 12c3-6 10-6 14-2-4 4-11 4-14-2z"/><path d="M6.5 12c-3-1-4.5-3-4.5-3s1.5-2 4.5-3"/><circle cx="16" cy="10" r="0.7" fill={c}/></svg>,
+  kayak:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="14" rx="9" ry="3"/><path d="M12 3v8"/><path d="M8 5l4 3 4-3"/></svg>,
+  tent:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M12 3l9 18H3L12 3z"/><path d="M12 21v-6"/></svg>,
+  disc:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2a15 15 0 014 10"/><path d="M12 2a15 15 0 00-4 10"/></svg>,
+  archery:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+  horse:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 3c-1 0-2 .5-2.5 1.5l-1 2-.5 1-4 1-3 3 1 2 3-1 1 4v4h2v-5l3-2 1 3v4h2v-5l1-4c.8-1.5.5-3-.5-4l1.5-1.5z"/><circle cx="17" cy="5" r="1" fill={c}/></svg>,
+  boat:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20c2-1 4-1 6 0s4 1 6 0 4-1 6 0"/><path d="M4 16l8-12 8 12"/><path d="M12 4v12"/></svg>,
+  bird:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 008-8V7a4 4 0 00-8 0v1H9l-5.6 10z"/></svg>,
+  info:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+  phone:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
+  globe:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>,
+  clock:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  pin:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+  share:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>,
+  check:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  x:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  splash:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6"/><path d="M8 4l4 4 4-4"/><path d="M2 16c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 20c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>,
+  flower:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 7.5a4.5 4.5 0 11-4.5 4.5"/><path d="M12 7.5a4.5 4.5 0 104.5 4.5"/><circle cx="12" cy="12" r="3" fill={c} opacity=".3"/><path d="M12 2v5"/><path d="M12 22v-5"/></svg>,
 };
 const mapsDir=(lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 const u=id=>`https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
@@ -183,14 +203,219 @@ const SUNSETS=[
   {id:"s4",name:"Turner Park",desc:"Jazz on the Green in summer. Bring wine and a picnic. Arrive by 6 PM.",lat:41.255,lng:-95.96,icon:IC.music},
 ];
 const PARKS=[
-  {id:"p1",name:"Gene Leahy Mall",desc:"The RiverFront's crown jewel. Splash pad, playground, amphitheater, and green space in downtown.",lat:41.258,lng:-95.93,tags:["Riverfront","Family","Free"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🏞️"},
-  {id:"p2",name:"Lauritzen Gardens",desc:"100-acre botanical garden with conservatory, model trains, and seasonal exhibits.",lat:41.2384,lng:-95.9158,tags:["Gardens","Seasonal"],img:u("photo-1585320806297-9794b3e4eeae"),icon:"🌺",url:"https://www.lauritzengardens.org"},
-  {id:"p3",name:"Zorinsky Lake",desc:"255-acre park with paved trail loop, fishing pier, prairie wildflowers, and waterbird habitat.",lat:41.23,lng:-96.075,tags:["Lake","Trails","Family"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🚶"},
-  {id:"p4",name:"Elmwood Park",desc:"Historic park in the Dundee area with trails, golf course, and shaded picnic areas.",lat:41.252,lng:-95.971,tags:["Trails","Historic"],img:u("photo-1448375240586-882707db888b"),icon:"🌳"},
-  {id:"p5",name:"Standing Bear Lake",desc:"135-acre lake in NW Omaha with trails, kayak launch, and nature center.",lat:41.306,lng:-96.065,tags:["Lake","Nature"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🏞️"},
-  {id:"p6",name:"Heartland of America Park",desc:"Downtown lake with fountain, walking paths, and dramatic city skyline views.",lat:41.254,lng:-95.922,tags:["Downtown","Lake"],img:u("photo-1506157786151-b8491531f063"),icon:"⛲"},
-  {id:"p7",name:"Stinson Park",desc:"Aksarben Village green hosting festivals, food trucks, and community events.",lat:41.253,lng:-95.921,tags:["Events","Community"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎉"},
-  {id:"p8",name:"Turner Park",desc:"Midtown park home to Jazz on the Green. Bring wine and a picnic.",lat:41.255,lng:-95.96,tags:["Jazz","Free","Summer"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎵"},
+  {id:"cunningham-lake",name:"Cunningham Lake",nickname:"The C",tagline:"Omaha's Urban Oasis",
+    desc:"A 390-acre lake surrounded by a 1,050-acre park in north central Omaha. Constructed by the U.S. Army Corps of Engineers for flood control and recreation, it opened in 1977. After a major renovation beginning in 2017, the park reopened in 2021 with upgraded trails, a renovated campground, new marina, disc golf course, and improved access.",
+    address:"8965 State St, Omaha, NE 68122",lat:41.327,lng:-96.04,phone:"531-201-5754",website:"https://explorethec.com",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1050,color:"#5CA8D4",
+    tags:["Lake","Trails","Fishing","Camping"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🎣",
+    lake:{acres:390,maxDepth:"23 ft",
+      species:[{name:"Channel Catfish",note:"Regularly stocked, up to 13 lbs"},{name:"Largemouth Bass",note:"Developing fishery, good populations"},{name:"Bluegill",note:"Great for beginners & kids"},{name:"White Bass",note:"Stocked since 2020"},{name:"Crappie",note:"Popular panfish target"},{name:"Saugeye",note:"Stocked seasonally"}],
+      license:"Required for ages 16+ — Nebraska sport fishing license",licenseUrl:"https://outdoornebraska.gov",
+      spots:["Multiple fishing piers around lake","Shoreline access at various points","Entrance #4 (north side) popular for fishing"],
+      rules:["No fishing near marina boat docks","Standard Nebraska regulations apply","Ice fishing at your own risk","No permanent ice shelters"]},
+    trails:[
+      {name:"The C Loop",distance:"6.2 mi",surface:"Concrete (8ft wide)",difficulty:"Easy",desc:"The main lake loop — flat, accessible, perfect for walking, running, or biking. Connects all park amenities.",features:["ADA Accessible","Water Stations","Year-Round"]},
+      {name:"Nature Trails",distance:"~20 mi",surface:"Natural / Dirt",difficulty:"Moderate",desc:"Extensive multipurpose trail network north of Highway 36. Open for hiking, mountain biking, and horseback riding.",features:["Horseback Riding","Wildlife Viewing","Year-Round"]},
+      {name:"Equestrian Trail",distance:"Varies",surface:"Natural",difficulty:"Moderate",desc:"Designated equestrian trails within the northern nature trail system. Riders must bring their own horses.",features:["Bring Your Own Horse","North Side Only"]}],
+    activities:[
+      {name:"Disc Golf",icon:"disc",desc:'18-hole "Lighthouse" course. Intermediate level, hilly. Free — bring your own discs.',season:"Year-round"},
+      {name:"Kayak & SUP",icon:"kayak",desc:"Rentals available through Neighborhood Offshore. Accessible launch at Entrance #3.",season:"Apr–Oct"},
+      {name:"Camping",icon:"tent",desc:"83 RV sites (42 full hookup, 41 electric). 7 tent sites. Showers, restrooms, snack bar.",season:"Spring–Nov"},
+      {name:"Boating",icon:"boat",desc:"No-wake lake (5 mph max). Public boat ramp open during park hours. Marina available.",season:"Apr–Oct"},
+      {name:"Archery",icon:"archery",desc:"9 stationary targets + 11-lane 3D range. Open year-round. Archery use only within range.",season:"Year-round"},
+      {name:"Birding",icon:"bird",desc:"450+ acres of wildlife area north of HWY 36. Excellent habitat for migratory and resident species.",season:"Year-round"}],
+    entrances:[{num:1,name:"State St (Main)",note:"Marina, main parking, trail access"},{num:2,name:"North Side",note:"Campground access (seasonal)"},{num:3,name:"South Side",note:"Kayak launch, shelters, scenic views"},{num:4,name:"North Lake",note:"Trails, fishing, lake overlook"}],
+    amenities:["Picnic Shelters","Restrooms & Showers","Water Stations","Snack Bar","Playground","Marina","3 Parking Areas"],
+    rules_allowed:["Pets on leash (6ft max)","Photography","Grills in designated areas","Geocaching (with permit)"],
+    rules_prohibited:["Swimming (people & pets)","Fireworks","Firearms","Bounce houses","Sledding on dam","Camping outside campground"]},
+
+  {id:"gene-leahy-mall",name:"Gene Leahy Mall",nickname:"The RiverFront",tagline:"Downtown's Living Room",
+    desc:"Omaha's flagship urban park, transformed in a $290M renovation completed in 2022. The 72-acre RiverFront spans three connected parks with a performance pavilion, interactive playground, splash pad, slides, and sweeping green lawns against the downtown skyline.",
+    address:"1001 Farnam St, Omaha, NE 68102",lat:41.258,lng:-95.93,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
+    hours:"6 AM – 11 PM Daily",admission:"Free",acreage:72,color:"#5EC4B6",
+    tags:["Riverfront","Family","Free","Downtown"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🏞️",
+    trails:[
+      {name:"RiverFront Promenade",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved path connecting Gene Leahy Mall, Heartland of America Park, and Lewis & Clark Landing along the river.",features:["ADA Accessible","Lit Path","River Views"]}],
+    activities:[
+      {name:"Splash Pad",icon:"splash",desc:"Interactive water jets and wading area for kids. Zero-depth entry.",season:"Memorial Day–Labor Day"},
+      {name:"Playground",icon:"slide",desc:"Massive adventure playground with climbing structures, slides, and rope bridges.",season:"Year-round"},
+      {name:"Performance Pavilion",icon:"music",desc:"Free outdoor concerts, movies, and cultural events throughout summer.",season:"May–Sep"},
+      {name:"Kayaking",icon:"kayak",desc:"Kayak and paddleboard launch near Lewis & Clark Landing.",season:"May–Oct"}],
+    amenities:["Restrooms","Food Trucks","Free Wi-Fi","ADA Accessible","Event Lawn","Dog-Friendly Areas"],
+    rules_allowed:["Leashed dogs in designated areas","Picnics on the lawn","Photography","Biking on paths"],
+    rules_prohibited:["Swimming in river","Glass containers","Amplified music without permit","Drone flying"]},
+
+  {id:"zorinsky-lake",name:"Zorinsky Lake",nickname:"Zorinsky",tagline:"West Omaha's Favorite Loop",
+    desc:"A 255-acre park centered around a 98-acre lake in West Omaha. The 4.8-mile paved loop is one of the most popular trails in the city, winding through prairie, past fishing piers, and alongside waterbird habitat.",
+    address:"3808 S 156th St, Omaha, NE 68130",lat:41.23,lng:-96.075,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:255,color:"#7DD4A0",
+    tags:["Lake","Trails","Family","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🚶",
+    lake:{acres:98,maxDepth:"18 ft",
+      species:[{name:"Largemouth Bass",note:"Catch and release encouraged"},{name:"Bluegill",note:"Abundant, great for families"},{name:"Channel Catfish",note:"Best in evening hours"},{name:"Crappie",note:"Spring spawning runs"}],
+      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
+      spots:["Fishing pier on south shore","Multiple shoreline access points","North shore rocky bank"],
+      rules:["No boats or flotation devices","Standard Nebraska regulations","No fishing near dam spillway"]},
+    trails:[
+      {name:"Lake Loop",distance:"4.8 mi",surface:"Paved (8ft wide)",difficulty:"Easy",desc:"The signature loop circling the entire lake. Flat, wide, and popular with walkers, runners, and cyclists.",features:["ADA Accessible","Water Stations","Restroom Access","Year-Round"]},
+      {name:"Prairie Trail",distance:"1.2 mi",surface:"Natural",difficulty:"Easy",desc:"Short nature trail through restored prairie on the park's south side. Wildflowers in summer.",features:["Wildflowers","Bird Habitat"]}],
+    activities:[
+      {name:"Running & Walking",icon:"trail",desc:"One of the most popular running loops in Omaha. Wide paved path with distance markers.",season:"Year-round"},
+      {name:"Birding",icon:"bird",desc:"Resident and migratory waterbirds including herons, pelicans, and bald eagles in winter.",season:"Year-round"},
+      {name:"Disc Golf",icon:"disc",desc:"9-hole disc golf course on the park's west side. Free, bring your own discs.",season:"Year-round"}],
+    amenities:["Restrooms","Parking (3 lots)","Fishing Piers","Picnic Shelters","Playground","Drinking Fountains"],
+    rules_allowed:["Leashed dogs","Cycling on paved path","Fishing with license","Photography"],
+    rules_prohibited:["Swimming","Boats or inflatables","Motorized vehicles on trail","Camping"]},
+
+  {id:"standing-bear-lake",name:"Standing Bear Lake",nickname:"Standing Bear",tagline:"Northwest Omaha's Hidden Gem",
+    desc:"A 135-acre lake surrounded by trails, a nature center, and one of the best kayak launches in the metro. Located in northwest Omaha, Standing Bear offers fishing, paddle sports, and a quieter alternative to the larger lakes.",
+    address:"6404 N 132nd St, Omaha, NE 68164",lat:41.306,lng:-96.065,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:220,color:"#4A90A4",
+    tags:["Lake","Kayaking","Nature","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🏞️",
+    lake:{acres:135,maxDepth:"20 ft",
+      species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Plentiful along shore"},{name:"Walleye",note:"Occasional catches"}],
+      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
+      spots:["Fishing pier near main parking","Shoreline access north side","Bank fishing near dam"],
+      rules:["Electric motors only","No swimming","Standard Nebraska regulations"]},
+    trails:[
+      {name:"Lake Trail",distance:"3.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved loop around the lake with gentle hills and tree-lined sections.",features:["ADA Accessible","Shaded Sections","Year-Round"]},
+      {name:"Nature Center Trail",distance:"0.8 mi",surface:"Woodchip",difficulty:"Easy",desc:"Short interpretive loop near the Fontenelle Nature Center with native plantings.",features:["Educational Signs","Family-Friendly"]}],
+    activities:[
+      {name:"Kayak & SUP",icon:"kayak",desc:"Popular kayak and paddleboard spot. Public launch near main parking area.",season:"Apr–Oct"},
+      {name:"Fishing",icon:"fish",desc:"Multiple access points around the lake. Pier and shoreline fishing.",season:"Year-round"},
+      {name:"Birding",icon:"bird",desc:"Wooded shoreline attracts warblers, woodpeckers, and waterbirds.",season:"Year-round"}],
+    amenities:["Restrooms","Kayak Launch","Fishing Pier","Playground","Nature Center","Parking"],
+    rules_allowed:["Kayaks and canoes","Leashed dogs","Fishing with license","Electric boat motors"],
+    rules_prohibited:["Gas-powered boats","Swimming","Jet skis","Camping"]},
+
+  {id:"heartland-america",name:"Heartland of America Park",nickname:"Heartland Park",tagline:"Downtown's Waterfront Jewel",
+    desc:"A downtown park featuring a scenic lake with a dramatic fountain, walking paths, and stunning skyline views. Part of the RiverFront revitalization, it connects to Gene Leahy Mall and Lewis & Clark Landing.",
+    address:"800 S 10th St, Omaha, NE 68108",lat:41.254,lng:-95.922,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
+    hours:"6 AM – 11 PM Daily",admission:"Free",acreage:31,color:"#64B5F6",
+    tags:["Downtown","Lake","Skyline","Free"],img:u("photo-1506157786151-b8491531f063"),icon:"⛲",
+    trails:[
+      {name:"Lakeside Path",distance:"0.6 mi",surface:"Paved",difficulty:"Easy",desc:"Walking path around the lake with fountain views and downtown skyline backdrop.",features:["ADA Accessible","Lit at Night","Photo Spots"]}],
+    activities:[
+      {name:"Fountain Show",icon:"splash",desc:"The park's signature fountain shoots water up to 300 feet. Lit at night with colored lights.",season:"Apr–Oct"},
+      {name:"Walking",icon:"trail",desc:"Peaceful lakeside stroll with some of the best skyline views in the city.",season:"Year-round"}],
+    amenities:["Restrooms","Benches","Lighting","ADA Paths","Public Art","Parking"],
+    rules_allowed:["Photography","Leashed dogs","Cycling on paths"],
+    rules_prohibited:["Swimming","Fishing","Motorized vehicles","Camping"]},
+
+  {id:"fontenelle-forest",name:"Fontenelle Forest",nickname:"The Forest",tagline:"2,000 Acres of Old-Growth Wonder",
+    desc:"A 2,000-acre nature preserve in Bellevue featuring old-growth forest, boardwalk canopy trails, and diverse wildlife. Home to TreeRush Adventures (aerial obstacle course) and a raptor rehabilitation center with live birds of prey.",
+    address:"1111 Bellevue Blvd N, Bellevue, NE 68005",lat:41.157,lng:-95.9,phone:"402-731-3140",website:"https://fontenelleforest.org",
+    hours:"8 AM – 5 PM Daily",admission:"$12 adults / $8 kids",acreage:2000,color:"#6BBF7A",
+    tags:["Forest","Nature","Family","Adventure"],img:u("photo-1448375240586-882707db888b"),icon:"🌲",
+    trails:[
+      {name:"Boardwalk Trail",distance:"1.0 mi",surface:"Boardwalk",difficulty:"Easy",desc:"Elevated boardwalk through the forest canopy. Fully accessible with stunning tree-top views.",features:["ADA Accessible","Canopy Views","All Ages"]},
+      {name:"Riverview Trail",distance:"2.5 mi",surface:"Natural",difficulty:"Moderate",desc:"Descends to the Missouri River floodplain through oak-hickory forest. Watch for deer and wild turkeys.",features:["River Views","Wildlife","Elevation Change"]},
+      {name:"Stream Trail",distance:"1.8 mi",surface:"Natural",difficulty:"Moderate",desc:"Follows a wooded creek through ravines. Best for birding, especially in spring migration.",features:["Creek Crossings","Birding","Spring Wildflowers"]}],
+    activities:[
+      {name:"TreeRush Adventures",icon:"tree",desc:"Aerial obstacle course with zip lines and rope bridges through the forest canopy. Reservations recommended.",season:"Mar–Nov"},
+      {name:"Raptor Woodland",icon:"bird",desc:"Live birds of prey including bald eagles, owls, and hawks in naturalistic enclosures. Included with admission.",season:"Year-round"},
+      {name:"Nature Programs",icon:"info",desc:"Guided hikes, birding walks, and seasonal nature programs for all ages.",season:"Year-round"}],
+    amenities:["Visitor Center","Gift Shop","Restrooms","Picnic Area","Nature Exhibits","Parking"],
+    rules_allowed:["Hiking on marked trails","Photography","Binoculars and birding gear"],
+    rules_prohibited:["Pets (no dogs)","Bikes on trails","Collecting plants or animals","Off-trail hiking"]},
+
+  {id:"lauritzen-gardens",name:"Lauritzen Gardens",nickname:"The Gardens",tagline:"Omaha's Botanical Treasure",
+    desc:"A 100-acre botanical garden and arboretum featuring themed garden rooms, a conservatory with tropical plants, seasonal model train displays, and the Marjorie K. Daugherty Conservatory. Beautiful in every season.",
+    address:"100 Bancroft St, Omaha, NE 68108",lat:41.2384,lng:-95.9158,phone:"402-346-4002",website:"https://www.lauritzengardens.org",
+    hours:"9 AM – 5 PM Daily",admission:"$14 adults / $7 kids",acreage:100,color:"#E88BD4",
+    tags:["Gardens","Seasonal","Family"],img:u("photo-1585320806297-9794b3e4eeae"),icon:"🌺",
+    trails:[
+      {name:"Garden Walk",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Winding paths through themed gardens including the Rose Garden, Victorian Garden, and Japanese Garden.",features:["ADA Accessible","Year-Round Beauty","Benches Throughout"]}],
+    activities:[
+      {name:"Seasonal Exhibits",icon:"flower",desc:"Spring tulips, summer roses, fall chrysanthemums, and holiday poinsettia shows. Model train display Nov–Jan.",season:"Year-round"},
+      {name:"Conservatory",icon:"tree",desc:"The Marjorie K. Daugherty Conservatory houses tropical and desert plants year-round, even in winter.",season:"Year-round"},
+      {name:"Photography",icon:"camera",desc:"Popular venue for wedding and portrait photography. Permit required for professional shoots.",season:"Year-round"}],
+    amenities:["Visitor Center","Gift Shop","Restrooms","Café","Event Spaces","Wheelchair Access"],
+    rules_allowed:["Amateur photography","Strollers","Wheelchairs","Sketching and painting"],
+    rules_prohibited:["Pets","Picking flowers or plants","Drones","Running","Outside food"]},
+
+  {id:"elmwood-park",name:"Elmwood Park",nickname:"Elmwood",tagline:"Dundee's Historic Heart",
+    desc:"A 204-acre historic park in the heart of the Dundee neighborhood. Features a public golf course, tennis courts, disc golf, rose garden, and shaded trails through mature elm and oak trees. A beloved community gathering spot since 1890.",
+    address:"802 S 60th St, Omaha, NE 68106",lat:41.252,lng:-95.971,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:204,color:"#A8D5BA",
+    tags:["Historic","Trails","Golf","Free"],img:u("photo-1448375240586-882707db888b"),icon:"🌳",
+    trails:[
+      {name:"Park Loop",distance:"2.0 mi",surface:"Paved / Gravel",difficulty:"Easy",desc:"Shaded loop through the park passing the rose garden, golf course, and picnic areas.",features:["Shaded","Historic Trees","Family-Friendly"]}],
+    activities:[
+      {name:"Golf",icon:"disc",desc:"Elmwood Park Golf Course — 18-hole public course. Tee times available online.",season:"Mar–Nov"},
+      {name:"Disc Golf",icon:"disc",desc:"Free 9-hole disc golf course winding through the park's wooded areas.",season:"Year-round"},
+      {name:"Tennis",icon:"disc",desc:"Multiple public tennis courts available first-come, first-served.",season:"Year-round"}],
+    amenities:["Restrooms","Picnic Shelters","Rose Garden","Playground","Golf Course","Tennis Courts","Parking"],
+    rules_allowed:["Leashed dogs","Cycling on paths","Picnics","Photography"],
+    rules_prohibited:["Motorized vehicles","Camping","Swimming in creek","Amplified music"]},
+
+  {id:"memorial-park",name:"Memorial Park",nickname:"Memorial",tagline:"Omaha's Concert Lawn",
+    desc:"A sprawling 83-acre park in Central Omaha known for summer concerts, community events, and open green space. Home to large-scale events and a popular running loop. The park honors veterans with memorial installations.",
+    address:"6005 Underwood Ave, Omaha, NE 68132",lat:41.262,lng:-95.975,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:83,color:"#FFB74D",
+    tags:["Concerts","Events","Free"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎶",
+    trails:[
+      {name:"Memorial Loop",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved loop around the park perimeter. Popular morning running route.",features:["Flat","Lit at Night","Year-Round"]}],
+    activities:[
+      {name:"Summer Concerts",icon:"music",desc:"Major concert events and festivals on the Great Lawn throughout summer.",season:"Jun–Sep"},
+      {name:"Running",icon:"trail",desc:"One of Omaha's most popular running loops with a flat, paved 1.5-mile path.",season:"Year-round"},
+      {name:"Open Space",icon:"sun",desc:"83 acres of open lawn perfect for frisbee, kite flying, picnics, and casual sports.",season:"Year-round"}],
+    amenities:["Restrooms","Event Stage","Large Parking","Open Lawn","Veterans Memorials","Playground"],
+    rules_allowed:["Leashed dogs","Picnics","Photography","Kites and sports"],
+    rules_prohibited:["Glass containers during events","Motorized vehicles","Camping","Fireworks"]},
+
+  {id:"chalco-hills",name:"Chalco Hills",nickname:"Chalco",tagline:"Prairie Trails & Nature Center",
+    desc:"A 1,186-acre recreation area in southwest Omaha featuring Wehrspann Lake, restored prairie, and an excellent nature center. The 8-mile trail loop around the lake offers rolling hills and diverse habitats.",
+    address:"8901 S 154th St, Omaha, NE 68138",lat:41.18,lng:-96.13,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1186,color:"#C49A6C",
+    tags:["Prairie","Trails","Nature Center","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🦅",
+    lake:{acres:255,maxDepth:"15 ft",
+      species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Excellent for families"},{name:"Wipers",note:"White bass hybrid — stocked"}],
+      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
+      spots:["Fishing pier on east shore","Shoreline access around loop","Dam area (south)"],
+      rules:["Electric and non-motorized boats only","Standard Nebraska regulations","No swimming"]},
+    trails:[
+      {name:"Wehrspann Lake Loop",distance:"8.1 mi",surface:"Gravel / Paved",difficulty:"Easy–Moderate",desc:"Full lake loop with gently rolling hills, prairie sections, and tree-lined stretches. Mixed surface.",features:["Water Stations","Rolling Hills","Mixed Surface","Year-Round"]},
+      {name:"Prairie Trail",distance:"2.5 mi",surface:"Natural",difficulty:"Easy",desc:"Interpretive nature trail through restored tallgrass prairie with wildflowers in season.",features:["Educational Signs","Wildflowers","Birding"]}],
+    activities:[
+      {name:"Nature Center",icon:"info",desc:"Chalco Hills Nature Center with interactive exhibits, live animals, and nature programs.",season:"Year-round"},
+      {name:"Birding",icon:"bird",desc:"Prairie and wetland habitats attract diverse species including hawks, herons, and migratory songbirds.",season:"Year-round"},
+      {name:"Trail Running",icon:"trail",desc:"Popular with trail runners for the varied terrain and rolling hills around the lake.",season:"Year-round"}],
+    amenities:["Nature Center","Restrooms","Parking","Picnic Shelters","Fishing Pier","Boat Ramp"],
+    rules_allowed:["Leashed dogs","Non-motorized boats","Fishing with license","Cross-country skiing in winter"],
+    rules_prohibited:["Gas-powered boats","Swimming","Motorized vehicles on trails","Camping"]},
+
+  {id:"walnut-creek",name:"Walnut Creek Lake",nickname:"Walnut Creek",tagline:"Papillion's Lakeside Retreat",
+    desc:"A 450-acre recreation area featuring a 105-acre lake, modern playground, and paved trails in Papillion. Great for fishing, kayaking, and family outings with newer facilities and easy highway access.",
+    address:"14725 Hwy 370, Papillion, NE 68046",lat:41.168,lng:-96.02,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
+    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:450,color:"#5DADE2",
+    tags:["Lake","Family","Kayaking","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🛶",
+    lake:{acres:105,maxDepth:"16 ft",
+      species:[{name:"Largemouth Bass",note:"Good numbers"},{name:"Channel Catfish",note:"Stocked annually"},{name:"Bluegill",note:"Abundant"},{name:"Crappie",note:"Spring runs"}],
+      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
+      spots:["Fishing pier near parking","Multiple shoreline access points"],
+      rules:["Electric motors only","No swimming","Standard Nebraska regulations"]},
+    trails:[
+      {name:"Lake Loop",distance:"3.7 mi",surface:"Paved",difficulty:"Easy",desc:"Flat paved loop around the lake with benches and lake views throughout.",features:["ADA Accessible","Family-Friendly","Flat","Year-Round"]}],
+    activities:[
+      {name:"Kayak & SUP",icon:"kayak",desc:"Public kayak launch with easy lake access. Calm waters ideal for beginners.",season:"Apr–Oct"},
+      {name:"Playground",icon:"splash",desc:"Modern all-abilities playground near the main parking area.",season:"Year-round"},
+      {name:"Fishing",icon:"fish",desc:"Well-stocked lake with pier and shoreline access. Popular family fishing spot.",season:"Year-round"}],
+    amenities:["Restrooms","Modern Playground","Kayak Launch","Fishing Pier","Picnic Shelters","Parking"],
+    rules_allowed:["Kayaks and canoes","Leashed dogs","Fishing with license","Electric motors"],
+    rules_prohibited:["Gas-powered boats","Swimming","Jet skis","Camping"]},
+
+  {id:"turner-park",name:"Turner Park",nickname:"Turner",tagline:"Midtown's Cultural Green",
+    desc:"A beloved 10-acre urban park at Midtown Crossing, home to Jazz on the Green (free summer concert series), the Omaha Farmers Market winter location, and seasonal ice rink. Surrounded by restaurants and shops.",
+    address:"3110 Farnam St, Omaha, NE 68131",lat:41.255,lng:-95.96,phone:"402-444-5900",website:"https://midtowncrossing.com",
+    hours:"6 AM – 11 PM Daily",admission:"Free",acreage:10,color:"#D4AD65",
+    tags:["Jazz","Events","Free","Dining"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎵",
+    activities:[
+      {name:"Jazz on the Green",icon:"music",desc:"Free Thursday evening jazz concerts all summer. Bring wine, picnic blankets, and friends.",season:"Jun–Aug"},
+      {name:"Ice Rink",icon:"splash",desc:"Outdoor ice skating rink at Midtown Crossing during winter months.",season:"Nov–Feb"},
+      {name:"Farmers Market",icon:"food",desc:"Winter Omaha Farmers Market held at Midtown Crossing on Saturdays.",season:"Nov–Apr"}],
+    amenities:["Restrooms (in Midtown Crossing)","Restaurants Nearby","Parking Garage","Event Lawn","Seating"],
+    rules_allowed:["Wine and beer at events","Leashed dogs","Picnics on lawn","Photography"],
+    rules_prohibited:["Glass containers during events","Amplified music without permit","Camping","Grills"]},
 ];
 const HOODS=[
   {id:"old-market",name:"Old Market",sub:"Downtown",desc:"Cobblestone streets, galleries, chef-driven restaurants, and Omaha's best nightlife. The cultural heart of the city since the 1800s.",lat:41.2555,lng:-95.932,color:"#5EC4B6",
@@ -524,6 +749,7 @@ export default function GOPrototype(){
   const[cities,setCities]=useState(new Set(["omaha"]));
   const[venCat,setVenCat]=useState("all");
   const[spotCat,setSpotCat]=useState("all");
+  const[parkTab,setParkTab]=useState("overview");
   const[w,setW]=useState(375);
   const[tab,setTab]=useState("today");
   const[favs,setFavs]=useState([]);
@@ -809,7 +1035,7 @@ export default function GOPrototype(){
         <Head text="Parks & Gardens" count={PARKS.length} mt={16} color="#81C784"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {PARKS.map(p=>(
-            <div key={p.id} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start"}}>
+            <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
                 <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -820,8 +1046,8 @@ export default function GOPrototype(){
                 <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.desc}</p>
                 <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{p.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
                 <div style={{display:"flex",gap:6,marginTop:10}}>
-                  <a href={mapsDir(p.lat,p.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(125,212,160,.1)",border:"1px solid rgba(125,212,160,.2)",color:"#81C784",fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.dir("#81C784",11)} Directions</a>
-                  {p.url&&<a href={p.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.link(T.textBody,11)} Info</a>}
+                  <a href={mapsDir(p.lat,p.lng)} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:`${p.color||"#81C784"}18`,border:`1px solid ${p.color||"#81C784"}33`,color:p.color||"#81C784",fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.dir(p.color||"#81C784",11)} Directions</a>
+                  <button onClick={e=>{e.stopPropagation();setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.chev(T.textBody,11)} Details</button>
                 </div>
               </div>
             </div>
@@ -1140,6 +1366,280 @@ export default function GOPrototype(){
         <div style={{height:90}}/>
       </div>}
 
+      {/* ═══ PARK DETAIL (accessed from Explore) ═══ */}
+      {tab.startsWith("park:")&&(()=>{
+        const parkId=tab.split(":")[1];
+        const park=PARKS.find(p=>p.id===parkId);
+        if(!park)return null;
+        const pc=park.color||"#81C784";
+        const PTABS=[{id:"overview",label:"Overview",icon:IC.explore},
+          park.trails?.length&&{id:"trails",label:"Trails",icon:IC.trail},
+          park.lake&&{id:"fishing",label:"Fishing",icon:IC.fish},
+          park.activities?.length&&{id:"activities",label:"Activities",icon:IC.disc},
+          {id:"info",label:"Info",icon:IC.info}].filter(Boolean);
+        const mapsUrl=q=>`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+
+        return <div style={{maxWidth:mxW,margin:"0 auto"}}>
+
+          {/* ── HERO IMAGE ── */}
+          <div style={{position:"relative",height:isD?280:isM?220:250,overflow:"hidden",borderRadius:"0 0 24px 24px"}}>
+            <img src={park.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
+            <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)`}}/>
+            <button onClick={()=>setTab("explore")} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(20,22,24,.6)",backdropFilter:"blur(8px)",border:`1px solid ${T.border}`,borderRadius:99,padding:"8px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:.5}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Explore</button>
+            <div style={{position:"absolute",top:16,right:16,display:"flex",gap:8}}>
+              <span style={{fontSize:10,fontWeight:700,letterSpacing:2,textTransform:"uppercase",padding:"5px 14px",borderRadius:99,background:`${pc}22`,color:pc,border:`1px solid ${pc}33`,backdropFilter:"blur(12px)"}}>🌿 Park</span>
+              {park.admission&&<span style={{fontSize:10,fontWeight:600,letterSpacing:1,textTransform:"uppercase",padding:"5px 14px",borderRadius:99,background:"rgba(20,22,24,.6)",color:T.text,border:"1px solid rgba(255,255,255,.12)",backdropFilter:"blur(12px)"}}>{park.admission}</span>}
+            </div>
+            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:`0 ${px}px 20px`}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                <div style={{width:10,height:10,borderRadius:"50%",background:pc,boxShadow:`0 0 12px ${pc}`}}/>
+                <span style={{fontSize:10,fontWeight:700,color:pc,letterSpacing:2,textTransform:"uppercase"}}>{park.tagline||""}</span>
+              </div>
+              <h1 style={{margin:0,fontSize:isD?32:26,fontWeight:300,color:T.textHi,letterSpacing:1.5,lineHeight:1.1}}>{park.name}</h1>
+              {park.nickname&&<p style={{fontSize:13,color:"rgba(242,239,233,.6)",margin:"4px 0 0",fontStyle:"italic"}}>Locally known as &ldquo;{park.nickname}&rdquo;</p>}
+              <div style={{display:"flex",flexWrap:"wrap",gap:isM?10:14,marginTop:10}}>
+                {park.hours&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(242,239,233,.9)"}}>{IC.clock("rgba(242,239,233,.6)",13)} {park.hours}</span>}
+                {park.address&&<span style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"rgba(242,239,233,.9)"}}>{IC.pin("rgba(242,239,233,.6)",13)} {park.address.split(",")[1]?.trim()||park.address}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div style={{padding:`0 ${px}px`}}>
+
+          {/* ── STAT PILLS ── */}
+          <div style={{display:"flex",gap:8,margin:"20px 0 24px",overflowX:"auto",paddingBottom:2}}>
+            {[park.acreage&&{label:"Acres",value:park.acreage.toLocaleString()},park.lake&&{label:"Lake",value:`${park.lake.acres} ac`},park.lake&&{label:"Depth",value:park.lake.maxDepth},park.trails?.length&&{label:"Trails",value:park.trails.length}].filter(Boolean).map((s,i)=>(
+              <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"14px 10px",flex:1,minWidth:80,background:"rgba(255,255,255,.03)",borderRadius:14,border:`1px solid ${T.border}`}}>
+                <span style={{fontSize:10,color:T.textDim,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>{s.label}</span>
+                <span style={{fontSize:18,fontWeight:700,color:T.textHi}}>{s.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* ── TAB BAR ── */}
+          <div style={{display:"flex",gap:4,marginBottom:24,overflowX:"auto",paddingBottom:2}}>
+            {PTABS.map(t=>(
+              <button key={t.id} onClick={()=>setParkTab(t.id)} className="hbtn" style={{display:"flex",alignItems:"center",gap:7,padding:"9px 16px",borderRadius:99,cursor:"pointer",border:`1px solid ${parkTab===t.id?pc+"44":T.border}`,background:parkTab===t.id?`${pc}15`:"rgba(255,255,255,.02)",color:parkTab===t.id?pc:T.textSec,fontSize:12,fontWeight:600,letterSpacing:.5,whiteSpace:"nowrap",flexShrink:0}}>
+                {t.icon(parkTab===t.id?pc:T.textSec,14)} {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* ── OVERVIEW TAB ── */}
+          {parkTab==="overview"&&<div style={{animation:"cardIn 0.3s ease both"}}>
+            <p style={{fontSize:13,color:T.textBody,lineHeight:1.7,margin:"0 0 20px",letterSpacing:.3}}>{park.desc}</p>
+
+            {/* Directions CTA */}
+            <a href={mapsUrl(park.address)} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,width:"100%",padding:"13px 0",borderRadius:99,background:pc,color:T.bg,fontSize:12,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.5,textTransform:"uppercase",marginBottom:16}}>{IC.dir(T.bg,14)} Get Directions</a>
+
+            {/* Activities preview */}
+            {park.activities?.length>0&&<>
+              <Head text="Things to Do" count={park.activities.length} color={pc}/>
+              <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8,marginBottom:24}}>
+                {park.activities.slice(0,4).map((a,i)=>{
+                  const IconFn=IC[a.icon];
+                  return <div key={i} className="ecard" style={{padding:"16px 14px",borderRadius:14,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`}}>
+                    <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
+                      <div style={{width:38,height:38,borderRadius:11,background:`${pc}15`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{IconFn?IconFn(pc,18):null}</div>
+                      <div><p style={{fontSize:15,fontWeight:600,color:T.textHi,margin:0}}>{a.name}</p>{a.season&&<p style={{fontSize:10,color:T.textSec,margin:"2px 0 0",fontWeight:500}}>{a.season}</p>}</div>
+                    </div>
+                    <p style={{fontSize:12,color:T.textBody,lineHeight:1.6,margin:0}}>{a.desc}</p>
+                  </div>;
+                })}
+              </div>
+              {park.activities.length>4&&<button onClick={()=>setParkTab("activities")} className="hbtn" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,width:"100%",padding:"10px 0",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:pc,fontSize:11,fontWeight:600,letterSpacing:.8,cursor:"pointer",marginBottom:24}}>View All {park.activities.length} Activities {IC.chev(pc,12)}</button>}
+            </>}
+
+            {/* Trails preview */}
+            {park.trails?.length>0&&<>
+              <Head text="Trails" count={park.trails.length} color={pc}/>
+              {park.trails.slice(0,2).map((t,i)=>{
+                const dc=t.difficulty==="Easy"?pc:t.difficulty==="Moderate"?"#E8B54D":T.red;
+                return <div key={i} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12}}>
+                  <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:10}}>
+                    <div>
+                      <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:0}}>{t.name}</p>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginTop:5}}>
+                        <span style={{fontSize:11,color:pc,fontWeight:600}}>{t.distance}</span>
+                        <span style={{color:T.textDim}}>·</span>
+                        <span style={{fontSize:11,color:T.textSec}}>{t.surface}</span>
+                      </div>
+                    </div>
+                    <span style={{fontSize:10,fontWeight:700,color:dc,background:`${dc}18`,padding:"4px 12px",borderRadius:99,letterSpacing:.5,flexShrink:0}}>{t.difficulty}</span>
+                  </div>
+                  <p style={{fontSize:13,color:T.textBody,lineHeight:1.65,margin:0}}>{t.desc}</p>
+                </div>;
+              })}
+              {park.trails.length>2&&<button onClick={()=>setParkTab("trails")} className="hbtn" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,width:"100%",padding:"10px 0",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:pc,fontSize:11,fontWeight:600,letterSpacing:.8,cursor:"pointer",marginBottom:16}}>View All {park.trails.length} Trails {IC.chev(pc,12)}</button>}
+            </>}
+
+            {/* Tags */}
+            <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:12,marginBottom:24}}>
+              {park.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"5px 12px",borderRadius:99,background:`${pc}12`,border:`1px solid ${pc}25`,color:pc,fontWeight:600,letterSpacing:.5}}>{tag}</span>)}
+            </div>
+          </div>}
+
+          {/* ── TRAILS TAB ── */}
+          {parkTab==="trails"&&park.trails&&<div style={{animation:"cardIn 0.3s ease both"}}>
+            <Head text="Trails" count={park.trails.length} color={pc}/>
+            {park.trails.map((t,i)=>{
+              const dc=t.difficulty==="Easy"?pc:t.difficulty==="Moderate"?"#E8B54D":T.red;
+              return <div key={i} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12}}>
+                <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:10}}>
+                  <div>
+                    <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:0}}>{t.name}</p>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginTop:5}}>
+                      <span style={{fontSize:11,color:pc,fontWeight:600}}>{t.distance}</span>
+                      <span style={{color:T.textDim}}>·</span>
+                      <span style={{fontSize:11,color:T.textSec}}>{t.surface}</span>
+                    </div>
+                  </div>
+                  <span style={{fontSize:10,fontWeight:700,color:dc,background:`${dc}18`,padding:"4px 12px",borderRadius:99,letterSpacing:.5,flexShrink:0}}>{t.difficulty}</span>
+                </div>
+                <p style={{fontSize:13,color:T.textBody,lineHeight:1.65,margin:"0 0 12px"}}>{t.desc}</p>
+                {t.features&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                  {t.features.map(f=><span key={f} style={{fontSize:10,padding:"4px 10px",borderRadius:99,background:`${pc}0D`,border:`1px solid ${pc}25`,color:pc,fontWeight:500}}>{f}</span>)}
+                </div>}
+              </div>;
+            })}
+            <div style={{background:`${pc}08`,borderRadius:14,border:`1px solid ${pc}25`,padding:16,marginTop:16,marginBottom:24}}>
+              <p style={{fontSize:11,fontWeight:700,color:pc,letterSpacing:1.5,textTransform:"uppercase",margin:"0 0 10px"}}>Trail Tips</p>
+              <div style={{fontSize:13,color:T.textBody,lineHeight:1.7}}>
+                <p style={{margin:"0 0 6px"}}>• Check trail conditions after rain — natural surface trails can be muddy</p>
+                <p style={{margin:"0 0 6px"}}>• Bring water on longer loops — stations may be seasonal</p>
+                <p style={{margin:0}}>• Dogs must be leashed on all trails (6ft max)</p>
+              </div>
+            </div>
+          </div>}
+
+          {/* ── FISHING TAB ── */}
+          {parkTab==="fishing"&&park.lake&&<div style={{animation:"cardIn 0.3s ease both"}}>
+            <Head text="Fishing" color="#5CA8D4"/>
+            <div style={{background:CG.water,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 14px":"20px 18px",marginBottom:16}}>
+              <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 14px"}}>Species in the Lake</p>
+              {park.lake.species.map((sp,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:12,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`,marginBottom:8}}>
+                  <span style={{fontSize:22,flexShrink:0}}>🐟</span>
+                  <div style={{flex:1,minWidth:0}}>
+                    <p style={{fontSize:14,fontWeight:600,color:T.textHi,margin:0}}>{sp.name}</p>
+                    <p style={{fontSize:11,color:T.textSec,margin:"2px 0 0"}}>{sp.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{background:"rgba(92,168,212,.06)",borderRadius:14,border:"1px solid rgba(92,168,212,.18)",padding:16,marginBottom:16}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                {IC.info("#5CA8D4",16)}
+                <p style={{fontSize:13,fontWeight:600,color:T.textHi,margin:0}}>License Required</p>
+              </div>
+              <p style={{fontSize:13,color:T.textBody,lineHeight:1.65,margin:"0 0 10px"}}>{park.lake.license}</p>
+              {park.lake.licenseUrl&&<a href={park.lake.licenseUrl} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,fontSize:12,color:"#5CA8D4",fontWeight:600,textDecoration:"none"}}>Get license at OutdoorNebraska.gov {IC.link("#5CA8D4",12)}</a>}
+            </div>
+            {park.lake.spots&&<div style={{marginBottom:16}}>
+              <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Where to Fish</p>
+              {park.lake.spots.map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0"}}><div style={{width:6,height:6,borderRadius:99,background:"#5CA8D4",flexShrink:0}}/><span style={{fontSize:13,color:T.textBody}}>{s}</span></div>)}
+            </div>}
+            {park.lake.rules&&<div style={{marginBottom:24}}>
+              <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Fishing Rules</p>
+              {park.lake.rules.map((r,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"6px 0"}}>{IC.info(T.textDim,13)}<span style={{fontSize:13,color:T.textBody}}>{r}</span></div>)}
+            </div>}
+          </div>}
+
+          {/* ── ACTIVITIES TAB ── */}
+          {parkTab==="activities"&&park.activities&&<div style={{animation:"cardIn 0.3s ease both"}}>
+            <Head text="Things to Do" count={park.activities.length} color={pc}/>
+            <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8,marginBottom:24}}>
+              {park.activities.map((a,i)=>{
+                const IconFn=IC[a.icon];
+                return <div key={i} className="ecard" style={{padding:"16px 14px",borderRadius:14,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`}}>
+                  <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
+                    <div style={{width:38,height:38,borderRadius:11,background:`${pc}15`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{IconFn?IconFn(pc,18):null}</div>
+                    <div><p style={{fontSize:15,fontWeight:600,color:T.textHi,margin:0}}>{a.name}</p>{a.season&&<p style={{fontSize:10,color:T.textSec,margin:"2px 0 0",fontWeight:500}}>{a.season}</p>}</div>
+                  </div>
+                  <p style={{fontSize:12,color:T.textBody,lineHeight:1.6,margin:0}}>{a.desc}</p>
+                </div>;
+              })}
+            </div>
+          </div>}
+
+          {/* ── INFO TAB ── */}
+          {parkTab==="info"&&<div style={{animation:"cardIn 0.3s ease both"}}>
+            <Head text="Park Details" color={T.textHi}/>
+            <div style={{marginBottom:24}}>
+              {park.hours&&<div style={{display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderBottom:`1px solid ${T.border}`}}>
+                <div style={{width:36,height:36,borderRadius:10,flexShrink:0,background:`${pc}12`,display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.clock(pc,16)}</div>
+                <div><p style={{fontSize:10,color:T.textDim,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",margin:"0 0 3px"}}>Hours</p><p style={{fontSize:14,color:T.textHi,fontWeight:500,margin:0}}>{park.hours}</p></div>
+              </div>}
+              {park.address&&<div style={{display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderBottom:`1px solid ${T.border}`}}>
+                <div style={{width:36,height:36,borderRadius:10,flexShrink:0,background:`${pc}12`,display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.pin(pc,16)}</div>
+                <div><p style={{fontSize:10,color:T.textDim,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",margin:"0 0 3px"}}>Address</p><p style={{fontSize:14,color:T.textHi,fontWeight:500,margin:0}}>{park.address}</p></div>
+              </div>}
+              {park.phone&&<div style={{display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderBottom:`1px solid ${T.border}`}}>
+                <div style={{width:36,height:36,borderRadius:10,flexShrink:0,background:`${pc}12`,display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.phone(pc,14)}</div>
+                <div><p style={{fontSize:10,color:T.textDim,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",margin:"0 0 3px"}}>Phone</p><p style={{fontSize:14,color:T.textHi,fontWeight:500,margin:0}}>{park.phone}</p></div>
+              </div>}
+              {park.website&&<a href={park.website} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderBottom:`1px solid ${T.border}`}}>
+                <div style={{width:36,height:36,borderRadius:10,flexShrink:0,background:`${pc}12`,display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.globe(pc,14)}</div>
+                <div style={{flex:1}}><p style={{fontSize:10,color:T.textDim,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",margin:"0 0 3px"}}>Website</p><p style={{fontSize:14,color:T.textHi,fontWeight:500,margin:0}}>{park.website.replace("https://","")}</p></div>
+                {IC.link(T.textDim,12)}
+              </a>}
+            </div>
+
+            {/* Entrances */}
+            {park.entrances&&<div style={{marginBottom:24}}>
+              <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Park Entrances</p>
+              {park.entrances.map((e,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:`1px solid ${T.border}`}}>
+                  <div style={{width:30,height:30,borderRadius:99,background:`${pc}15`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    <span style={{fontSize:13,fontWeight:700,color:pc}}>{e.num}</span>
+                  </div>
+                  <div style={{flex:1}}>
+                    <p style={{fontSize:14,fontWeight:600,color:T.textHi,margin:0}}>{e.name}</p>
+                    <p style={{fontSize:11,color:T.textSec,margin:"2px 0 0"}}>{e.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>}
+
+            {/* Amenities */}
+            {park.amenities&&<div style={{marginBottom:24}}>
+              <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Amenities</p>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {park.amenities.map(a=><span key={a} style={{fontSize:11,padding:"6px 13px",borderRadius:99,background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,color:T.textBody,fontWeight:500}}>{a}</span>)}
+              </div>
+            </div>}
+
+            {/* Rules */}
+            {(park.rules_allowed||park.rules_prohibited)&&<div style={{marginBottom:24}}>
+              <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 8px"}}>Park Rules</p>
+              {park.rules_allowed?.map(r=><div key={r} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0"}}>
+                <div style={{width:22,height:22,borderRadius:99,flexShrink:0,background:"rgba(107,191,122,.12)",display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.check("#7DD4A0",12)}</div>
+                <span style={{fontSize:13,color:T.textBody}}>{r}</span>
+              </div>)}
+              {park.rules_prohibited?.map(r=><div key={r} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0"}}>
+                <div style={{width:22,height:22,borderRadius:99,flexShrink:0,background:"rgba(232,54,79,.12)",display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.x(T.red,12)}</div>
+                <span style={{fontSize:13,color:T.textBody}}>{r}</span>
+              </div>)}
+            </div>}
+          </div>}
+
+          {/* ── CTAs ── */}
+          <a href={mapsUrl(park.address)} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,width:"100%",padding:"16px 0",borderRadius:99,textDecoration:"none",background:`linear-gradient(135deg,${pc},${pc}dd)`,color:T.bg,fontSize:13,fontWeight:700,letterSpacing:2,textTransform:"uppercase",boxShadow:`0 4px 24px ${pc}33`,marginBottom:12}}>{IC.pin(T.bg,16)} Get Directions</a>
+          <div style={{display:"flex",gap:8,marginBottom:32}}>
+            {park.website&&<a href={park.website} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",textDecoration:"none"}}>{IC.globe(T.textSec,13)} Website</a>}
+            <button onClick={()=>{if(navigator.share)navigator.share({title:park.name,url:window.location.href}).catch(()=>{});else navigator.clipboard?.writeText(window.location.href);}} className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",cursor:"pointer"}}>{IC.share(T.textSec,13)} Share</button>
+          </div>
+
+          <div style={{textAlign:"center",paddingBottom:32,borderTop:`1px solid ${T.border}`,paddingTop:20}}>
+            <p style={{fontSize:10,color:T.textDim,letterSpacing:.6,margin:"0 0 4px"}}>Park info subject to change · Verify details at venue websites</p>
+            <p style={{fontSize:9,color:"rgba(235,230,220,.2)",letterSpacing:.4,margin:0}}>&copy; 2026 GO: Guide to Omaha</p>
+          </div>
+
+          <div style={{height:100}}/>
+          </div>
+        </div>;
+      })()}
+
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
       <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 14px max(4px,env(safe-area-inset-bottom))",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <div style={{width:"100%",maxWidth:isD?480:isT?400:360,padding:"8px 14px 4px",background:"rgba(20,22,24,.95)",backdropFilter:"blur(22px)",borderRadius:"14px 14px 0 0",borderTop:`1px solid ${T.border}`,borderLeft:`1px solid ${T.border}`,borderRight:`1px solid ${T.border}`}}>
@@ -1162,9 +1662,9 @@ export default function GOPrototype(){
         </div>
         <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:"0 0 16px 16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:"none"}}>
           {tabsD.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
-              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
-              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
+              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
+              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>
           ))}
         </div>

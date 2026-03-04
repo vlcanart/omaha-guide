@@ -797,7 +797,9 @@ export default function GOPrototype(){
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);};
-  useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");}},[tab]);
+  const[evShow,setEvShow]=useState(30);
+  useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");setEvShow(30);}},[tab]);
+  useEffect(()=>{setEvShow(30);},[evCat,evSub,dateRange]);
   const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>evCat==="all"||e.cat===evCat).filter(e=>matchDate(e,dateRange)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,dateRange,cities]);
   const nb=Math.max(0,Math.min(1,(tv-50)/20));
   const isDay=tv<60,isNite=tv>=60;
@@ -1040,28 +1042,28 @@ export default function GOPrototype(){
       {/* ═══ EVENTS TAB ═══ */}
       {tab==="events"&&<div style={sec}>
         {/* City filter */}
-        <div style={{display:"flex",gap:6,flexWrap:"nowrap",overflowX:"auto",paddingTop:16,paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
-          {[["omaha","Omaha"],["cb","Council Bluffs"],["lincoln","Lincoln"]].map(([k,label])=><button key={k} onClick={()=>togCity(k)} style={{background:cities.has(k)?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${cities.has(k)?T.accent+"40":T.border}`,borderRadius:99,padding:"4px 12px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:10,fontWeight:600,color:cities.has(k)?T.accent:T.textSec,letterSpacing:1,textTransform:"uppercase"}}>{label}</span></button>)}
+        <div style={{display:"flex",gap:8,flexWrap:"nowrap",overflowX:"auto",paddingTop:16,paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
+          {[["omaha","Omaha"],["cb","Council Bluffs"],["lincoln","Lincoln"]].map(([k,label])=><button key={k} onClick={()=>togCity(k)} style={{background:cities.has(k)?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${cities.has(k)?T.accent+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:36}}><span style={{fontSize:11,fontWeight:600,color:cities.has(k)?T.accent:T.textSec,letterSpacing:1,textTransform:"uppercase"}}>{label}</span></button>)}
         </div>
         {/* Date presets */}
-        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
-          {DATE_PRESETS.map(dp=><button key={dp.id} onClick={()=>setDateRange(dp.id)} style={{background:dateRange===dp.id?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${dateRange===dp.id?T.accent+"40":T.border}`,borderRadius:99,padding:"4px 12px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:10,fontWeight:600,color:dateRange===dp.id?T.accent:T.textSec,letterSpacing:.8}}>{dp.label}</span></button>)}
+        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
+          {DATE_PRESETS.map(dp=><button key={dp.id} onClick={()=>setDateRange(dp.id)} style={{background:dateRange===dp.id?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${dateRange===dp.id?T.accent+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:36}}><span style={{fontSize:11,fontWeight:600,color:dateRange===dp.id?T.accent:T.textSec,letterSpacing:.8}}>{dp.label}</span></button>)}
         </div>
         {/* Category pills */}
-        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch"}}>
-          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"4px 12px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:4}}><span style={{fontSize:12}}>{ec.emoji}</span><span style={{fontSize:10,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
+        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
+          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
         </div>
         {/* Subcategory pills */}
-        {evCat!=="all"&&ESUBS[evCat]&&<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          <button onClick={()=>setEvSub("all")} style={{background:evSub==="all"?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub==="all"?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"3px 10px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:9,fontWeight:600,color:evSub==="all"?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>All</span></button>
-          {ESUBS[evCat].map(s=><button key={s} onClick={()=>setEvSub(s)} style={{background:evSub===s?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub===s?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"3px 10px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:9,fontWeight:600,color:evSub===s?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>{s}</span></button>)}
+        {evCat!=="all"&&ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+          <button onClick={()=>setEvSub("all")} style={{background:evSub==="all"?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub==="all"?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub==="all"?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>All</span></button>
+          {ESUBS[evCat].map(s=><button key={s} onClick={()=>setEvSub(s)} style={{background:evSub===s?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub===s?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub===s?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>{s}</span></button>)}
         </div>}
         {/* Events heading */}
         <Head text={evCat==="all"?"All Events":ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
-        {/* Event cards */}
-        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvCat("all");setEvSub("all");setDateRange("all");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"8px 20px",cursor:"pointer",color:T.accent,fontSize:12,fontWeight:600}}>Clear Filters</button></div>:
-        filteredEvents.map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
-          <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${Math.min(i,.15/.04)*.04}s both`,cursor:"pointer"}}>
+        {/* Event cards — paginated for performance */}
+        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvCat("all");setEvSub("all");setDateRange("all");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
+        {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+          <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
               <div style={{flex:1}}>
@@ -1072,7 +1074,7 @@ export default function GOPrototype(){
                   <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
                     {ev.city&&<span style={{fontSize:9,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:600,letterSpacing:.5,textTransform:"uppercase"}}>{ev.city==="cb"?"Council Bluffs":ev.city==="lincoln"?"Lincoln":"Omaha"}</span>}
-                    <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
+                    <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"6px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec,minHeight:34}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,14,favs.includes(ev.id))}</button>
                     <span style={{fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{ev.venue}</span>
                   </div>
                 </div>
@@ -1080,6 +1082,8 @@ export default function GOPrototype(){
             </div>
           </div>
         );})}
+        {evShow<filteredEvents.length&&<div style={{textAlign:"center",padding:"16px 0 8px"}}><button onClick={()=>setEvShow(s=>s+30)} className="hbtn" style={{background:`${T.accent}12`,border:`1px solid ${T.accent}30`,borderRadius:99,padding:"12px 28px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:44}}>Show More ({filteredEvents.length-evShow} remaining)</button></div>}
+        </>}
       </div>}
 
       {/* ═══ EXPLORE TAB ═══ */}
@@ -1745,9 +1749,9 @@ export default function GOPrototype(){
             </button>
           </div>
         </div>}
-        <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:tab==="today"?"0 0 16px 16px":"16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:tab==="today"?"none":`1px solid ${T.border}`}}>
+        <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:tab==="today"?"0 0 16px 16px":"16px",display:"flex",justifyContent:"space-around",padding:"6px 4px 8px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:tab==="today"?"none":`1px solid ${T.border}`}}>
           {tabsD.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"10px 24px":"10px 16px",borderRadius:11,minWidth:isD?80:isT?68:60,minHeight:48,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
               <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
               <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>

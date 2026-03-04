@@ -10,6 +10,15 @@ const TrailMap=dynamic(()=>import("./TrailMap"),{ssr:false,loading:()=>(
     </div>
   </div>
 )});
+const EventDetail=dynamic(()=>import("./EventDetail"),{ssr:false,loading:()=>(
+  <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"80vh",color:"rgba(242,239,233,.58)"}}>
+    <div style={{textAlign:"center"}}>
+      <div style={{width:32,height:32,border:"3px solid rgba(94,196,182,.3)",borderTop:"3px solid #5EC4B6",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 12px"}}/>
+      <p style={{fontSize:12,letterSpacing:1}}>Loading event...</p>
+    </div>
+  </div>
+)});
+import { INGESTED_EVENTS } from "./events-data";
 
 /* ═══════════════════════════════════════════════════════════
    GO: GUIDE TO OMAHA — DESIGN SYSTEM NOTES
@@ -687,19 +696,20 @@ const HOODS=[
     tags:["Jazz","Dining","Events","Parks","Free"],
     vibe:"Relaxed & Musical",bestFor:"Jazz lovers, summer evenings, casual dining"},
 ];
-const EVENTS=[
-  {id:1,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",city:"omaha",date:"Sat",time:"8 PM",price:"$35–65",emoji:"🎸",desc:"Pink Floyd's The Wall note-for-note with full visual production.",feat:true},
+const SEED_EVENTS=[
+  {id:1,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",city:"omaha",date:"Sat",time:"8 PM",price:"$35–65",emoji:"🎸",desc:"Pink Floyd's The Wall note-for-note with full visual production. Every song, every note — performed live with a full band, vocalists, and stunning visual effects that bring the album to life.",feat:true,doors:"6:30 PM",address:"1212 Douglas St, Omaha, NE 68102",venueType:"Performing Arts",capacity:"3,000",ageRestriction:"All Ages",url:"https://www.ticketmaster.com",tags:["Classic Rock","Live Music","Tribute","Arena Show"],lineup:[{name:"Black Jacket Symphony",role:"Headliner",time:"8:00 PM",img:"https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=200&h=200&fit=crop"},{name:"Local Opening Act",role:"Support",time:"7:00 PM",img:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=200&h=200&fit=crop"}],pricing:[{tier:"General Admission",price:"$35",note:"Standing room"},{tier:"Reserved Seating",price:"$55",note:"Balcony sections"},{tier:"VIP Experience",price:"$65",note:"Early entry + meet & greet"}]},
   {id:2,title:"Tig Notaro",cat:"comedy",venue:"Holland PAC",date:"Sat",time:"7:30 PM",price:"$45–85",emoji:"🎙️",desc:"Grammy-nominated deadpan comedy. Star of 'One Mississippi'.",feat:true},
-  {id:3,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",city:"omaha",date:"Tue",time:"7 PM",price:"$25–90",emoji:"🏀",desc:"Big East basketball. Bluejays host DePaul at the CHI.",feat:true},
+  {id:3,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",city:"omaha",date:"Tue",time:"7 PM",price:"$25–90",emoji:"🏀",desc:"Big East basketball. Bluejays host DePaul at the CHI.",feat:true,broadcast:"FOX Sports",address:"455 N 10th St, Omaha, NE 68102",venueType:"Arena",capacity:"18,300",url:"https://www.ticketmaster.com",matchup:{home:{name:"Creighton",abbr:"CU",record:"22-5",rank:"#12",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},away:{name:"DePaul",abbr:"DPU",record:"11-16",color:"#005EB8",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/305.png"}},tags:["College Basketball","Big East","Rivalry"]},
   {id:4,title:"Nate Jackson Live",cat:"comedy",venue:"Steelhouse Omaha",city:"omaha",date:"Fri",time:"8 PM",price:"$40–80",emoji:"😂",desc:"Instagram-famous comedian with electric crowd work.",feat:true},
   {id:5,title:"Ethel Cain",cat:"concerts",venue:"The Astro",date:"Wed",time:"8 PM",price:"$40–75",emoji:"🕯️",desc:"Southern gothic sensation. 'Preacher's Daughter' live.",feat:true},
   {id:6,title:"LOVB Nebraska",cat:"sports",venue:"Baxter Arena",date:"Sat",time:"7 PM",price:"$20–50",emoji:"🏐",desc:"Pro volleyball. League One Volleyball's Nebraska franchise."},
   {id:7,title:"All Them Witches",cat:"concerts",venue:"The Slowdown",date:"Mon",time:"8 PM",price:"$25–35",emoji:"🎸",desc:"Heavy psychedelic rock double-header with King Buffalo."},
   {id:8,title:"Backline Improv",cat:"comedy",venue:"Backline Comedy",date:"Sat",time:"8 PM",price:"$10–15",emoji:"😂",desc:"House improv team takes audience suggestions and runs."},
-  {id:9,title:"Storm Chasers Opener",cat:"sports",venue:"Werner Park",date:"Fri",time:"6:35 PM",price:"$12–45",emoji:"⚾",desc:"2026 MiLB season kickoff with postgame fireworks.",feat:true},
+  {id:9,title:"Storm Chasers Opener",cat:"sports",venue:"Werner Park",date:"Fri",time:"6:35 PM",price:"$12–45",emoji:"⚾",desc:"2026 MiLB season kickoff with postgame fireworks. The Omaha Storm Chasers, Triple-A affiliate of the Kansas City Royals, open the season with a Friday night fireworks spectacular.",feat:true,address:"12356 Ballpark Way, Papillion, NE 68046",venueType:"Ballpark",capacity:"9,023",url:"https://www.milb.com/omaha",tags:["Minor League Baseball","Fireworks","Family Night"],matchup:{home:{name:"Storm Chasers",abbr:"OMA",record:"",color:"#003DA5",logo:"https://www.milb.com/assets/images/logos/omaha.svg"},away:{name:"Iowa Cubs",abbr:"IOW",record:"",color:"#CC3433",logo:"https://www.milb.com/assets/images/logos/iowa.svg"}}},
   {id:10,title:"Pinewood Bowl Concert",cat:"concerts",venue:"Pinewood Bowl Theater",city:"lincoln",date:"Sat",time:"7 PM",price:"$25-55",emoji:"🎶",desc:"Outdoor amphitheater in Pioneers Park. Live music under the stars.",feat:false},
-  {id:11,title:"Husker Volleyball",cat:"sports",venue:"Devaney Center",city:"lincoln",date:"Fri",time:"7 PM",price:"$15-40",emoji:"🏐",desc:"Nebraska volleyball at home. Electric atmosphere, sell-out crowd.",feat:true}
-]
+  {id:11,title:"Husker Volleyball",cat:"sports",venue:"Devaney Center",city:"lincoln",date:"Fri",time:"7 PM",price:"$15-40",emoji:"🏐",desc:"Nebraska volleyball at home. Electric atmosphere, sell-out crowd. The Huskers bring Big Ten volleyball action to Lincoln with one of the most passionate fanbases in all of college sports.",feat:true,broadcast:"Big Ten Network",address:"500 Stadium Dr, Lincoln, NE 68588",venueType:"Arena",capacity:"7,907",url:"https://huskers.com/tickets",tags:["College Volleyball","Big Ten","Nebraska"],matchup:{home:{name:"Nebraska",abbr:"NEB",record:"28-2",rank:"#2",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},away:{name:"Wisconsin",abbr:"WIS",record:"24-6",rank:"#7",color:"#C5050C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/275.png"}}}
+];
+const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
 
 /* ═══ VENUES ═══ */
 const VENUES=[
@@ -762,6 +772,7 @@ export default function GOPrototype(){
   const[parkTab,setParkTab]=useState("overview");
   const[w,setW]=useState(375);
   const[tab,setTab]=useState("today");
+  const[prevTab,setPrevTab]=useState("today");
   const[favs,setFavs]=useState([]);
   useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
@@ -776,6 +787,7 @@ export default function GOPrototype(){
   const sec={maxWidth:mxW,margin:"0 auto",padding:`0 ${px}px`};
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
+  const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);};
   const nb=Math.max(0,Math.min(1,(tv-50)/20));
   const isDay=tv<60,isNite=tv>=60;
   const mLabel=isDay?"Today":"Tonight";
@@ -816,7 +828,7 @@ export default function GOPrototype(){
      SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
      GO: title stays visible at reduced size. No celestial or weather elements. */
   const fullHero=tab==="today"||tab==="events";
-  const isTrailPage=tab.startsWith("trail:");
+  const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:");
   const heroH=isTrailPage?"0px":fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
   const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
   const heroMax=isTrailPage?0:fullHero?560:135;
@@ -977,7 +989,7 @@ export default function GOPrototype(){
           <Head text={"Tonight's Events"} count={EVENTS.length} mt={4} color={T.accent}/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory",marginBottom:10}}>
             {EVENTS.filter(e=>e.feat&&(cityMatch(e))).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
-              <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,width:isD?340:isM?265:290,minWidth:isD?340:isM?265:290,flexShrink:0,scrollSnapAlign:"start",padding:"16px 16px 18px"}}>
+              <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,width:isD?340:isM?265:290,minWidth:isD?340:isM?265:290,flexShrink:0,scrollSnapAlign:"start",padding:"16px 16px 18px",cursor:"pointer"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
                   <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{ev.emoji}</div>
                   <div><div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:16,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div><p style={{margin:"1px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4,textTransform:"uppercase"}}>{ev.date} · {ev.time}</p></div>
@@ -986,7 +998,7 @@ export default function GOPrototype(){
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                   <span style={{fontSize:18,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    <button onClick={()=>tog(ev.id)} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
+                    <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
                     <span style={{fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{ev.venue}</span>
                   </div>
                 </div>
@@ -994,7 +1006,7 @@ export default function GOPrototype(){
             )})}
           </div>
           {EVENTS.filter(e=>!e.feat).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
-            <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+            <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
                 <div style={{flex:1}}>
@@ -1018,7 +1030,7 @@ export default function GOPrototype(){
       {tab==="events"&&<div style={sec}>
         <Head text="Upcoming Events" count={EVENTS.filter(e=>cityMatch(e)).length} mt={16} color={T.accent}/>
         {EVENTS.filter(e=>cityMatch(e)).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
-          <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+          <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
               <div style={{flex:1}}>
@@ -1029,7 +1041,7 @@ export default function GOPrototype(){
                   <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
                     {ev.city&&<span style={{fontSize:9,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:600,letterSpacing:.5,textTransform:"uppercase"}}>{ev.city==="cb"?"Council Bluffs":ev.city==="lincoln"?"Lincoln":"Omaha"}</span>}
-                    <button onClick={()=>tog(ev.id)} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
+                    <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
                     <span style={{fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{ev.venue}</span>
                   </div>
                 </div>
@@ -1360,7 +1372,7 @@ export default function GOPrototype(){
         <Head text="Saved Events" count={favs.length} mt={16} color={T.gold}/>
         {favs.length===0?<div style={{textAlign:"center",padding:"40px 0"}}><p style={{fontSize:13,color:T.textDim}}>No saved events yet. Tap the heart on any event to save it.</p></div>
         :EVENTS.filter(ev=>favs.includes(ev.id)).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
-          <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+          <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
               <div style={{flex:1}}>
@@ -1368,7 +1380,7 @@ export default function GOPrototype(){
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
                   <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
-                  <button onClick={()=>tog(ev.id)} className="hbtn" style={{background:"rgba(212,173,101,.1)",border:"1px solid rgba(212,173,101,.2)",borderRadius:99,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:T.gold,fontSize:10,fontWeight:600}}>{IC.heart(T.gold,12,true)} Saved</button>
+                  <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(212,173,101,.1)",border:"1px solid rgba(212,173,101,.2)",borderRadius:99,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:T.gold,fontSize:10,fontWeight:600}}>{IC.heart(T.gold,12,true)} Saved</button>
                 </div>
               </div>
             </div>
@@ -1376,6 +1388,17 @@ export default function GOPrototype(){
         );})}
         <div style={{height:90}}/>
       </div>}
+
+      {/* ═══ EVENT DETAIL ═══ */}
+      {tab.startsWith("event:")&&(()=>{
+        const eid=tab.split(":")[1];
+        const ev=EVENTS.find(e=>String(e.id)===String(eid));
+        if(!ev)return null;
+        return <EventDetail event={ev} isSaved={favs.includes(ev.id)}
+          onToggleSave={()=>tog(ev.id)}
+          onBack={()=>{setTab(prevTab);window.scrollTo(0,0);}}
+          isM={isM} isT={isT} isD={isD}/>;
+      })()}
 
       {/* ═══ PARK DETAIL (accessed from Explore) ═══ */}
       {tab.startsWith("park:")&&(()=>{
@@ -1693,9 +1716,9 @@ export default function GOPrototype(){
         </div>
         <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:"0 0 16px 16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:"none"}}>
           {tabsD.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
-              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
-              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
+              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
+              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>
           ))}
         </div>

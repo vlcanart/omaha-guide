@@ -1,694 +1,1181 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { INGESTED_EVENTS, BUILD_META, dedupeKey } from "./events-data";
+import { useState, useEffect, useMemo } from "react";
 
-/* ═══ DESIGN TOKENS — lighter palette ═══ */
-const T={
-  bg:"#141618",
-  surface:"#1B1D21",
-  card:"#1F2227",
-  border:"rgba(255,255,255,0.08)",
-  borderHi:"rgba(255,255,255,0.18)",
-  text:"#F2EFE9",
-  textHi:"#FFFFFF",
-  textBody:"rgba(242,239,233,0.82)",
-  textSec:"rgba(242,239,233,0.58)",
-  textDim:"rgba(242,239,233,0.32)",
-  venue:"rgba(242,239,233,0.72)",
-  accent:"#5EC4B6",
-  accentSoft:"rgba(94,196,182,0.10)",
-  accentGlow:"rgba(94,196,182,0.30)",
-  gold:"#D4AD65",
-  green:"#7DD4A0",
-  red:"#E8364F",
-  sans:"'Inter',system-ui,-apple-system,sans-serif",
-};
-const CG={
-  concerts:"linear-gradient(135deg,#1A2E32 0%,#213740 60%,#1C3035 100%)",
-  sports:"linear-gradient(135deg,#1A2430 0%,#21303E 60%,#1C2836 100%)",
-  festivals:"linear-gradient(135deg,#2A1F34 0%,#34263E 60%,#2C2138 100%)",
-  family:"linear-gradient(135deg,#1C2A1F 0%,#253628 60%,#1F2E22 100%)",
-  arts:"linear-gradient(135deg,#271F30 0%,#30263A 60%,#292134 100%)",
-  comedy:"linear-gradient(135deg,#2D2518 0%,#3A2F1E 60%,#332A1C 100%)",
-  _:"linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
-};
-const CA={concerts:"#5EC4B6",sports:"#64B5F6",festivals:"#CE93D8",family:"#81C784",arts:"#B39DDB",comedy:"#FFB74D"};
+/* ═══════════════════════════════════════════════════════════
+   GO: GUIDE TO OMAHA — DESIGN SYSTEM NOTES
+   ═══════════════════════════════════════════════════════════
 
-/* ═══ SVG ICONS ═══ */
-const I={
+   HEADER / HERO SIZING
+   ─────────────────────
+   FULL HERO (50-55vh, 320-560px):
+     Tabs: Today, Events
+     Full animated skyline with sun/moon arc, stars, weather
+     City filters, large "GO: Guide to Omaha" title (28-44px)
+     All interactive elements (time slider, weather, city toggles)
+
+   COMPACT HERO (95-135px) — ALL INTERIOR PAGES:
+     Tabs: Explore, Saved, Venues, Neighborhoods — everything except Today/Events
+     Shows only the bottom third of the skyline SVG
+     The crop line should sit right above the church steeple —
+       buildings, windows, and "GO: Guide to Omaha" text remain visible
+     SVG uses preserveAspectRatio="xMidYMax slice" so YMax anchors
+       to the bottom of the viewBox, naturally showing the base/buildings
+     Skyline div fills 100% of compact height (vs 78% in full hero)
+     "GO: Guide to Omaha" title shrinks to 16-20px, positioned at bottom
+     No stars, sun/moon, horizon glow, or weather — just sky gradient + silhouettes
+     Bottom gradient overlay reduced to 35px (vs 60px full)
+     Smooth CSS transition between full ↔ compact on tab switch
+
+     Heights by breakpoint:
+       Desktop (≥960):  120px
+       Tablet (600-959): 105px
+       Mobile (<600):    95px
+
+     This compact header is intentionally minimal — a brand-presence
+     strip that keeps GO: visible without taking real estate from content.
+     Content sections begin immediately below with their own headers.
+
+   TYPOGRAPHY — "GO FONT" PATTERN
+   ──────────────────────────────
+     The "Guide to Omaha" text uses:  fontWeight 300, letterSpacing 1.5
+     The "GO" wordmark uses:          fontWeight 800, letterSpacing 2-3
+     The teal colon separator uses:   fontWeight 200, color T.accent
+
+     This light/elegant type treatment is reused for:
+     ✦ Neighborhood names on detail pages (fontWeight 300, letterSpacing 1.5)
+     ✦ Directory section headers ("[Hood] Directory" — fontWeight 300)
+     ✦ Any large decorative headline that should feel editorial, not UI
+
+     Standard section headers (Head component) remain:
+       fontSize 12, fontWeight 600, letterSpacing 2.5, uppercase, color T.textSec
+
+   NEIGHBORHOOD PAGES
+   ──────────────────
+     Own hero image (220-280px) rendered below the compact skyline header
+     Neighborhood name: fontWeight 300, letterSpacing 1.5
+     — matches "Guide to Omaha" text treatment (light, open, elegant)
+     Each neighborhood has a unique accent color used for tags, pills, CTAs
+     Directory filterable by: Eat / Drink / Coffee & Sweets / Shop / Do
+
+   ═══════════════════════════════════════════════════════════ */
+
+const T = {
+  bg: "#141618", surface: "#1B1D21",
+  border: "rgba(255,255,255,0.08)", borderHi: "rgba(255,255,255,0.18)",
+  text: "#F2EFE9", textHi: "#FFFFFF", textBody: "rgba(242,239,233,0.82)",
+  textSec: "rgba(242,239,233,0.58)", textDim: "rgba(242,239,233,0.32)",
+  venue: "rgba(242,239,233,0.72)", accent: "#5EC4B6",
+  accentSoft: "rgba(94,196,182,0.10)", accentGlow: "rgba(94,196,182,0.30)",
+  gold: "#D4AD65", green: "#7DD4A0", red: "#E8364F",
+  sans: "'Inter',system-ui,-apple-system,sans-serif",
+};
+const CG = {
+  concerts: "linear-gradient(135deg,#1A2E32 0%,#213740 60%,#1C3035 100%)",
+  sports: "linear-gradient(135deg,#1A2430 0%,#21303E 60%,#1C2836 100%)",
+  comedy: "linear-gradient(135deg,#2D2518 0%,#3A2F1E 60%,#332A1C 100%)",
+  trail: "linear-gradient(135deg,#1A2B20 0%,#233D2A 60%,#1E3224 100%)",
+  hood: "linear-gradient(135deg,#22201A 0%,#2E2A20 60%,#282418 100%)",
+  sunset: "linear-gradient(135deg,#2A1E1A 0%,#3A2818 60%,#302216 100%)",
+  _: "linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
+};
+const CA = { concerts:"#5EC4B6", sports:"#64B5F6", comedy:"#FFB74D" };
+
+/* ═══ COLOR MATH ═══ */
+const h2r=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const r2h=([r,g,b])=>"#"+[r,g,b].map(c=>Math.round(Math.min(255,Math.max(0,c))).toString(16).padStart(2,"0")).join("");
+const mc=(a,b,t)=>{const[r1,g1,b1]=h2r(a),[r2,g2,b2]=h2r(b);return r2h([r1+(r2-r1)*t,g1+(g2-g1)*t,b1+(b2-b1)*t])};
+const mx=(a,b,t)=>a+(b-a)*t;
+
+/* ═══ SKY STOPS ═══ */
+const STOPS=[
+  {t:0,  s1:"#4A7CB5",s2:"#D4956B",s3:"#F4C97E",bldg:"#000000",sunY:.74,sunC:"#FFD07A",sunSz:38,sunOp:1,  moonOp:0, starOp:0, winOp:0,  glow:"#FFD07A"},
+  {t:25, s1:"#5B9BD5",s2:"#87CEEB",s3:"#B8DCF0",bldg:"#000000",sunY:.18,sunC:"#FFFBE8",sunSz:28,sunOp:.9,moonOp:0, starOp:0, winOp:0,  glow:"#FFFBE8"},
+  {t:50, s1:"#C27840",s2:"#E6956B",s3:"#F0C27A",bldg:"#000000",sunY:.68,sunC:"#FF9944",sunSz:44,sunOp:1,  moonOp:0, starOp:0, winOp:0,  glow:"#FF9944"},
+  {t:75, s1:"#2A1B4E",s2:"#5C3470",s3:"#C26848",bldg:"#000000",sunY:.92,sunC:"#D84420",sunSz:50,sunOp:.5,moonOp:.3,starOp:.2,winOp:.5,glow:"#D84420"},
+  {t:90, s1:"#0C1628",s2:"#122240",s3:"#1A2A4A",bldg:"#000000",sunY:1.25,sunC:"#D84420",sunSz:50,sunOp:0,  moonOp:1, starOp:1, winOp:1,  glow:"#C8C0B0"},
+  {t:100,s1:"#0C1628",s2:"#122240",s3:"#1A2A4A",bldg:"#000000",sunY:1.25,sunC:"#D84420",sunSz:50,sunOp:0,  moonOp:1, starOp:1, winOp:1,  glow:"#C8C0B0"},
+];
+function interp(v){
+  let lo=STOPS[0],hi=STOPS[STOPS.length-1];
+  for(let i=0;i<STOPS.length-1;i++){if(v>=STOPS[i].t&&v<=STOPS[i+1].t){lo=STOPS[i];hi=STOPS[i+1];break;}}
+  const rng=hi.t-lo.t||1,t=(v-lo.t)/rng,r={};
+  for(const k of Object.keys(lo)){if(k==="t")continue;if(typeof lo[k]==="string"&&lo[k].startsWith("#"))r[k]=mc(lo[k],hi[k],t);else if(typeof lo[k]==="number")r[k]=mx(lo[k],hi[k],t);}
+  return r;
+}
+const STARS=Array.from({length:60},()=>({x:Math.random()*100,y:Math.random()*28,sz:Math.random()*2+.5,dl:Math.random()*3,dur:2+Math.random()*3}));
+
+/* ═══ OMAHA SKYLINE — native SVG from skyline-4.svg ═══ */
+function Skyline({color,winOp}){
+  return(
+    <svg viewBox="0 0 1625 540" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" style={{display:"block"}}>
+      <g transform="translate(0,540) scale(0.1,-0.1)" fill={color} stroke="none">
+        <path d="M7124 4759 c-12 -13 -14 -63 -14 -283 1 -187 -2 -272 -10 -281 -6 -8 -35 -15 -63 -17 l-52 -3 -3 -220 c-2 -219 -2 -219 -27 -245 l-25 -26 0 -872 0 -872 -68 0 c-90 0 -138 14 -146 43 -3 12 -6 131 -6 264 0 182 -3 244 -12 250 -7 4 -44 10 -83 13 l-70 5 -5 85 -5 85 -213 3 c-118 1 -229 -2 -247 -7 -33 -9 -34 -8 -42 27 -7 28 -15 37 -38 44 -36 9 -49 -2 -63 -54 -7 -24 -6 -40 0 -46 7 -7 7 -20 1 -39 -7 -19 -7 -33 0 -45 8 -13 5 -25 -17 -56 -24 -35 -26 -43 -15 -60 10 -16 10 -26 1 -47 -9 -20 -9 -30 0 -45 9 -15 9 -24 -1 -44 -12 -21 -12 -28 -1 -41 11 -13 11 -23 1 -51 -10 -27 -10 -38 -1 -49 10 -12 10 -22 0 -45 -10 -24 -10 -33 0 -45 10 -12 10 -21 0 -45 -10 -24 -10 -33 0 -45 10 -12 10 -24 1 -55 -9 -30 -9 -44 1 -59 9 -15 9 -28 0 -59 -10 -32 -10 -46 0 -67 9 -20 9 -36 0 -69 -8 -30 -8 -54 -2 -77 6 -19 10 -56 10 -84 l0 -50 -96 0 -96 0 7 55 c3 30 5 66 4 80 -1 14 -1 45 -1 70 0 25 0 56 0 70 -1 28 -1 85 0 115 1 11 1 36 0 55 0 19 0 44 1 55 0 11 -1 58 -3 105 -2 47 1 90 5 96 5 6 3 24 -3 42 -9 22 -9 37 -1 54 7 16 7 30 0 46 -7 15 -7 30 0 46 6 12 8 28 3 35 -4 7 -8 187 -9 399 -1 213 -5 390 -9 394 -4 4 -41 8 -82 10 l-75 3 -3 65 c-2 46 -7 69 -19 78 -21 15 -265 17 -294 2 -15 -9 -19 -22 -19 -69 0 -36 -5 -63 -13 -69 -7 -6 -44 -12 -82 -14 l-70 -3 -5 -250 c-3 -137 -7 -251 -8 -252 -1 -2 -76 -3 -166 -3 -121 0 -167 -3 -173 -12 -4 -7 -9 -47 -11 -88 -2 -41 -4 -76 -6 -77 -1 -1 -33 -5 -71 -9 -39 -4 -73 -12 -77 -18 -5 -6 -8 -249 -7 -541 l0 -530 -70 -3 -71 -3 0 51 c0 63 -10 82 -57 111 -21 13 -41 27 -44 32 -4 5 -218 10 -495 11 -269 2 -498 3 -509 4 -11 0 -119 0 -241 -1 -195 -2 -222 -4 -238 -19 -10 -10 -22 -18 -27 -18 -6 0 -28 -15 -49 -32 -32 -27 -37 -36 -28 -52 9 -16 8 -52 -3 -151 -1 -5 2 -28 5 -50 9 -55 -4 -73 -43 -59 -17 7 -33 8 -38 3 -16 -16 -77 33 -83 66 -3 18 -12 31 -24 33 -15 3 -17 -1 -12 -25 5 -23 1 -34 -18 -52 -13 -13 -34 -22 -48 -20 -12 1 -30 -1 -39 -5 -9 -4 -36 -6 -60 -4 l-44 3 -7 65 c-17 157 -30 904 -16 932 5 10 4 19 -2 23 -13 8 -13 52 -1 59 5 4 5 19 -2 36 -9 23 -9 35 1 50 7 12 8 21 2 25 -13 8 -13 52 -1 59 5 4 5 21 -2 41 -7 26 -7 39 0 46 8 8 8 18 1 35 -6 12 -7 31 -3 41 5 10 7 23 5 28 -1 6 -6 23 -9 39 -5 21 -14 32 -35 37 -40 11 -49 4 -67 -46 -14 -37 -14 -47 -3 -56 11 -9 11 -16 -2 -42 -15 -27 -15 -31 -1 -39 14 -7 14 -13 3 -40 -12 -27 -12 -34 0 -45 12 -12 11 -19 -2 -45 -14 -28 -15 -32 -1 -40 13 -7 14 -14 5 -38 -5 -17 -7 -38 -2 -48 4 -9 6 -21 4 -27 -1 -5 -4 -167 -6 -360 -2 -366 -7 -492 -26 -738 l-11 -147 -162 0 -162 0 -7 37 c-9 57 -7 148 4 177 6 18 5 37 -5 65 -10 29 -11 49 -3 78 6 24 6 58 1 89 -5 28 -5 68 0 93 8 38 6 45 -13 58 -16 12 -21 23 -18 45 3 16 1 31 -3 34 -5 3 -46 5 -91 6 -46 0 -89 5 -95 10 -18 14 -16 83 2 98 21 17 19 28 -7 35 -13 4 -37 13 -55 21 -29 13 -31 16 -22 47 12 43 12 47 -6 41 -8 -3 -124 -7 -257 -7 l-243 -2 -1 -36 c-1 -47 -10 -59 -39 -59 -32 0 -37 -11 -39 -89 l-1 -66 -92 1 c-93 1 -93 1 -93 -24 0 -14 -7 -33 -15 -41 -11 -13 -15 -69 -19 -279 -3 -145 -8 -267 -10 -271 -3 -4 0 -24 6 -44 9 -29 8 -42 -2 -62 -11 -21 -11 -29 0 -50 12 -22 12 -28 -3 -43 -14 -14 -21 -14 -37 -4 -14 8 -27 9 -45 2 -35 -13 -112 -13 -120 1 -4 6 -14 7 -24 3 -9 -5 -95 -11 -191 -14 l-175 -5 -3 -48 -3 -47 86 0 c136 0 125 27 125 -306 l0 -284 -30 -7 c-37 -7 -50 -28 -50 -82 l0 -41 -87 -1 c-49 -1 -94 -1 -100 0 -8 1 -13 -11 -13 -34 l0 -35 8111 0 8110 0 -3 33 -3 32 -105 1 c-103 1 -150 12 -150 36 0 6 -9 3 -20 -7 -20 -18 -20 -17 -20 33 0 39 4 52 15 52 8 0 31 11 51 25 20 14 47 25 59 25 26 0 39 13 66 67 20 40 26 93 9 93 -5 0 -16 12 -24 28 -39 70 -68 92 -138 104 -38 6 -68 14 -68 19 0 4 -15 25 -33 47 -19 22 -40 55 -47 73 -8 19 -39 68 -69 109 -222 303 -521 501 -869 575 -58 12 -108 28 -113 36 -5 8 -9 42 -9 75 0 47 -4 63 -16 68 -9 3 -91 6 -184 6 -125 0 -170 -3 -178 -13 -6 -7 -12 -44 -14 -82 l-3 -70 -65 -12 c-88 -16 -144 -30 -212 -54 -32 -11 -62 -17 -68 -14 -14 8 -14 1131 0 1140 20 12 10 45 -15 51 -14 4 -29 4 -32 1 -3 -4 -14 -2 -25 4 -16 9 -19 17 -14 47 4 21 7 46 9 57 2 20 -4 20 -793 20 l-795 0 3 -25 c2 -14 4 -41 5 -60 2 -34 1 -35 -40 -41 -54 -7 -58 -12 -44 -46 8 -20 11 -172 9 -538 l-3 -510 -77 -3 c-85 -3 -98 8 -58 48 24 24 25 49 6 75 -12 16 -29 20 -95 23 -90 5 -91 6 -91 82 0 19 -3 358 -6 753 l-6 717 -21 5 c-12 3 -69 6 -127 8 l-105 2 0 80 0 80 -52 3 c-28 2 -56 9 -62 16 -8 9 -11 91 -9 256 l3 242 44 15 c26 9 59 12 80 9 81 -14 76 -17 79 50 2 51 0 63 -18 79 -28 26 -120 27 -147 3 -11 -10 -32 -18 -46 -18 l-27 0 0 -315 c0 -357 6 -335 -86 -335 -45 0 -46 -1 -40 -27 11 -48 12 -117 3 -130 -7 -9 -44 -13 -123 -13 -90 0 -116 -3 -129 -16 -14 -14 -15 -104 -15 -916 1 -496 -2 -904 -7 -908 -4 -5 -39 -10 -78 -12 l-70 -3 -3 149 c-2 118 1 156 13 182 8 18 18 46 21 62 5 25 2 31 -15 37 -18 6 -21 14 -21 68 0 71 -4 78 -45 93 -26 9 -30 14 -27 43 1 20 -4 41 -14 52 -13 15 -15 41 -12 168 2 110 0 153 -10 163 -7 7 -12 41 -12 89 0 49 -5 87 -15 105 -8 16 -15 36 -15 44 -1 24 -22 54 -63 90 -35 30 -39 31 -60 17 -49 -33 -77 -67 -88 -111 -6 -26 -15 -49 -20 -52 -5 -3 -9 -41 -9 -85 0 -44 -5 -90 -12 -102 -8 -15 -11 -68 -9 -165 2 -104 -1 -147 -10 -158 -7 -8 -13 -31 -13 -51 -1 -32 -5 -37 -36 -48 l-35 -12 -3 -71 c-2 -61 -6 -72 -23 -77 -18 -6 -20 -12 -15 -41 4 -18 13 -45 21 -60 15 -30 10 -54 -12 -54 -9 0 -38 16 -64 35 -27 19 -58 35 -68 35 -24 0 -81 76 -81 107 0 18 -6 23 -25 23 -30 0 -105 69 -105 97 -1 10 -7 29 -15 43 -12 22 -11 27 2 42 20 22 13 52 -14 56 -25 4 -40 -28 -25 -54 14 -26 -12 -112 -45 -145 -15 -16 -43 -31 -60 -35 -26 -5 -33 -11 -33 -29 0 -13 -6 -30 -13 -37 -7 -7 -21 -25 -31 -40 -11 -16 -27 -28 -40 -28 -12 0 -33 -11 -47 -24 -15 -13 -42 -26 -60 -28 -39 -3 -39 0 -13 76 l17 48 -33 26 c-30 24 -32 28 -26 71 7 54 -1 69 -40 80 -26 7 -29 12 -26 43 1 22 -3 40 -13 48 -12 10 -15 41 -15 169 0 101 -4 161 -11 168 -6 6 -12 49 -14 96 -2 46 -8 93 -13 103 -6 10 -13 31 -16 45 -5 25 -29 54 -79 95 l-25 21 -46 -45 c-26 -25 -49 -56 -52 -71 -3 -14 -12 -40 -20 -58 -8 -17 -14 -63 -14 -105 0 -43 -5 -79 -12 -86 -8 -8 -11 -57 -9 -163 2 -122 -1 -154 -13 -167 -8 -10 -16 -35 -18 -57 -3 -34 -6 -40 -26 -40 -32 0 -42 -21 -42 -92 0 -53 -3 -63 -20 -68 -11 -3 -20 -15 -20 -25 0 -10 9 -39 20 -65 11 -26 20 -66 20 -90 l0 -43 -32 12 c-18 6 -44 17 -56 25 -13 7 -48 21 -77 31 l-53 18 -10 -31 c-7 -22 -10 189 -11 700 -1 486 2 734 9 738 17 11 0 25 -30 25 -57 0 -60 5 -60 97 0 46 4 92 10 102 8 17 -1 18 -127 24 -171 9 -540 9 -571 1 -17 -5 -21 -11 -15 -23 4 -9 9 -55 11 -103 l3 -87 -38 -6 c-62 -11 -65 -12 -53 -34 6 -13 10 -185 10 -496 0 -450 -1 -477 -17 -470 -28 10 -170 25 -245 25 l-68 0 0 850 0 850 -25 16 -25 16 -2 227 -3 226 -50 3 c-88 6 -86 -3 -85 305 1 148 -2 273 -7 278 -4 4 -100 9 -211 11 -177 3 -205 1 -218 -13z m-1054 -2144 c0 -6 -5 -16 -11 -22 -8 -8 -8 -17 0 -31 6 -11 11 -25 11 -31 0 -12 -29 -15 -31 -3 -4 34 -4 119 -1 126 6 10 32 -22 32 -39z m-5412 -1834 c7 -4 12 -12 11 -17 -1 -5 1 -22 6 -38 4 -16 3 -43 -3 -62 -7 -23 -7 -36 0 -40 6 -4 7 -24 4 -48 -3 -22 -5 -47 -5 -53 1 -34 1 -80 0 -98 0 -11 1 -60 3 -110 3 -62 -1 -101 -10 -124 -8 -18 -14 -53 -14 -78 l0 -44 -97 3 c-95 3 -98 4 -107 29 -6 19 -5 41 6 73 14 42 14 48 -3 75 -10 16 -28 35 -41 42 -13 7 -26 17 -30 23 -13 20 -9 451 4 464 14 14 255 17 276 3z m3830 -708 c-10 -2 -28 -2 -40 0 -13 2 -5 4 17 4 22 1 32 -1 23 -4z"/>
+        <path d="M9415 2670 c-3 -5 -1 -10 4 -10 6 0 11 5 11 10 0 6 -2 10 -4 10 -3 0 -8 -4 -11 -10z"/>
+        <path d="M0 224 c0 -79 2 -81 43 -46 9 8 17 26 17 39 0 24 -37 83 -52 83 -4 0 -8 -34 -8 -76z"/>
+      </g>
+
+      {/* Window lights — pixel-verified, varied by building */}
+      <g fill="#FFE4AA" opacity={winOp}>
+        {[[126,356],[82,394],[104,394],[1006,394],[126,432],[148,432],[1028,432],[1512,432],[126,470],[1006,470],[1556,470]].map(([x,y],i)=><rect key={`g0${i}`} x={x} y={y} width="2" height="3" rx=".5"/>)}
+        {[[940,318],[940,356],[280,394],[302,394],[324,394],[368,394],[236,432],[302,432],[324,432],[346,432],[368,432],[940,432],[962,432],[258,470],[280,470],[302,470],[324,470],[346,470],[368,470],[940,470],[962,470]].map(([x,y],i)=><rect key={`g1${i}`} x={x} y={y} width="2.5" height="3.5" rx=".5"/>)}
+        {[[522,242],[544,242],[522,280],[544,280],[478,318],[478,394],[544,394],[412,432],[434,432],[456,432],[500,432],[522,432],[412,470],[456,470],[478,470],[1204,470],[1226,470]].map(([x,y],i)=><rect key={`g2${i}`} x={x} y={y} width="3" height="4" rx=".5"/>)}
+        {[[1248,318],[1336,318],[1380,318],[1292,356],[1314,356],[1358,356],[1380,356],[1248,394],[1270,394],[1358,394],[1380,394],[1270,432],[1292,432],[1314,432],[1358,432],[1380,432],[1402,432],[1424,432],[1446,432],[1468,432],[1270,470],[1292,470],[1336,470],[1358,470],[1424,470],[1446,470],[1468,470]].map(([x,y],i)=><rect key={`g3${i}`} x={x} y={y} width="3" height="4.5" rx=".5"/>)}
+        {[[742,90],[720,128],[742,128],[742,204],[764,204],[720,242],[742,242],[764,242],[852,242],[874,242],[1182,242],[720,280],[742,280],[764,280],[1160,280],[720,318],[742,318],[764,318],[830,318],[852,318],[874,318],[1138,318],[1160,318],[1182,318],[654,356],[676,356],[698,356],[720,356],[742,356],[808,356],[852,356],[1072,356],[1138,356],[1182,356],[610,394],[654,394],[676,394],[698,394],[764,394],[786,394],[808,394],[874,394],[1072,394],[1160,394],[1182,394],[588,432],[610,432],[632,432],[654,432],[676,432],[720,432],[742,432],[764,432],[808,432],[874,432],[896,432],[1094,432],[1116,432],[1138,432],[1160,432],[1182,432],[588,470],[610,470],[676,470],[720,470],[764,470],[808,470],[852,470],[874,470],[1072,470],[1116,470],[1160,470]].map(([x,y],i)=><rect key={`g4${i}`} x={x} y={y} width="3.5" height="5" rx=".5"/>)}
+      </g>
+      {/* Antennas */}
+      <g opacity={winOp*.8}>
+        {[[725,63,2.5,2],[540,204,2,2.3],[1163,148,2,1.8],[845,221,2,2.6],[222,265,1.5,2.1]].map(([cx,cy,r,d],i)=><circle key={`a${i}`} cx={cx} cy={cy} r={r} fill="#FF3333"><animate attributeName="opacity" values="1;0.2;1" dur={`${d}s`} repeatCount="indefinite"/></circle>)}
+      </g>
+    </svg>
+  );
+}
+
+/* ═══ ICONS ═══ */
+const IC={
+  trail:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19l4-12 4 8 4-4 4 8"/><circle cx="8" cy="7" r="1.5" fill={c} opacity=".3"/></svg>,
+  walk:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10 10l2-1 2 1v5l-1 5"/><path d="M10 10l-2 8 3-1"/><path d="M14 15l2 5"/></svg>,
+  sunset:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 18a5 5 0 00-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><polyline points="8 6 12 2 16 6"/></svg>,
+  music:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
+  bike:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 100-2 1 1 0 000 2z" fill={c}/><path d="M12 17.5V14l-3-3 4-3 2 3h3"/></svg>,
+  camera:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+  food:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>,
+  heart:(c,s=16,f=false)=><svg width={s} height={s} viewBox="0 0 24 24" fill={f?c:"none"} stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+  chev:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+  dir:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12"/></svg>,
+  link:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>,
+  tree:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V8"/><path d="M5 12l7-10 7 10"/><path d="M7 16l5-6 5 6"/></svg>,
+  today:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>,
+  calendar:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="2"/></svg>,
   events:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="2"/></svg>,
-  explore:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill={c} opacity="0.15"/></svg>,
+  explore:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill={c} opacity=".5"/></svg>,
   venues:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
   saved:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>,
-  music:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
-  trophy:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 19.24 7 20h10c0-.76-.85-1.25-2.03-1.79C14.47 17.98 14 17.55 14 17v-2.34"/><path d="M18 2H6v7a6 6 0 1012 0V2z"/></svg>,
-  festival:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
-  family:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M17 14h1a3 3 0 013 3v4"/></svg>,
-  art:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17" cy="15" r="1.5"/><circle cx="8.5" cy="12.5" r="1.5"/><circle cx="6" cy="18" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>,
-  dir:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z" opacity="0"/><path d="M5 12h14"/><path d="M12 5v14"/><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12"/></svg>,
-  link:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>,
-  chev:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
-  chevDown:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>,
-  heart:(c,s=16,fill=false)=><svg width={s} height={s} viewBox="0 0 24 24" fill={fill?c:"none"} stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
-  search:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-  refresh:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>,
-  comedy:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
-  play:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill={c} stroke="none"><polygon points="5,3 19,12 5,21"/></svg>,
-  playCircle:(c,s=24)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill={c}/></svg>,
-  share:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>,
 };
-
-const CATICON={concerts:I.music,sports:I.trophy,festivals:I.festival,family:I.family,arts:I.art,comedy:I.comedy};
-
-function useW(){const[w,s]=useState(typeof window!=="undefined"?window.innerWidth:375);useEffect(()=>{const h=()=>s(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);return w;}
-
-/* ═══ IMAGES ═══ */
-const u=id=>`https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
-const IMG={rock:u("photo-1470229722913-7c0e2dbbafd3"),concert:u("photo-1501386761578-eac5c94b800a"),acoustic:u("photo-1511671782779-c97d3d27a1d4"),comedy:u("photo-1585699324551-f6c309eedeca"),edm:u("photo-1574391884720-bbc3740c59d1"),metal:u("photo-1508854710579-5cecc3a9ff17"),folk:u("photo-1510915361894-db8b60106cb1"),indie:u("photo-1459749411175-04bf5292ceea"),jazz:u("photo-1415201364774-f6f0bb35f28f"),orchestra:u("photo-1465847899084-d164df4dedc6"),basketball:u("photo-1546519638-68e109498ffc"),football:u("photo-1508098682722-e99c43a406b2"),baseball:u("photo-1529768167801-9173d94c2a42"),soccer:u("photo-1553778263-73a83bab9b0c"),hockey:u("photo-1580692475446-c2fabbbbf835"),volleyball:u("photo-1612872087720-bb876e2e67d1"),food:u("photo-1555939594-58d7cb561ad1"),festival:u("photo-1533174072545-7a4b6ad7a6c3"),zoo:u("photo-1534567153574-2b12153a87f0"),running:u("photo-1552674605-db6ffd4facb5"),art:u("photo-1531243269054-5ebf6f34081e"),theater:u("photo-1503095396549-807759245b35"),film:u("photo-1489599849927-2ee91cede3ba"),books:u("photo-1481627834876-b7833e8f5570"),gaming:u("photo-1542751371-adc38448a05e"),country:u("photo-1506157786151-b8491531f063"),emo:u("photo-1524368535928-5b5e00ddc76b"),gothic:u("photo-1518834107812-67b0b7c58434"),sports:u("photo-1461896836934-bd45ba8ac53e"),family:u("photo-1511895426328-dc8714191300"),default:u("photo-1492684223066-81342ee5ff30")};
-const EV_IMG={1:u("photo-1493225457124-a3eb161ffa5f"),2:u("photo-1585699324551-f6c309eedeca"),4:u("photo-1470229722913-7c0e2dbbafd3"),6:u("photo-1603190287605-e6ade32fa852"),7:u("photo-1542751371-adc38448a05e"),16:u("photo-1518834107812-67b0b7c58434"),101:u("photo-1546519638-68e109498ffc"),106:u("photo-1529768167801-9173d94c2a42"),107:u("photo-1508098682722-e99c43a406b2"),203:u("photo-1555939594-58d7cb561ad1")};
-
-function pickImg(ev){
-  if(ev.image)return ev.image;
-  if(EV_IMG[ev.id])return EV_IMG[ev.id];
-  const ti=(ev.title||"").toLowerCase(),tags=(ev.tags||[]).map(t=>t.toLowerCase());
-  for(const[k,v]of Object.entries(IMG)){if(tags.includes(k))return v;}
-  const R=[[["symphony","playstation"],IMG.orchestra],[["comedy","notaro","nate jackson"],IMG.comedy],[["country","fisher","farr","thorogood"],IMG.country],[["metal","lorna","nihil"],IMG.metal],[["edm","wooli","inzo"],IMG.edm],[["folk","jurado"],IMG.folk],[["punk","hawthorne","yellowcard"],IMG.emo],[["gothic","ethel cain"],IMG.gothic],[["indie","heat wave"],IMG.indie],[["rock","hexum","witches"],IMG.rock],[["jazz","noma"],IMG.jazz],[["basketball","creighton"],IMG.basketball],[["football","husker"],IMG.football],[["baseball","storm"],IMG.baseball],[["soccer","union omaha"],IMG.soccer],[["hockey","lancer","maverick"],IMG.hockey],[["volleyball","lovb"],IMG.volleyball],[["zoo"],IMG.zoo],[["run"],IMG.running],[["food","cinco"],IMG.food],[["film","a24"],IMG.film],[["theater","theatre","bluebarn"],IMG.theater],[["art","joslyn"],IMG.art],[["book","lit"],IMG.books]];
-  for(const[keys,url]of R){for(const k of keys){if(ti.includes(k))return url;}}
-  return IMG[ev.cat]||IMG.default;
-}
-
-/* ═══ DATA ═══ */
-const VENUES=[
-  /* ── Arenas & Main Stages ── */
-  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"The premier arena for the biggest global stadium tours and Creighton Men's Basketball.",url:"https://www.chihealthcenteromaha.com",img:u("photo-1540039155733-5bb30b53aa14")},
-  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:u("photo-1547347298-4074fc3086f0")},
-  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue built to attract large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:u("photo-1501386761578-eac5c94b800a")},
-  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) bringing world-class rock, pop, and country.",url:"https://www.theastrotheater.com",img:u("photo-1470229722913-7c0e2dbbafd3")},
-  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic, ornate 1927 theater hosting Broadway tours, comedians, and major concerts.",url:"https://o-pa.org",img:u("photo-1503095396549-807759245b35")},
-  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Modern acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:u("photo-1465847899084-d164df4dedc6")},
-  {id:25,name:"Liberty First Credit Union Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for mid-to-large tier country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:u("photo-1540039155733-5bb30b53aa14")},
-  {id:26,name:"Charles Schwab Field",area:"North Downtown",cap:"24,000+",type:"Arena",lat:41.2565,lng:-95.9497,desc:"Home of the College World Series; occasionally hosts massive stadium concerts.",url:"https://www.charlesschwabfieldomaha.com",img:u("photo-1567459169668-95d355decb6d")},
-  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Massive outdoor summer concert series right across the river at Harrah's Casino.",url:"https://www.stircove.com",img:u("photo-1506157786151-b8491531f063")},
-  {id:17,name:"Werner Park",area:"Papillion",cap:"9,023",type:"Outdoor",lat:41.1183,lng:-96.0945,desc:"Minor league ballpark with fireworks nights. Home of the Storm Chasers.",url:"#",img:u("photo-1529768167801-9173d94c2a42")},
-  /* ── Performing Arts & Theater ── */
-  {id:27,name:"Omaha Community Playhouse",area:"Central (Cass St)",cap:"Varies",type:"Performing Arts",lat:41.2562,lng:-95.9580,desc:"The largest community theater in the U.S., putting on high-quality plays and musicals.",url:"https://www.omahaplayhouse.com",img:u("photo-1503095396549-807759245b35")},
-  {id:28,name:"BLUEBARN Theatre",area:"Little Italy",cap:"Intimate",type:"Performing Arts",lat:41.2543,lng:-95.9365,desc:"Intimate, contemporary theater known for daring and innovative professional productions.",url:"https://bluebarn.org",img:u("photo-1503095396549-807759245b35")},
-  {id:29,name:"The Rose Theater",area:"Downtown",cap:"Varies",type:"Performing Arts",lat:41.2610,lng:-95.9372,desc:"Historic theater dedicated to high-production children's and family stage shows.",url:"https://www.rosetheater.org",img:u("photo-1503095396549-807759245b35")},
-  /* ── Indie / Club ── */
-  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records. Main stage and front room.",url:"https://theslowdown.com",img:u("photo-1459749411175-04bf5292ceea")},
-  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"The legendary heart of Omaha's alt/indie scene. A must-play for touring bands on the rise.",url:"https://waitingroomlounge.com",img:u("photo-1511671782779-c97d3d27a1d4")},
-  {id:10,name:"Reverb Lounge",area:"Benson",cap:"150",type:"Indie / Club",lat:41.2808,lng:-95.9545,desc:"Sleek, mid-century modern listening room with great sound. Steps from The Waiting Room.",url:"https://reverblounge.com",img:u("photo-1508854710579-5cecc3a9ff17")},
-  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic large hall hosting punk, metal, hip-hop, and EDM.",url:"https://www.admiralomaha.com",img:u("photo-1574391884720-bbc3740c59d1")},
-  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge next to a Bentley dealership. Premium cocktails and vibes.",url:"https://barnato.bar",img:u("photo-1511671782779-c97d3d27a1d4")},
-  /* ── Bar / Restaurant Venues ── */
-  {id:30,name:"The Jewell",area:"Capitol District",cap:"Intimate",type:"Bar / Venue",lat:41.2577,lng:-95.9370,desc:"Omaha's premier jazz club. Upscale dining and cocktails with national/local jazz and blues.",url:"https://jewellomaha.com",img:u("photo-1415201364774-f6f0bb35f28f")},
-  {id:31,name:"Noli's Pizzeria",area:"Blackstone",cap:"Patio",type:"Bar / Venue",lat:41.2590,lng:-95.9650,desc:"Authentic NY-style pizza with regular live music on the patio.",url:"https://nolispizzeria.com",img:u("photo-1555939594-58d7cb561ad1")},
-  {id:32,name:"The Down Under Lounge",area:"Leavenworth",cap:"Small",type:"Bar / Venue",lat:41.2520,lng:-95.9430,desc:"Quirky, beloved neighborhood bar with local indie bands, open mics, and art on the walls.",url:"https://theduomaha.com",img:u("photo-1459749411175-04bf5292ceea")},
-  {id:33,name:"Harney Street Tavern",area:"Old Market",cap:"Small",type:"Bar / Venue",lat:41.2555,lng:-95.9330,desc:"Cozy tavern with great drinks and a small stage for acoustic, rock, and blues musicians.",url:"https://harneystreettavern.com",img:u("photo-1511671782779-c97d3d27a1d4")},
-  {id:34,name:"O'Leaver's",area:"Saddle Creek",cap:"Small",type:"Bar / Venue",lat:41.2680,lng:-95.9620,desc:"Legendary dive bar hosting loud underground punk/indie. Massive outdoor sand volleyball area.",url:"https://oleavers.com",img:u("photo-1508854710579-5cecc3a9ff17")},
-  {id:35,name:"Bogie's West",area:"West Omaha",cap:"Small",type:"Bar / Venue",lat:41.2600,lng:-96.0500,desc:"Laid-back sports bar known for hosting live local jazz, blues, and classic rock.",url:"https://bogiesbar.com",img:u("photo-1415201364774-f6f0bb35f28f")},
-  {id:36,name:"The B. Bar",area:"Central Omaha",cap:"Small",type:"Bar / Venue",lat:41.2580,lng:-95.9500,desc:"Community-focused bar hosting diverse local and national acts. Shows almost every night.",url:"https://thebbaromaha.com",img:u("photo-1459749411175-04bf5292ceea")},
-  {id:37,name:"Buck's Bar and Grill",area:"Venice (West)",cap:"Small",type:"Bar / Venue",lat:41.2700,lng:-96.1000,desc:"Country-leaning local gem famous for prime rib dinners and regular live music.",url:"https://bucksbarandgrill.com",img:u("photo-1506157786151-b8491531f063")},
-  /* ── Comedy Clubs ── */
-  {id:50,name:"Funny Bone Comedy Club",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians. 21+ with 2-item minimum.",url:"https://omaha.funnybone.com",img:u("photo-1585699324551-f6c309eedeca")},
-  {id:51,name:"The Backline Comedy Theatre",area:"Downtown",cap:"150",type:"Comedy Club",lat:41.2555,lng:-95.9340,desc:"Headquarters for Omaha's local comedy scene. Improv, sketch, open mics, stand-up, and a training center.",url:"https://backlinecomedy.com",img:u("photo-1585699324551-f6c309eedeca")},
-  {id:52,name:"Big Canvas Comedy",area:"Blackstone",cap:"100",type:"Comedy Club",lat:41.2590,lng:-95.9650,desc:"Nonprofit comedy theater focused on short-form improv, stand-up, and family-friendly comedy classes.",url:"https://bigcanvascomedy.com",img:u("photo-1585699324551-f6c309eedeca")},
-  {id:53,name:"The Dubliner Pub",area:"Old Market",cap:"Small",type:"Comedy Club",lat:41.2555,lng:-95.9320,desc:"Classic below-street-level Irish pub hosting a popular long-running Monday night Comedy Open Mic.",url:"https://dublinerpubomaha.com",img:u("photo-1585699324551-f6c309eedeca")},
-  /* ── Museums & Attractions ── */
-  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"Consistently ranked among the world's best zoos. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:u("photo-1534567153574-2b12153a87f0")},
-  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"State-of-the-art interactive science and perception center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:u("photo-1531243269054-5ebf6f34081e")},
-  {id:39,name:"Omaha Children's Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2600,lng:-95.9340,desc:"Hands-on learning museum with Imagination Playground, water tables, and a science center.",url:"https://ocm.org",img:u("photo-1511895426328-dc8714191300")},
-  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station. Walk-through historic train cars and a 1930s soda fountain.",url:"https://durhammuseum.org",img:u("photo-1503095396549-807759245b35")},
-  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with a massive 42,000 sq ft Snøhetta expansion. Free general admission.",url:"https://joslyn.org",img:u("photo-1531243269054-5ebf6f34081e")},
-  {id:41,name:"SAC & Aerospace Museum",area:"Ashland",cap:"Varies",type:"Museum / Attraction",lat:41.0350,lng:-96.3000,desc:"Massive facility housing Cold War aircraft, spacecraft, and a Children's Learning Center.",url:"https://sacmuseum.org",img:u("photo-1540039155733-5bb30b53aa14")},
-  {id:42,name:"Lauritzen Gardens",area:"South Omaha",cap:"Varies",type:"Museum / Attraction",lat:41.2384,lng:-95.9158,desc:"100-acre botanical garden with indoor conservatory and popular seasonal model train displays.",url:"https://www.lauritzengardens.org",img:u("photo-1534567153574-2b12153a87f0")},
-  {id:43,name:"Fontenelle Forest",area:"Bellevue",cap:"Varies",type:"Museum / Attraction",lat:41.1570,lng:-95.9000,desc:"One of the largest private nature centers in the nation. 17 miles of trails and boardwalk.",url:"https://fontenelleforest.org",img:u("photo-1552674605-db6ffd4facb5")},
-  {id:44,name:"El Museo Latino",area:"South Omaha",cap:"Varies",type:"Museum / Attraction",lat:41.2380,lng:-95.9400,desc:"Showcases traditional and contemporary artwork from local and global Latin American artists.",url:"https://elmuseolatino.org",img:u("photo-1531243269054-5ebf6f34081e")},
-  {id:45,name:"Wildlife Safari Park",area:"Ashland",cap:"Varies",type:"Museum / Attraction",lat:41.0400,lng:-96.3100,desc:"4-mile drive-through park with bison, elk, wolves, and bears. Affiliated with Omaha's Zoo.",url:"https://wildlifesafaripark.com",img:u("photo-1534567153574-2b12153a87f0")},
-  {id:46,name:"Union Pacific Railroad Museum",area:"Council Bluffs, IA",cap:"Varies",type:"Museum / Attraction",lat:41.2614,lng:-95.8512,desc:"Hands-on history of the transcontinental railroad. Free admission.",url:"https://uprrmuseum.org",img:u("photo-1503095396549-807759245b35")},
-  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films at Ruth Sokolof Theater.",url:"https://filmstreams.org",img:u("photo-1489599849927-2ee91cede3ba")},
-];
-
-/* ═══ EXPLORE: expandable sections with real listings ═══ */
-const EXPLORE=[
-  {id:"hoods",title:"Neighborhoods",icon:"◈",items:[
-    {name:"Old Market",desc:"Cobblestone streets, galleries, restaurants, and nightlife.",lat:41.2555,lng:-95.9320,url:"https://oldmarket.com",tags:["Dining","Nightlife","Shopping"]},
-    {name:"Benson",desc:"Eclectic live music, dive bars, vintage shops, and local eats.",lat:41.2810,lng:-95.9540,url:"#",tags:["Music","Bars","Vintage"]},
-    {name:"Dundee–Memorial Park",desc:"Tree-lined streets, Elmwood Park trails, neighborhood restaurants.",lat:41.2620,lng:-95.9750,url:"#",tags:["Dining","Parks","Walking"]},
-    {name:"Blackstone District",desc:"Omaha's cocktail and culinary hub. Speakeasies and breweries.",lat:41.2590,lng:-95.9650,url:"#",tags:["Cocktails","Dining","Nightlife"]},
-    {name:"Aksarben Village",desc:"Modern mixed-use with Stinson Park, restaurants, and events.",lat:41.2440,lng:-95.9600,url:"#",tags:["Parks","Events","Dining"]},
-    {name:"North Downtown",desc:"The Slowdown, Film Streams, and a growing creative corridor.",lat:41.2691,lng:-95.9251,url:"#",tags:["Music","Film","Arts"]},
-  ]},
-  {id:"parks",title:"Parks & Gardens",icon:"🌿",items:[
-    {name:"Lauritzen Gardens",desc:"100-acre botanical oasis with seasonal exhibits and events.",lat:41.2384,lng:-95.9158,url:"https://www.lauritzengardens.org",tags:["Gardens","Seasonal"]},
-    {name:"Gene Leahy Mall",desc:"Riverfront park with splash pad, playground, amphitheater, and green space.",lat:41.2580,lng:-95.9300,url:"#",tags:["Riverfront","Family"]},
-    {name:"Heartland of America Park",desc:"Downtown lake with fountain, walking paths, and city skyline views.",lat:41.2540,lng:-95.9220,url:"#",tags:["Lake","Walking"]},
-    {name:"Zorinsky Lake",desc:"Popular 255-acre park with trails, fishing, and picnic areas in West Omaha.",lat:41.2300,lng:-96.0750,url:"#",tags:["Trails","Fishing"]},
-    {name:"Elmwood Park",desc:"Historic park with trails, golf course, and playground in the Dundee area.",lat:41.2520,lng:-95.9710,url:"#",tags:["Trails","Historic"]},
-    {name:"Standing Bear Lake",desc:"Northwest Omaha park with 135-acre lake, trails, and nature center.",lat:41.3060,lng:-96.0650,url:"#",tags:["Lake","Nature"]},
-  ]},
-  {id:"trails",title:"Trails & Running",icon:"🏃",items:[
-    {name:"Bob Kerrey Pedestrian Bridge",desc:"3,000-ft bridge connecting Nebraska and Iowa across the Missouri River.",lat:41.2575,lng:-95.9215,url:"#",tags:["Bridge","River"]},
-    {name:"Keystone Trail",desc:"50+ mile paved trail system spanning the Omaha metro area.",lat:41.2400,lng:-96.0200,url:"#",tags:["Cycling","Running"]},
-    {name:"Wehrspann Lake Trail",desc:"8-mile loop around Wehrspann Lake at Chalco Hills Recreation Area.",lat:41.1800,lng:-96.1300,url:"#",tags:["Lake","Loop"]},
-    {name:"Big Papio Trail",desc:"Paved trail along Big Papillion Creek. Great for cycling and running.",lat:41.2100,lng:-96.0500,url:"#",tags:["Creek","Cycling"]},
-    {name:"Fontenelle Forest",desc:"2,000 acres of forest, wetlands, and boardwalk trails in Bellevue.",lat:41.1570,lng:-95.9000,url:"https://fontenelleforest.org",tags:["Forest","Nature"]},
-  ]},
-  {id:"food",title:"Food & Drink",icon:"🍽️",items:[
-    {name:"South O Taco Trail",desc:"Authentic taquerias and Mexican restaurants along South 24th Street.",lat:41.2300,lng:-95.9400,url:"#",tags:["Tacos","Authentic"]},
-    {name:"Blackstone Cocktail Crawl",desc:"Walk between craft cocktail bars in the Blackstone entertainment district.",lat:41.2590,lng:-95.9650,url:"#",tags:["Cocktails","Nightlife"]},
-    {name:"Omaha Farmers Market",desc:"Saturday mornings in the Old Market. Local produce, baked goods, and crafts.",lat:41.2520,lng:-95.9340,url:"https://omahafarmersmarket.com",tags:["Market","Local"]},
-    {name:"Benson First Friday",desc:"Monthly art walk with open galleries, food specials, and live music.",lat:41.2810,lng:-95.9540,url:"#",tags:["Art","Monthly"]},
-    {name:"Dundee Restaurant Row",desc:"Walkable stretch of chef-driven restaurants along Underwood Avenue.",lat:41.2625,lng:-95.9750,url:"#",tags:["Fine Dining","Walkable"]},
-  ]},
-  {id:"outdoor",title:"Outdoor Venues",icon:"🎪",items:[
-    {name:"Stir Concert Cove",desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",lat:41.233,lng:-95.854,url:"#",tags:["Concerts","Summer"]},
-    {name:"Stinson Park",desc:"Aksarben Village green hosting festivals, food trucks, and community events.",lat:41.253,lng:-95.921,url:"#",tags:["Festivals","Community"]},
-    {name:"Gene Leahy Mall Amphitheater",desc:"Riverfront stage for free outdoor performances and movie nights.",lat:41.258,lng:-95.930,url:"#",tags:["Free","Movies"]},
-    {name:"Turner Park",desc:"Midtown park hosting Omaha's Jazz on the Green and outdoor concerts.",lat:41.255,lng:-95.960,url:"#",tags:["Jazz","Free"]},
-    {name:"SumTur Amphitheater",desc:"Intimate outdoor venue in Papillion for concerts and events.",lat:41.152,lng:-96.044,url:"#",tags:["Concerts","Papillion"]},
-  ]},
-  {id:"tours",title:"Walking Tours",icon:"🚶",items:[
-    {name:"Old Market Historic Walk",desc:"Self-guided tour through cobblestone streets and 19th-century warehouses.",lat:41.2555,lng:-95.9320,url:"#",tags:["History","Self-Guided"]},
-    {name:"North Omaha Murals",desc:"Street art tour featuring murals celebrating community and culture.",lat:41.2800,lng:-95.9400,url:"#",tags:["Art","Culture"]},
-    {name:"Benson Bar Crawl",desc:"Walk Maple Street's eclectic mix of dive bars, cocktail spots, and breweries.",lat:41.2810,lng:-95.9540,url:"#",tags:["Bars","Nightlife"]},
-    {name:"Downtown Architecture Tour",desc:"Art Deco gems, the Woodmen Tower, First National, and Union Station.",lat:41.2580,lng:-95.9350,url:"#",tags:["Architecture","History"]},
-  ]},
-];
-
-/* ═══ EVENTS ═══ */
-const EV=[
-  {id:1,title:"Bryce Vine",cat:"concerts",venue:"The Waiting Room",date:"2026-02-20",time:"8 PM",price:"$20–30",url:"https://waitingroomlounge.com",emoji:"🎤",desc:"Infectious pop-rap energy. Known for 'Drew Barrymore' and viral TikTok hits.",tags:["Pop","Rap"],ytId:"XGjAKhcVjbg"},
-  {id:2,title:"Nate Jackson Live",cat:"concerts",venue:"Steelhouse Omaha",date:"2026-02-21",time:"8 PM",price:"$40–80",url:"https://steelhouseomaha.com",emoji:"😂",feat:true,desc:"Instagram-famous comedian brings electric stand-up and crowd work to Steelhouse.",tags:["Comedy"]},
-  {id:3,title:"Creed Fisher",cat:"concerts",venue:"Barnato",date:"2026-02-21",time:"8 PM",price:"$25–45",url:"#",emoji:"🤠",desc:"Outlaw country grit in Barnato's art deco speakeasy.",tags:["Country"],ytId:"HD3NVukAzMw"},
-  {id:4,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",date:"2026-02-22",time:"8 PM",price:"$35–65",url:"https://steelhouseomaha.com",emoji:"🎸",feat:true,desc:"Pink Floyd's The Wall performed note-for-note with full visual production.",tags:["Rock","Tribute"],ytId:"5Hbiac8sEYg"},
-  {id:5,title:"Rivers of Nihil",cat:"concerts",venue:"Reverb Lounge",date:"2026-02-22",time:"7 PM",price:"$18–25",url:"https://reverblounge.com",emoji:"🤘",desc:"Progressive death metal with saxophone passages. Atmospheric and heavy.",tags:["Metal"]},
-  {id:6,title:"Tig Notaro",cat:"concerts",venue:"Holland PAC",date:"2026-02-22",time:"7:30 PM",price:"$45–85",url:"https://ticketomaha.com",emoji:"🎙️",feat:true,desc:"Grammy-nominated deadpan comedy. Star of 'One Mississippi'.",tags:["Comedy"],ytId:"aMRxDTR0FeA"},
-  {id:7,title:"Playstation The Concert",cat:"concerts",venue:"Orpheum Theater",date:"2026-02-25",time:"7 PM",price:"$50–120",url:"https://ticketomaha.com",emoji:"🎮",feat:true,desc:"God of War, Last of Us — iconic soundtracks performed live by orchestra.",tags:["Gaming","Orchestra"]},
-  {id:8,title:"Wooli: Synapse",cat:"concerts",venue:"Steelhouse Omaha",date:"2026-02-25",time:"8 PM",price:"$35–55",url:"https://steelhouseomaha.com",emoji:"🎧",desc:"Dinosaur-themed dubstep meets melodic production.",tags:["EDM"]},
-  {id:9,title:"Damien Jurado",cat:"concerts",venue:"Reverb Lounge",date:"2026-02-24",time:"8 PM",price:"$20–30",url:"https://reverblounge.com",emoji:"🎵",desc:"20+ albums of raw, poetic Americana folk.",tags:["Folk"]},
-  {id:10,title:"All Them Witches",cat:"concerts",venue:"The Slowdown",date:"2026-03-03",time:"8 PM",price:"$25–35",url:"https://theslowdown.com",emoji:"🎸",desc:"Heavy psychedelic rock double-header with King Buffalo.",tags:["Rock"],ytId:"LYMhUwSzrMo"},
-  {id:11,title:"Tyler Farr — Acoustic",cat:"concerts",venue:"Barnato",date:"2026-03-06",time:"8 PM",price:"$30–55",url:"#",emoji:"🎶",desc:"Stripped-down country from the 'Redneck Crazy' hitmaker.",tags:["Country","Acoustic"]},
-  {id:12,title:"Hawthorne Heights",cat:"concerts",venue:"The Slowdown",date:"2026-03-11",time:"7 PM",price:"$25–40",url:"https://theslowdown.com",emoji:"🖤",desc:"Emo icons. 'Ohio Is For Lovers' and 2000s nostalgia.",tags:["Emo"],ytId:"hA5ezR0KfSM"},
-  {id:13,title:"Inzo: Mirrorverse Tour",cat:"concerts",venue:"The Admiral",date:"2026-03-22",time:"8 PM",price:"$25–40",url:"#",emoji:"🪩",desc:"Visual-heavy electronic immersion. 500M+ streams.",tags:["Electronic"]},
-  {id:14,title:"Hot Flash Heat Wave",cat:"concerts",venue:"The Slowdown",date:"2026-03-23",time:"8 PM",price:"$20–30",url:"https://theslowdown.com",emoji:"🌊",desc:"Dreamy indie pop from San Francisco.",tags:["Indie Pop"]},
-  {id:15,title:"Nick Hexum of 311",cat:"concerts",venue:"The Waiting Room",date:"2026-03-25",time:"8 PM",price:"$25–40",url:"https://waitingroomlounge.com",emoji:"🎤",desc:"311 frontman goes solo acoustic. Omaha hometown hero.",tags:["Rock","Acoustic"],ytId:"SUFSB2plwzA"},
-  {id:16,title:"Ethel Cain",cat:"concerts",venue:"The Astro",date:"2026-04-23",time:"8 PM",price:"$40–75",url:"https://ticketmaster.com",emoji:"🕯️",feat:true,desc:"Southern gothic sensation. 'Preacher's Daughter' live.",tags:["Gothic","Alt"],ytId:"1Gac9fDP_Hg"},
-  {id:17,title:"Lorna Shore",cat:"concerts",venue:"Steelhouse Omaha",date:"2026-04-20",time:"7:30 PM",price:"$35–55",url:"https://steelhouseomaha.com",emoji:"🔥",desc:"Deathcore's biggest band. Earth-shattering live show.",tags:["Metal"],ytId:"qyYmS_iBcy4"},
-  {id:18,title:"Yellowcard",cat:"concerts",venue:"Stir Concert Cove",date:"2026-05-19",time:"7 PM",price:"$40–65",url:"https://ticketmaster.com",emoji:"🎸",desc:"Pop-punk legends. 'Ocean Avenue' outdoors.",tags:["Emo"],ytId:"X9fLbfzCqWw"},
-  {id:19,title:"George Thorogood",cat:"concerts",venue:"The Astro",date:"2026-05-17",time:"8 PM",price:"$45–85",url:"https://ticketmaster.com",emoji:"🎸",desc:"'Bad to the Bone' — The Baddest Show On Earth Tour.",tags:["Rock"],ytId:"X9jlqrJvuKs"},
-  {id:20,title:"NOMA Underground",cat:"concerts",venue:"North Omaha Music & Arts",date:"2026-02-21",time:"7 PM",price:"Free",url:"#",emoji:"🎷",desc:"Free community music night in North Omaha.",tags:["Jazz","Free"]},
-  {id:101,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",date:"2026-02-25",time:"7 PM",price:"$25–90",url:"https://ticketmaster.com",emoji:"🏀",feat:true,desc:"Big East basketball. Bluejays host DePaul at the CHI.",tags:["Basketball"]},
-  {id:102,title:"LOVB Nebraska vs. Madison",cat:"sports",venue:"Baxter Arena",date:"2026-02-22",time:"7 PM",price:"$20–50",url:"https://ticketmaster.com",emoji:"🏐",desc:"Pro volleyball. League One Volleyball's Nebraska franchise.",tags:["Volleyball"]},
-  {id:103,title:"Lancers vs. Waterloo",cat:"sports",venue:"Liberty First CU Arena",date:"2026-02-22",time:"6:05 PM",price:"$10–20",url:"#",emoji:"🏒",desc:"USHL junior hockey. Fast-paced action in Ralston.",tags:["Hockey"]},
-  {id:104,title:"UNO Mavericks Hockey",cat:"sports",venue:"Baxter Arena",date:"2026-03-06",time:"7:07 PM",price:"$10–30",url:"https://ticketmaster.com",emoji:"🏒",desc:"UNO NCHC conference matchup. Division I college hockey.",tags:["Hockey"]},
-  {id:105,title:"Union Omaha vs. Boise",cat:"sports",venue:"Morrison Stadium",date:"2026-03-22",time:"7 PM",price:"$15–35",url:"#",emoji:"⚽",desc:"USL League One under the lights.",tags:["Soccer"]},
-  {id:106,title:"Storm Chasers Opening Night",cat:"sports",venue:"Werner Park",date:"2026-04-04",time:"6:35 PM",price:"$12–45",url:"#",emoji:"⚾",feat:true,desc:"2026 MiLB season kickoff with postgame fireworks.",tags:["Baseball"]},
-  {id:107,title:"Huskers Spring Game",cat:"sports",venue:"Memorial Stadium",date:"2026-04-18",time:"1 PM",price:"Free",url:"#",emoji:"🏈",feat:true,desc:"86,000 fans for the first look at 2026 Huskers.",tags:["Football","Free"]},
-  {id:201,title:"Omaha Lit Fest",cat:"festivals",venue:"Stinson Park",date:"2026-04-18",time:"10 AM",price:"Free",url:"#",emoji:"📚",desc:"Literature, spoken word, and author readings.",tags:["Literary","Free"]},
-  {id:202,title:"Cinco de Mayo Fiesta",cat:"festivals",venue:"Stinson Park",date:"2026-05-05",time:"12 PM",price:"Free",url:"#",emoji:"🎉",desc:"Mariachi, street food, folklorico dancing.",tags:["Cultural","Free"]},
-  {id:203,title:"Food Truck Festival",cat:"festivals",venue:"Stinson Park",date:"2026-05-09",time:"11 AM",price:"Free Entry",url:"#",emoji:"🍔",feat:true,desc:"40+ food trucks, live music, craft beverages.",tags:["Food"]},
-  {id:204,title:"Zoo After Dark",cat:"family",venue:"Henry Doorly Zoo",date:"2026-03-21",time:"6 PM",price:"$20–35",url:"https://www.omahazoo.com/special-events",emoji:"🦁",desc:"The zoo at night. Animal encounters and light installations.",tags:["Zoo"]},
-  {id:205,title:"Spring Family Fun Run",cat:"family",venue:"Elmwood Park",date:"2026-04-12",time:"9 AM",price:"$10–25",url:"#",emoji:"🏃",desc:"5K through Elmwood Park. Finisher medals for all.",tags:["Running"]},
-  {id:301,title:"Joslyn First Friday",cat:"arts",venue:"Joslyn Art Museum",date:"2026-03-06",time:"5 PM",price:"Free",url:"https://joslyn.org/calendar",emoji:"🎨",desc:"Free first Friday with music, tours, and art-making.",tags:["Art","Free"]},
-  {id:302,title:"BLUEBARN: Curious Incident",cat:"arts",venue:"The Rose Theater",date:"2026-03-13",time:"7:30 PM",price:"$25–45",url:"https://bluebarn.org/plays-events/",emoji:"🎭",desc:"Award-winning contemporary theater from BLUEBARN.",tags:["Theater"]},
-  {id:303,title:"Film Streams: A24 Showcase",cat:"arts",venue:"Film Streams",date:"2026-03-08",time:"7 PM",price:"$12",url:"https://filmstreams.org/films",emoji:"🎬",desc:"Curated A24 double feature at Ruth Sokolof Theater.",tags:["Film"]},
-  /* ── Comedy ── */
-  {id:401,title:"Monday Open Mic Comedy",cat:"comedy",venue:"The Dubliner Pub",date:"2026-02-23",time:"8 PM",price:"Free",url:"https://dublinerpubomaha.com",emoji:"🎤",desc:"Omaha's longest-running comedy open mic. Below-street-level Irish pub vibes. Every Monday.",tags:["Open Mic","Free"]},
-  {id:402,title:"Backline Improv Showcase",cat:"comedy",venue:"The Backline Comedy Theatre",date:"2026-02-21",time:"8 PM",price:"$10–15",url:"https://backlinecomedy.com",emoji:"😂",desc:"The house improv team takes audience suggestions and runs with them. Cheap drinks, big laughs.",tags:["Improv"]},
-  {id:403,title:"Big Canvas Family Improv",cat:"comedy",venue:"Big Canvas Comedy",date:"2026-02-22",time:"2 PM",price:"$8–12",url:"https://bigcanvascomedy.com",emoji:"😄",desc:"Family-friendly short-form improv show in the Blackstone. All ages welcome.",tags:["Improv","Family"]},
-  {id:404,title:"Funny Bone: National Headliner",cat:"comedy",venue:"Funny Bone Comedy Club",date:"2026-02-27",time:"7:30 PM",price:"$25–55",url:"https://omaha.funnybone.com",emoji:"🎙️",feat:true,desc:"Nationally touring comedian at Omaha's premier stand-up club. 21+ with 2-item minimum.",tags:["Stand-Up"]},
-  {id:405,title:"Monday Open Mic Comedy",cat:"comedy",venue:"The Dubliner Pub",date:"2026-03-02",time:"8 PM",price:"Free",url:"https://dublinerpubomaha.com",emoji:"🎤",desc:"Weekly Monday night comedy open mic. Underground Irish pub in the Old Market.",tags:["Open Mic","Free"]},
-  {id:406,title:"Backline Stand-Up Showcase",cat:"comedy",venue:"The Backline Comedy Theatre",date:"2026-02-28",time:"9 PM",price:"$10–15",url:"https://backlinecomedy.com",emoji:"😂",desc:"Local and regional stand-up comedians take the stage downtown.",tags:["Stand-Up"]},
-];
-
-const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const DN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const fmt=ds=>{const d=new Date(ds+"T00:00:00");return`${MO[d.getMonth()]} ${d.getDate()}`;};
-const fmtFull=ds=>{const d=new Date(ds+"T00:00:00");return`${DAYS[d.getDay()]}, ${MO[d.getMonth()]} ${d.getDate()}`;};
-const toDS=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const CATS=[{id:"all",label:"All",dot:null},{id:"concerts",label:"Concerts",dot:"#5EC4B6"},{id:"sports",label:"Sports",dot:"#64B5F6"},{id:"comedy",label:"Comedy",dot:"#FFB74D"},{id:"festivals",label:"Festivals",dot:"#CE93D8"},{id:"family",label:"Family",dot:"#81C784"},{id:"arts",label:"Arts",dot:"#B39DDB"}];
 const mapsDir=(lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-const mapsSearch=q=>`https://www.google.com/maps/search/${encodeURIComponent(q+' Omaha NE')}`;
+const u=id=>`https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
 
-/* ═══ HOOKS-SAFE COMPONENTS ═══ */
-function ImgCard({src,children,h=130,grad}){
-  const[ok,setOk]=useState(false);
-  return(<div style={{position:"relative",height:h,background:grad||CG._,overflow:"hidden"}}>
-    <img src={src} alt="" referrerPolicy="no-referrer" onLoad={()=>setOk(true)} onError={()=>{}} style={{width:"100%",height:"100%",objectFit:"cover",opacity:ok?0.55:0,transition:"opacity 0.5s"}}/>
-    <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.05) 0%,rgba(20,22,24,0.88) 100%)"}}/>
-    {children}
-  </div>);
+/* ═══ CONTENT DATA ═══ */
+const TRAILS=[
+  {id:"t1",name:"Keystone Trail",desc:"Omaha's backbone — 50+ miles of paved multi-use trail through the metro.",distance:"52 mi",difficulty:"Easy",surface:"Paved",lat:41.24,lng:-96.02,tags:["Cycling","Running"],img:u("photo-1552674605-db6ffd4facb5"),elev:"Flat",icon:IC.bike},
+  {id:"t2",name:"Bob Kerrey Bridge Loop",desc:"Cross the Missouri River to Iowa and back. Best sunrise views in the city.",distance:"3.2 mi",difficulty:"Easy",surface:"Paved",lat:41.2575,lng:-95.9215,tags:["Walking","River"],img:u("photo-1506157786151-b8491531f063"),elev:"Flat",icon:IC.walk},
+  {id:"t3",name:"Fontenelle Forest",desc:"2,000 acres of old-growth forest. Boardwalk canopy trail. Watch for bald eagles.",distance:"17 mi trails",difficulty:"Moderate",surface:"Dirt / Boardwalk",lat:41.157,lng:-95.9,tags:["Forest","Birding"],img:u("photo-1448375240586-882707db888b"),elev:"+350 ft",url:"https://fontenelleforest.org",icon:IC.tree},
+  {id:"t4",name:"Wehrspann Lake Loop",desc:"8-mile loop at Chalco Hills. Packed gravel, gentle rolling hills, shaded sections.",distance:"8.1 mi",difficulty:"Easy–Mod",surface:"Gravel",lat:41.18,lng:-96.13,tags:["Lake","Loop"],img:u("photo-1500534314263-0869cef27f7d"),elev:"+180 ft",icon:IC.trail},
+  {id:"t5",name:"Zorinsky Lake Trail",desc:"Popular West Omaha loop with prairie views, fishing pier, and waterbird habitat.",distance:"4.8 mi",difficulty:"Easy",surface:"Paved",lat:41.23,lng:-96.075,tags:["Lake","Family"],img:u("photo-1441974231531-c6227db76b6e"),elev:"Flat",icon:IC.walk},
+];
+const WALKS=[
+  {id:"w1",name:"Old Market Historic Walk",desc:"Cobblestone streets, 19th-century warehouses, galleries. Start at 10th & Howard.",time:"45 min",distance:"1.2 mi",lat:41.2555,lng:-95.932,tags:["History","Architecture"],icon:IC.camera},
+  {id:"w2",name:"Benson Mainstreet",desc:"Omaha's most eclectic neighborhood. Vintage shops, murals, record stores, dive bars.",time:"1 hr",distance:"1.5 mi",lat:41.281,lng:-95.954,tags:["Music","Vintage"],icon:IC.walk},
+  {id:"w3",name:"Blackstone to Dundee",desc:"Cocktail district to tree-lined neighborhood restaurants. Hit Crescent Moon and Pitch.",time:"1.5 hr",distance:"2.1 mi",lat:41.259,lng:-95.965,tags:["Dining","Cocktails"],icon:IC.food},
+  {id:"w4",name:"North Omaha Murals",desc:"Street art celebrating Black history, jazz legends, and community resilience.",time:"1 hr",distance:"1.8 mi",lat:41.28,lng:-95.94,tags:["Art","Culture"],icon:IC.camera},
+  {id:"w5",name:"RiverFront Trail",desc:"Gene Leahy Mall → Heartland of America Park → Lewis & Clark Landing.",time:"40 min",distance:"1.4 mi",lat:41.258,lng:-95.928,tags:["Riverfront","Family"],icon:IC.walk},
+];
+const DAYTIME=[
+  {id:"d1",name:"Henry Doorly Zoo",desc:"Consistently ranked #1 zoo in the world. Desert Dome, Lied Jungle, and Scott Aquarium.",price:"$26.95",time:"3–5 hrs",lat:41.226,lng:-95.9287,tags:["Zoo","Family"],icon:"🦁",url:"https://www.omahazoo.com"},
+  {id:"d2",name:"Joslyn Art Museum",desc:"World-class collection with massive Snøhetta expansion. Free admission.",price:"Free",time:"1.5–2 hrs",lat:41.2635,lng:-95.9394,tags:["Art","Free"],icon:"🎨",url:"https://joslyn.org"},
+  {id:"d3",name:"Kiewit Luminarium",desc:"Interactive science center on the riverfront. 100+ hands-on exhibits.",price:"$24",time:"2–3 hrs",lat:41.2565,lng:-95.923,tags:["Science","Family"],icon:"🔬",url:"https://kiewitluminarium.org"},
+  {id:"d4",name:"Lauritzen Gardens",desc:"100-acre botanical garden with seasonal model trains and conservatory.",price:"$14",time:"1.5–2 hrs",lat:41.2384,lng:-95.9158,tags:["Gardens"],icon:"🌺",url:"https://www.lauritzengardens.org"},
+  {id:"d5",name:"The Durham Museum",desc:"Art Deco Union Station turned museum. Vintage train cars and 1930s soda fountain.",price:"$12",time:"1.5–2 hrs",lat:41.2553,lng:-95.931,tags:["History"],icon:"🚂",url:"https://durhammuseum.org"},
+];
+const SUNSETS=[
+  {id:"s1",name:"Bob Kerrey Bridge",desc:"Best sunset panorama in Omaha. Missouri River catches golden light with both skylines.",lat:41.2575,lng:-95.9215,icon:IC.sunset},
+  {id:"s2",name:"Gene Leahy Mall",desc:"Free outdoor movies and performances against a downtown backdrop.",lat:41.258,lng:-95.93,icon:IC.sunset},
+  {id:"s3",name:"Stir Concert Cove",desc:"Lakeside at Harrah's. Summer concerts as the sun drops behind the stage.",lat:41.233,lng:-95.854,icon:IC.music},
+  {id:"s4",name:"Turner Park",desc:"Jazz on the Green in summer. Bring wine and a picnic. Arrive by 6 PM.",lat:41.255,lng:-95.96,icon:IC.music},
+];
+const PARKS=[
+  {id:"p1",name:"Gene Leahy Mall",desc:"The RiverFront's crown jewel. Splash pad, playground, amphitheater, and green space in downtown.",lat:41.258,lng:-95.93,tags:["Riverfront","Family","Free"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🏞️"},
+  {id:"p2",name:"Lauritzen Gardens",desc:"100-acre botanical garden with conservatory, model trains, and seasonal exhibits.",lat:41.2384,lng:-95.9158,tags:["Gardens","Seasonal"],img:u("photo-1585320806297-9794b3e4eeae"),icon:"🌺",url:"https://www.lauritzengardens.org"},
+  {id:"p3",name:"Zorinsky Lake",desc:"255-acre park with paved trail loop, fishing pier, prairie wildflowers, and waterbird habitat.",lat:41.23,lng:-96.075,tags:["Lake","Trails","Family"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🚶"},
+  {id:"p4",name:"Elmwood Park",desc:"Historic park in the Dundee area with trails, golf course, and shaded picnic areas.",lat:41.252,lng:-95.971,tags:["Trails","Historic"],img:u("photo-1448375240586-882707db888b"),icon:"🌳"},
+  {id:"p5",name:"Standing Bear Lake",desc:"135-acre lake in NW Omaha with trails, kayak launch, and nature center.",lat:41.306,lng:-96.065,tags:["Lake","Nature"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🏞️"},
+  {id:"p6",name:"Heartland of America Park",desc:"Downtown lake with fountain, walking paths, and dramatic city skyline views.",lat:41.254,lng:-95.922,tags:["Downtown","Lake"],img:u("photo-1506157786151-b8491531f063"),icon:"⛲"},
+  {id:"p7",name:"Stinson Park",desc:"Aksarben Village green hosting festivals, food trucks, and community events.",lat:41.253,lng:-95.921,tags:["Events","Community"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎉"},
+  {id:"p8",name:"Turner Park",desc:"Midtown park home to Jazz on the Green. Bring wine and a picnic.",lat:41.255,lng:-95.96,tags:["Jazz","Free","Summer"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎵"},
+];
+const HOODS=[
+  {id:"old-market",name:"Old Market",sub:"Downtown",desc:"Cobblestone streets, galleries, chef-driven restaurants, and Omaha's best nightlife. The cultural heart of the city since the 1800s.",lat:41.2555,lng:-95.932,color:"#5EC4B6",
+    imgs:[u("photo-1519999482648-25049ddd37b1"),u("photo-1555939594-58d7cb561ad1"),u("photo-1503095396549-807759245b35")],
+    history:"The Old Market began as a wholesale fruit and vegetable market in the late 1800s. The brick warehouses along Howard and Jones streets housed produce dealers until the 1960s, when artists and entrepreneurs began converting the abandoned spaces into galleries and studios. A pivotal restoration movement in the 1970s preserved the cobblestone streets and iron facades that define the district today. The Passageway, M's Pub (before the 2015 fire), and the Artists Cooperative Gallery were early anchors that proved mixed-use urban revitalization could work.",
+    walk:{name:"Old Market Loop",distance:"1.2 mi",time:"45 min",steps:["Start at 10th & Howard by the flower murals","Walk south on 10th — peek into Jackson Street galleries","Cut through The Passageway to Jones Street","West on Jones past Upstream Brewing and M's Pub site","South on 13th to the Bemis Center for Contemporary Arts","Circle back via Howard Street for restaurants and shops"]},
+    spots:[
+      /* ── Restaurants ── */
+      {name:"Le Bouillon",type:"Restaurant",cat:"eat",desc:"Modern French farm-to-table. Attached wine shop & basement wine bar Mon Càve.",addr:"1017 Howard",price:"$$$",icon:"🇫🇷",known:"French onion soup, duck confit"},
+      {name:"M's Pub",type:"Restaurant",cat:"eat",desc:"Old Market institution since 1973. Continental cuisine, legendary lavosh.",addr:"422 S 11th",price:"$$$",icon:"🍽️",url:"https://www.mspubomaha.com",known:"Lavosh, shrimp scampi"},
+      {name:"Plank Seafood",type:"Restaurant",cat:"eat",desc:"Oyster bar and grilled seafood with a raw bar.",addr:"1111 Howard",price:"$$$",icon:"🦪",known:"Oysters, seafood platters"},
+      {name:"Kitchen Table",type:"Restaurant",cat:"eat",desc:"Farm-to-table with an on-site hydroponic farm.",addr:"1415 Farnam",price:"$$$",icon:"🌿",known:"Seasonal menu, hydroponic farm"},
+      {name:"Upstream Brewing",type:"Brewpub",cat:"eat",desc:"Award-winning craft beers and upscale pub fare since 1996.",addr:"514 S 11th",price:"$$",icon:"🍺",known:"House beers, thin-crust pizza"},
+      {name:"Twisted Fork",type:"Restaurant",cat:"eat",desc:"Cowboy-inspired comfort food. Hearty portions.",addr:"1101 Jackson",price:"$$",icon:"🤠",known:"Chicken fried steak, smoked wings"},
+      {name:"Jackson Street Tavern",type:"Restaurant",cat:"eat",desc:"American tapas and international small plates.",addr:"1125 Jackson",price:"$$",icon:"🍻",known:"Tapas, happy hour, patio"},
+      {name:"Nicola's Italian",type:"Restaurant",cat:"eat",desc:"Intimate Italian with the best patio in the Market.",addr:"521 S 13th",price:"$$$",icon:"🍝",known:"Handmade pasta, patio"},
+      {name:"Gather",type:"Restaurant",cat:"eat",desc:"Modern American with elegant open dining room.",addr:"1108 Howard",price:"$$$",icon:"🍷",known:"Prix fixe, cocktails, brunch"},
+      {name:"Dolci",type:"Bakery",cat:"eat",desc:"European pastry shop — croissants, tarts, macarons.",addr:"1110 Howard",price:"$",icon:"🥐",known:"Croissants, French macarons"},
+      /* ── Bars ── */
+      {name:"Mr. Toad's Pub",type:"Bar",cat:"drink",desc:"Prime people-watching patio with string lights. An Old Market classic.",addr:"1022 Howard",price:"$$",icon:"🍺",known:"Outdoor patio, craft beer"},
+      {name:"The Dubliner",type:"Irish Pub",cat:"drink",desc:"Feels like St. Patrick's Day every night. Live music weekends.",addr:"1205 Harney",price:"$$",icon:"🍀",known:"Irish whiskey, live music"},
+      {name:"Brickway Brewery",type:"Brewery & Distillery",cat:"drink",desc:"Craft brewery and distillery. Tour the operation, taste the results.",addr:"1116 Jackson",price:"$$",icon:"🥃",known:"Craft beer, brewery tours"},
+      {name:"Laka Lono Rum Club",type:"Tiki Bar",cat:"drink",desc:"Tropical tiki bar with flaming cocktails and Polynesian vibes.",addr:"1111 Howard",price:"$$",icon:"🌺",known:"Flaming drinks, rum cocktails"},
+      /* ── Coffee & Sweets ── */
+      {name:"Ted & Wally's",type:"Ice Cream",cat:"sweet",desc:"Scratch-made premium ice cream since 1984. Old Market original.",addr:"1120 Jackson",price:"$",icon:"🍦",known:"Handmade, seasonal flavors"},
+      {name:"Old Market Candy Shop",type:"Candy",cat:"sweet",desc:"Handmade truffles, fudge, and the famous Mud Balls.",addr:"1019 Howard",price:"$",icon:"🍫",known:"Mud Balls, truffles"},
+      {name:"Hollywood Candy",type:"Candy & Vintage",cat:"sweet",desc:"Massive retro candy warehouse with old-fashioned soda fountain.",addr:"1209 Jackson",price:"$",icon:"🍭",known:"Retro candy, soda fountain"},
+      {name:"Table Coffee",type:"Coffee",cat:"sweet",desc:"Full-menu coffee shop with sandwiches and baked goods.",addr:"Old Market",price:"$",icon:"☕",known:"Espresso, pastries, lunch"},
+      /* ── Shopping ── */
+      {name:"Raygun",type:"Gift Shop",cat:"shop",desc:"Midwest pride in t-shirt form. Witty, irreverent, locally loved.",addr:"1108 Jackson",price:"$$",icon:"👕",known:"Omaha/Midwest shirts, stickers"},
+      {name:"Goldsmith Silversmith",type:"Jewelry",cat:"shop",desc:"Custom handcrafted jewelry in the Old Market Passageway.",addr:"1026 Howard",price:"$$$",icon:"💎",known:"Custom rings, local artisans"},
+      {name:"Made in Omaha",type:"Gift Shop",cat:"shop",desc:"All Omaha creators — apparel, art, food, and gifts.",addr:"Old Market",price:"$$",icon:"🎁",known:"Local makers, Omaha souvenirs"},
+      {name:"Homer's Music",type:"Record Shop",cat:"shop",desc:"Vinyl paradise. New and used records since 1974.",addr:"1114 Howard",price:"$$",icon:"🎵",known:"Vinyl, CDs, local music"},
+      {name:"Artists' Co-op Gallery",type:"Gallery",cat:"shop",desc:"Member-owned gallery showcasing local artists.",addr:"405 S 11th",price:"Free",icon:"🎨",known:"Local art, First Friday"},
+      /* ── Entertainment ── */
+      {name:"KANEKO",type:"Art & Culture",cat:"play",desc:"Unique creativity space — art, performances, installations.",addr:"1111 Jones",price:"Free",icon:"🏛️",known:"Interactive exhibits, events"},
+      {name:"Bemis Center",type:"Contemporary Art",cat:"play",desc:"International contemporary art with rotating exhibitions.",addr:"724 S 12th",price:"Free",icon:"🎭",known:"Artist residencies, exhibitions"},
+      {name:"Gene Leahy Mall",type:"Park",cat:"play",desc:"Downtown oasis — slides, splash pad, hammocks, performance lawn.",addr:"Riverfront",price:"Free",icon:"🌳",known:"Playground, events, river views"},
+      {name:"Bob Kerrey Bridge",type:"Landmark",cat:"play",desc:"Pedestrian bridge to Iowa. Stand in two states at once.",addr:"Riverfront Dr",price:"Free",icon:"🌉",known:"Sunset walks, two-state photo"}
+    ],
+    events:[{name:"Omaha Farmers Market",when:"Saturdays, May–Oct",desc:"Local produce, baked goods, and crafts."},{name:"Holiday Lights Festival",when:"Nov–Jan",desc:"200,000+ lights along the streets and buildings."},{name:"Old Market Stroll",when:"First Fridays",desc:"Gallery openings, specials, and live music."}],
+    tags:["Dining","Nightlife","Shopping","Galleries","History","Cobblestone"],
+    vibe:"Historic & Walkable",bestFor:"First-time visitors, date nights, weekend strolls"},
+  {id:"benson",name:"Benson",sub:"Maple Street",desc:"Omaha's most eclectic neighborhood. Dive bars, vinyl shops, murals, and the undisputed indie music capital of the city.",lat:41.281,lng:-95.954,color:"#CE93D8",
+    imgs:[u("photo-1459749411175-04bf5292ceea"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1508854710579-5cecc3a9ff17")],
+    history:"Originally an independent city founded in 1887 by Erastus Benson, a railroad executive. It was annexed into Omaha in 1917 but never lost its fiercely independent spirit. The main drag, Maple Street, went through cycles of boom and decline before a creative renaissance in the 2000s. The Waiting Room opened in 2007, anchoring what became a nationally recognized indie music corridor. Today Benson has more live music per block than anywhere in Nebraska.",
+    walk:{name:"Benson Main Drag",distance:"1.5 mi",time:"1 hr",steps:["Start at The Waiting Room (6212 Maple)","Walk west past vinyl shops and vintage stores","Detour south on 60th for murals and street art","Continue west to Reverb Lounge and Beercade","Hit Benson Brewery and Jake's Cigars","End at The Sydney for cocktails or O'Leaver's for punk rock"]},
+    spots:[
+      /* ── Restaurants ── */
+      {name:"Au Courant",type:"Restaurant",cat:"eat",desc:"European-inspired regional kitchen. Chef's tasting menu is a splurge.",addr:"6064 Maple",price:"$$$",icon:"🍽️",known:"Tasting menu, seasonal plates"},
+      {name:"Yoshitomo",type:"Restaurant",cat:"eat",desc:"Creative sushi with a devoted following. Omakase available.",addr:"6009 Maple",price:"$$$",icon:"🍣",known:"Omakase, creative rolls"},
+      {name:"Little Riot",type:"Pizzeria",cat:"eat",desc:"Wood-fired pizza with global mashups. Rooftop bar.",addr:"Maple St",price:"$$",icon:"🍕",known:"Creative pizzas, rooftop patio"},
+      {name:"Benson Brewery",type:"Brewpub",cat:"eat",desc:"Microbrewery with gastropub fare. Great patio.",addr:"6059 Maple",price:"$$",icon:"🍺",url:"https://www.bensonbrewery.com",known:"House beers, pub food, patio"},
+      {name:"Taco Co.",type:"Taqueria",cat:"eat",desc:"Puffy shell tacos that inspire devotion.",addr:"6108 Maple",price:"$",icon:"🌮",known:"Puffy shell tacos, frozen margs"},
+      {name:"Ika Ramen",type:"Restaurant",cat:"eat",desc:"Cozy ramen spot with rich broths.",addr:"6109 Maple",price:"$$",icon:"🍜",known:"Tonkotsu ramen, gyoza"},
+      {name:"Bärchen Beer Garden",type:"Beer Garden",cat:"eat",desc:"Outdoor German-style beer garden.",addr:"6014 Maple",price:"$$",icon:"🥨",known:"Bärchen burger, German bier"},
+      {name:"Edge of the Universe",type:"Restaurant",cat:"eat",desc:"Eclectic fare with a cosmic theme.",addr:"Maple St",price:"$$",icon:"🌌",known:"Creative dishes, unique vibes"},
+      {name:"Jojo's Diner",type:"Diner",cat:"eat",desc:"New-school diner with great breakfast.",addr:"6118 Military",price:"$",icon:"🥞",known:"Breakfast, diner classics"},
+      {name:"Star Deli",type:"Deli",cat:"eat",desc:"Crave-worthy sandwiches just off the main strip.",addr:"6114 Military",price:"$",icon:"🥪",known:"Signature sandwiches"},
+      /* ── Bars ── */
+      {name:"Krug Park",type:"Bar",cat:"drink",desc:"Restored 1908 building. Superb cocktails and perfect music.",addr:"6205 Maple",price:"$$",icon:"🍸",known:"Craft cocktails, 1908 building"},
+      {name:"The Sydney",type:"Bar",cat:"drink",desc:"Dark, stylish cocktail lounge. Great for dates.",addr:"6067 Maple",price:"$$",icon:"🍹",known:"Cocktails, intimate setting"},
+      {name:"Beercade",type:"Arcade Bar",cat:"drink",desc:"Classic arcade games + pinball + huge beer selection.",addr:"6104 Maple",price:"$",icon:"🕹️",known:"Pac-Man, pinball, craft beer"},
+      {name:"Infusion Brewing",type:"Brewery",cat:"drink",desc:"Local craft brewery with rotating taps.",addr:"6115 Maple",price:"$$",icon:"🍺",known:"Rotating taps, taproom"},
+      {name:"Jake's Cigars & Spirits",type:"Bar",cat:"drink",desc:"Cigar lounge meets whiskey bar.",addr:"6206 Maple",price:"$$",icon:"🚬",known:"Cigars, bourbon selection"},
+      /* ── Coffee & Sweets ── */
+      {name:"Ted & Wally's Benson",type:"Ice Cream",cat:"sweet",desc:"Second location of Omaha's beloved scratch-made ice cream.",addr:"6023 Maple",price:"$",icon:"🍦",known:"Handmade, seasonal flavors"},
+      {name:"Legend Comics & Coffee",type:"Coffee",cat:"sweet",desc:"Coffee shop meets comic book store.",addr:"5207 Leavenworth",price:"$",icon:"📚",known:"Comics, espresso"},
+      /* ── Shopping ── */
+      {name:"Homer's Music",type:"Record Shop",cat:"shop",desc:"Vinyl heaven. Crate-digging is a Benson ritual.",addr:"Maple St",price:"$$",icon:"🎵",known:"Vinyl, used records"},
+      {name:"Five Nine",type:"Stationery",cat:"shop",desc:"Curated paper goods and gifts.",addr:"Maple St",price:"$$",icon:"✉️",known:"Cards, stationery"},
+      {name:"Found Vintage Market",type:"Vintage",cat:"shop",desc:"Restored furniture and home décor.",addr:"Maple St",price:"$$",icon:"🪑",known:"Vintage furniture"},
+      /* ── Entertainment ── */
+      {name:"The Waiting Room",type:"Music Venue",cat:"play",desc:"Omaha's premier indie venue since 2007. National and local acts.",addr:"6212 Maple",price:"$15-40",icon:"🎤",known:"Indie concerts, intimate stage"},
+      {name:"Reverb Lounge",type:"Music Venue",cat:"play",desc:"Intimate shows next to Waiting Room.",addr:"6121 Military",price:"$10-25",icon:"🎵",known:"Emerging artists, DJ nights"},
+      {name:"Benson Theatre",type:"Historic Theater",cat:"play",desc:"1920s theater — live events and screenings.",addr:"6054 Maple",price:"Varies",icon:"🎬",known:"Historic venue, events"}
+    ],
+    events:[{name:"Benson First Friday",when:"First Fridays",desc:"Monthly art walk, gallery openings, food & drink specials."},{name:"Benson Beer Fest",when:"Summer",desc:"Street party with 50+ craft beers and live music."}],
+    tags:["Music","Bars","Vintage","Murals","Indie","Record Shops"],
+    vibe:"Eclectic & Creative",bestFor:"Music lovers, night owls, creatives"},
+  {id:"dundee",name:"Dundee",sub:"Memorial Park Area",desc:"Tree-lined streets, walkable restaurants on Underwood Ave, and Elmwood Park trails. Classic Omaha at its most charming.",lat:41.262,lng:-95.975,color:"#81C784",
+    imgs:[u("photo-1448375240586-882707db888b"),u("photo-1414235077428-338989a2e8c0"),u("photo-1552674605-db6ffd4facb5")],
+    history:"Dundee was platted in 1880 and developed as one of Omaha's first streetcar suburbs. The name comes from Dundee, Scotland. Warren Buffett has lived in the same Dundee house since 1958, purchased for $31,500. Happy Hollow Country Club (1907) and the historic Dundee Theater (1925, now a Film Streams location) anchor the neighborhood's century-old identity. Underwood Avenue's restaurant boom in the 2010s transformed a quiet residential strip into one of Omaha's top dining destinations.",
+    walk:{name:"Dundee to Elmwood",distance:"2.1 mi",time:"1 hr",steps:["Start at 50th & Underwood — the restaurant corridor","Walk west past Dario's, Dante, and Pitch Pizzeria","Turn south on 52nd toward Elmwood Park","Loop through Elmwood's shaded trails and bridge","Return via Happy Hollow Blvd past historic homes","End at Dundee Dell for a beer"]},
+    spots:[
+      /* ── Restaurants ── */
+      {name:"Avoli Osteria",type:"Restaurant",cat:"eat",desc:"Northern Italian. Handmade pasta, wood-fired dishes, great wine list.",addr:"5013 Underwood",price:"$$$",icon:"🍝",url:"http://www.avoliosteria.com",known:"Porchetta, seasonal risotto"},
+      {name:"Pitch Pizzeria",type:"Restaurant",cat:"eat",desc:"Coal-fired Neapolitan pizza, craft cocktails. Always packed for good reason.",addr:"5021 Underwood",price:"$$",icon:"🍕",url:"https://pitchpizzeria.com",known:"Margherita pizza, grilled artichoke"},
+      {name:"Ooh De Lally",type:"Restaurant",cat:"eat",desc:"Nonprofit restaurant in the old Marks Bistro space. The legendary mac & cheese lives on.",addr:"4916 Underwood",price:"$$",icon:"🍽️",url:"https://www.oohdelally.org",known:"Marks signature mac & cheese, brunch"},
+      {name:"Acadian Grille",type:"Restaurant",cat:"eat",desc:"Cajun and Southern comfort. Gumbo, po'boys, blackened catfish.",addr:"4814 Underwood",price:"$$",icon:"🦐",url:"https://www.opentable.com/r/acadian-grille-dundee-omaha",known:"Po'boy, crawfish etouffee"},
+      {name:"Jaipur",type:"Restaurant",cat:"eat",desc:"Indian cuisine on Underwood. Tikka masala, biryani, fresh naan.",addr:"5018 Underwood",price:"$$",icon:"🍛",known:"Chicken tikka masala, garlic naan"},
+      {name:"Goldbergs",type:"Restaurant",cat:"eat",desc:"Burgers, beers, and legendary Bloody Marys. Patio scene in summer.",addr:"5008 Dodge",price:"$$",icon:"🍔",url:"http://www.goldbergsindundee.com",known:"Goldberg Burger, Bloody Mary bar"},
+      {name:"Amsterdam Falafel & Kabob",type:"Restaurant",cat:"eat",desc:"European-style street food. Build-your-own falafel with 20+ toppings.",addr:"620 N 50th",price:"$",icon:"🥙",url:"http://www.eatafk.com",known:"Spicy falafel bowl, curry fries"},
+      {name:"Good Lookin'",type:"Restaurant",cat:"eat",desc:"All-day brunch and breakfast. Colorful, inventive, always a line.",addr:"4919 Underwood",price:"$$",icon:"🥞",url:"https://www.reallygoodlookin.com",known:"Biscuits & gravy, breakfast sandwich"},
+      {name:"Ahmad's Persian Cuisine",type:"Restaurant",cat:"eat",desc:"Authentic Persian dishes — kabobs, stews, saffron rice.",addr:"4646 Dodge",price:"$$",icon:"🫓",known:"Lamb kabob, ghormeh sabzi"},
+      {name:"The Hollows",type:"Restaurant",cat:"eat",desc:"Upscale New American with a chef's counter and seasonal tasting menus.",addr:"5019 Underwood",price:"$$$",icon:"🌿",url:"https://thehollowsdundee.com",known:"Tasting menu, foraged ingredients"},
+      {name:"Lola's",type:"Restaurant",cat:"eat",desc:"Cafe and wine bar inside Film Streams. Mediterranean small plates evenings.",addr:"4952 Dodge",price:"$$",icon:"🍷",url:"https://lolasomaha.com",known:"Charcuterie boards, natural wine"},
+      {name:"Great Harvest Bread",type:"Bakery",cat:"eat",desc:"Fresh-baked artisan breads and sandwiches. The honey wheat is iconic.",addr:"4910 Underwood",price:"$",icon:"🍞",url:"http://www.greatharvestbreadomaha.com",known:"Honey wheat bread, turkey pesto sandwich"},
+      {name:"Le Quartier",type:"Bakery",cat:"eat",desc:"Fine French bakery — croissants, pain au chocolat, artisan cakes.",addr:"5026 Underwood",price:"$$",icon:"🥐",url:"http://lequartierbakingco.com",known:"Croissants, fruit tarts, petit fours"},
+      {name:"Cupcake Omaha",type:"Bakery",cat:"eat",desc:"Gourmet cupcakes with rotating seasonal flavors.",addr:"107 N 50th",price:"$",icon:"🧁",url:"http://cupcakeomaha.net",known:"Red velvet, salted caramel"},
+      /* ── Bars & Drinks ── */
+      {name:"Dundee Dell",type:"Bar & Restaurant",cat:"drink",desc:"Omaha's oldest restaurant (est. 1915). Legendary fish & chips, 700+ scotch whiskies, The Pine Room.",addr:"5007 Underwood",price:"$$",icon:"🥃",url:"https://dundeedell.com",known:"Fish & chips, scotch collection, Pine Room"},
+      {name:"Pageturners Lounge",type:"Bar",cat:"drink",desc:"Neighborhood cocktail bar with book-club energy. Trivia, live music, events.",addr:"5004 Dodge",price:"$$",icon:"📖",url:"https://www.pageturnersomaha.com",known:"Craft cocktails, trivia nights"},
+      {name:"Underwood Bar",type:"Bar",cat:"drink",desc:"Low-key neighborhood hangout. Good beer selection, no pretension.",addr:"4918 Underwood",price:"$",icon:"🍺",known:"Local drafts, casual vibes"},
+      {name:"Fox Den at Ooh De Lally",type:"Bar",cat:"drink",desc:"Intimate cocktail den upstairs at Ooh De Lally. Dark, moody, great drinks.",addr:"4916 Underwood",price:"$$",icon:"🍸",url:"https://www.oohdelally.org/fox-den",known:"Seasonal cocktails, intimate setting"},
+      {name:"Dundee Cork & Bottle",type:"Wine Shop",cat:"drink",desc:"Curated wine shop with tastings and knowledgeable staff.",addr:"614 N 50th",price:"$$",icon:"🍷",known:"Wine tastings, local picks"},
+      /* ── Coffee & Sweets ── */
+      {name:"eCreamery",type:"Ice Cream",cat:"sweet",desc:"Gourmet ice cream. Oprah's favorite. Rumor has it Buffett & McCartney have been spotted here.",addr:"5001 Underwood",price:"$",icon:"🍦",url:"http://www.ecreamery.com",known:"Custom flavors, Shark Tank alum"},
+      {name:"Blue Line Coffee",type:"Coffee",cat:"sweet",desc:"Specialty coffee roasted on-site. Clean, modern, plant-filled.",addr:"4924 Underwood",price:"$",icon:"☕",url:"http://www.bluelinecoffee.com",known:"Pour-over, cold brew, oat lattes"},
+      {name:"Dundee Double Shot",type:"Coffee",cat:"sweet",desc:"Cozy indie coffee house. Espresso, pastries, neighborhood regulars.",addr:"118 N 50th",price:"$",icon:"☕",known:"Espresso, morning pastries"},
+      {name:"Felius Cat Cafe",type:"Cafe & Cat Rescue",cat:"sweet",desc:"Nebraska's only cat cafe. Coffee, snacks, and adoptable cats roaming free. Saturday cat yoga.",addr:"5015 Dodge",price:"$",icon:"🐱",url:"https://felius.org",known:"Cat playroom ($10/30min), adoptions"},
+      /* ── Shopping ── */
+      {name:"Albany and Avers",type:"Vintage & Apparel",cat:"shop",desc:"Curated vintage, pre-owned, and new women's apparel. Hosts vinyl listening parties.",addr:"Underwood Ave",price:"$$",icon:"👗",known:"Vintage markets, Taylor Swift parties"},
+      {name:"Exist Green",type:"Zero-Waste Boutique",cat:"shop",desc:"Omaha's only zero-waste store. Sustainable goods, refills, eco gifts.",addr:"Underwood Ave",price:"$$",icon:"♻️",known:"Refill station, eco lifestyle goods"},
+      {name:"Dundee Candle Co.",type:"Candles & Gifts",cat:"shop",desc:"Pour your own custom candle. Unique scents and gift sets.",addr:"Underwood Ave",price:"$$",icon:"🕯️",known:"Custom candle pouring, gift sets"},
+      {name:"Duck Duck Bottle Shop",type:"Bottle Shop",cat:"shop",desc:"Coming soon — curated natural wine and craft beer bottle shop.",addr:"4917 Underwood",price:"$$",icon:"🍾",known:"Natural wine, craft beer"},
+      /* ── Entertainment ── */
+      {name:"Film Streams Dundee",type:"Arthouse Cinema",cat:"play",desc:"Omaha's longest-running cinema (1925). Two screens: 300-seat Peggy Payne + 25-seat Microcinema. Katie's Video bookstore.",addr:"4952 Dodge",price:"$12",icon:"🎬",url:"https://filmstreams.org/dundee-theater",known:"Indie films, Dundee Hundee series"},
+      {name:"Elmwood Park",type:"Park",cat:"play",desc:"Historic park with trails, disc golf, playground, and shaded picnic areas.",addr:"Dodge & 60th",price:"Free",icon:"🌳",known:"Trails, disc golf, playground"},
+      {name:"Memorial Park",type:"Park",cat:"play",desc:"Omaha's premier green space. Running trails, concerts, July 4th fireworks.",addr:"63rd & Underwood",price:"Free",icon:"🏞️",known:"July 4th fireworks, running loop"},
+    ],
+    events:[{name:"Dundee Day",when:"September",desc:"Annual street festival with live music, food trucks, and family activities."},{name:"Memorial Park Fireworks",when:"July 4th",desc:"Omaha's biggest Independence Day celebration."}],
+    tags:["Dining","Parks","Walking","Family","Film","Historic Homes"],
+    vibe:"Charming & Walkable",bestFor:"Foodies, families, park lovers"},
+  {id:"blackstone",name:"Blackstone",sub:"Farnam Street",desc:"Omaha's cocktail and culinary hub. Speakeasies, breweries, and chef-driven spots packed into a few electric blocks.",lat:41.259,lng:-95.965,color:"#FFB74D",
+    imgs:[u("photo-1470229722913-7c0e2dbbafd3"),u("photo-1415201364774-f6f0bb35f28f"),u("photo-1511671782779-c97d3d27a1d4")],
+    history:"Named for the Blackstone Hotel (1916), this stretch of Farnam once housed Omaha's grandest lodging. The hotel hosted JFK, Nixon, and celebrities during its heyday. After decades of decline, a massive revitalization beginning around 2015 transformed the district into Omaha's premier cocktail and dining destination. The Blackstone Social, Scriptown Brewing, and a wave of chef-driven restaurants catalyzed the comeback. The historic hotel itself reopened as a Marriott Autograph Collection property.",
+    walk:{name:"Blackstone Bar Hop",distance:"0.8 mi",time:"1.5 hrs",steps:["Start at Scriptown Brewing (38th & Farnam)","Walk east to Berry & Rye speakeasy","Cross to Nite Owl for craft cocktails","Hit Stirnella for dinner (or Yoshitomo for sushi)","End at Crescent Moon for Belgian ales"]},
+    spots:[
+      /* ── Restaurants ── */
+      {name:"Crescent Moon",type:"Alehouse",cat:"eat",desc:"Home of Omaha's best Reuben — born here in the 1920s. Top beer bar nationally.",addr:"3578 Farnam",price:"$$",icon:"🥪",known:"Reuben, 600+ beers"},
+      {name:"Early Bird",type:"Brunch",cat:"eat",desc:"Cereal pancakes, chicken & donuts. Omaha's most creative brunch.",addr:"3914 Farnam",price:"$$",icon:"🥞",known:"Fruity Pebble pancakes"},
+      {name:"Noli's Pizzeria",type:"Pizzeria",cat:"eat",desc:"NY-style slices with specially-filtered water dough. Always a line.",addr:"4001 Farnam",price:"$",icon:"🍕",known:"Pizza by the slice"},
+      {name:"Mula Mexican Kitchen",type:"Restaurant",cat:"eat",desc:"Trendy Mexican with a certified tequileria. Always packed.",addr:"3831 Farnam",price:"$$",icon:"🌮",known:"Tacos, tequila flights"},
+      {name:"Koen Japanese BBQ",type:"Restaurant",cat:"eat",desc:"Tableside Japanese BBQ and izakaya.",addr:"Farnam St",price:"$$$",icon:"🔥",known:"Wagyu BBQ, izakaya plates"},
+      {name:"HomeGrown",type:"Restaurant",cat:"eat",desc:"Locally sourced comfort food, seasonal menus.",addr:"3916 Farnam",price:"$$",icon:"🌿",known:"Farm-to-table bowls"},
+      {name:"The Committee Chophouse",type:"Steakhouse",cat:"eat",desc:"Upscale chophouse with great steaks.",addr:"Farnam St",price:"$$$$",icon:"🥩",known:"Steaks, special occasions"},
+      {name:"Cunningham's Pub",type:"Pub",cat:"eat",desc:"Classic pub food, solid beer list.",addr:"3903 Farnam",price:"$$",icon:"🍔",known:"Pub food, trivia nights"},
+      /* ── Bars ── */
+      {name:"Scriptown Brewing",type:"Brewery",cat:"drink",desc:"Craft beer brewed on-site in Blackstone.",addr:"3922 Farnam",price:"$$",icon:"🍺",known:"IPAs, seasonal brews"},
+      {name:"Nite Owl",type:"Late Night Bar",cat:"drink",desc:"Retro-themed late-night spot. Creative bar food, movies on projectors.",addr:"3823 Farnam",price:"$$",icon:"🦉",known:"Tot-chos, late night"},
+      {name:"Huber Haus",type:"Bier Hall",cat:"drink",desc:"German bier hall in the basement. Long tables, Das Boot.",addr:"3578 Farnam",price:"$$",icon:"🍻",known:"German beer, brats"},
+      {name:"Little Ricky's",type:"Rooftop Bar",cat:"drink",desc:"One of Omaha's few rooftop bars.",addr:"Farnam St",price:"$$",icon:"🌇",known:"Rooftop patio, cocktails"},
+      {name:"Corkscrew Wine",type:"Wine Bar",cat:"drink",desc:"Curated wine bar with cheese boards.",addr:"Farnam St",price:"$$",icon:"🍷",known:"Wine flights, cheese"},
+      {name:"Red Lion Lounge",type:"Bar",cat:"drink",desc:"Laid-back. Cheap drinks, good conversation.",addr:"Farnam St",price:"$",icon:"🍺",known:"Dive vibes, chill"},
+      {name:"Reno's Karaoke",type:"Karaoke",cat:"drink",desc:"Private karaoke rooms and full bar.",addr:"Farnam St",price:"$$",icon:"🎤",known:"Private rooms"},
+      /* ── Coffee & Sweets ── */
+      {name:"Coneflower Creamery",type:"Ice Cream",cat:"sweet",desc:"All made in-house, down to the sprinkles. Omaha's artisan ice cream.",addr:"4432 Leavenworth",price:"$",icon:"🍦",known:"Halva, honeycomb, cookie sandwiches"},
+      {name:"Archetype Coffee",type:"Coffee",cat:"sweet",desc:"No-fuss specialty roaster. Simple, excellent.",addr:"3926 Farnam",price:"$",icon:"☕",known:"Single origin, espresso"},
+      /* ── Entertainment ── */
+      {name:"First Round",type:"Sports Bar",cat:"play",desc:"90s-themed, 30+ TVs, tons of GF options.",addr:"Farnam St",price:"$$",icon:"🏈",known:"Sports, retro, GF menu"},
+      {name:"Cottonwood Hotel",type:"Boutique Hotel",cat:"play",desc:"Historic Blackstone Hotel (1916) reimagined. Beautiful lobby, Orleans Room.",addr:"302 S 36th",price:"$$$$",icon:"🏨",known:"Historic landmark, cocktails"}
+    ],
+    events:[{name:"Blackstone Block Party",when:"Summer",desc:"Street closures, live music, food vendors, and craft beer."}],
+    tags:["Cocktails","Dining","Nightlife","Craft Beer","Speakeasy"],
+    vibe:"Trendy & Buzzy",bestFor:"Date nights, cocktail enthusiasts, foodies"},
+  {id:"north-downtown",name:"North Downtown",sub:"NoDo",desc:"The Slowdown, Film Streams, Steelhouse Omaha, and a growing creative corridor between downtown and the riverfront.",lat:41.2691,lng:-95.9251,color:"#64B5F6",
+    imgs:[u("photo-1501386761578-eac5c94b800a"),u("photo-1459749411175-04bf5292ceea"),u("photo-1540039155733-5bb30b53aa14")],
+    history:"Once warehouse district and rail yards, NoDo's transformation began with Saddle Creek Records relocating The Slowdown here in 2007. Film Streams' Ruth Sokolof Theater followed. The opening of Steelhouse Omaha (2024) and continued development around 14th and Webster have made this the live entertainment spine of the city. The area connects the Old Market to the north via a creative corridor that grows each year.",
+    walk:{name:"NoDo Music Walk",distance:"1 mi",time:"40 min",steps:["Start at The Slowdown (14th & Mike Fahey)","Walk to Film Streams / Ruth Sokolof Theater","Continue south past Steelhouse Omaha","Detour east to the riverfront pedestrian bridge","Return via Capitol Avenue"]},
+    spots:[
+      {name:"Dolomiti Pizzeria",type:"Pizzeria",cat:"eat",desc:"Wood-fired sourdough pizza in Millwork Commons.",addr:"1125 N 13th",price:"$$",icon:"🍕",known:"Sourdough pizza, Italian wine"},
+      {name:"Heirloom Fine Foods",type:"Market & Cafe",cat:"eat",desc:"Gourmet market, cafe, and prepared foods.",addr:"1210 Nicholas",price:"$$",icon:"🥗",known:"Prepared foods, gourmet market"},
+      {name:"Trap Room",type:"Bar & Grill",cat:"eat",desc:"Neighborhood hangout near Slowdown.",addr:"N 14th St",price:"$$",icon:"🍔",known:"Burgers, cocktails"},
+      {name:"Rally Coffee",type:"Coffee",cat:"sweet",desc:"Craft coffee in the Capitol District.",addr:"Capitol District",price:"$",icon:"☕",known:"Espresso, cold brew"},
+      {name:"Coneflower Millwork",type:"Ice Cream",cat:"sweet",desc:"Second Coneflower with the cone window.",addr:"Millwork Commons",price:"$",icon:"🍦",known:"Artisan ice cream"},
+      {name:"The Slowdown",type:"Music Venue",cat:"play",desc:"Omaha's flagship indie venue. Home of Saddle Creek Records.",addr:"729 N 14th",price:"$15-50",icon:"🎤",known:"Indie concerts, Saddle Creek"},
+      {name:"Steelhouse Omaha",type:"Music Venue",cat:"play",desc:"Dynamic mid-size concert venue. Opened 2024.",addr:"NoDo",price:"$20-75",icon:"🎵",known:"National touring acts"},
+      {name:"Film Streams Ruth Sokolof",type:"Cinema",cat:"play",desc:"Nonprofit arthouse cinema. Supported by Alexander Payne.",addr:"1340 Mike Fahey",price:"$12",icon:"🎬",known:"Art films, retrospectives"},
+      {name:"Hot Shops Art Center",type:"Art Studios",cat:"play",desc:"Working artist studios — glassblowing, metalwork, galleries.",addr:"1301 Nicholas",price:"Free",icon:"🔥",known:"Open houses, demos"},
+      {name:"CHI Health Center",type:"Arena",cat:"play",desc:"Major arena for concerts, sports, conventions.",addr:"455 N 10th",price:"Varies",icon:"🏟️",known:"Concerts, events"},
+      {name:"Charles Schwab Field",type:"Ballpark",cat:"play",desc:"Home of NCAA College World Series.",addr:"1160 Mike Fahey",price:"Varies",icon:"⚾",known:"CWS, Creighton baseball"},
+      {name:"The Fat Putter",type:"Mini Golf",cat:"play",desc:"Over-the-top themed mini golf.",addr:"NoDo",price:"$$",icon:"⛳",known:"Themed holes, family fun"}
+    ],
+    events:[{name:"Maha Music Festival",when:"August",desc:"Annual outdoor festival at Stinson Park featuring national acts."}],
+    tags:["Music","Film","Arts","Venues","Live Shows"],
+    vibe:"Creative & Up-and-Coming",bestFor:"Concertgoers, film buffs, night out"},
+  {id:"little-italy",name:"Little Italy",sub:"South 10th Street",desc:"Historic neighborhood home to BLUEBARN Theatre, The Admiral, and authentic Italian spots. Gritty charm meets cultural depth.",lat:41.2543,lng:-95.9365,color:"#E8364F",
+    imgs:[u("photo-1503095396549-807759245b35"),u("photo-1574391884720-bbc3740c59d1"),u("photo-1459749411175-04bf5292ceea")],
+    history:"Italian immigrants began settling along South 10th Street in the 1890s, establishing bakeries, grocers, and social clubs. The Santa Lucia Festival (started 1925) is still celebrated annually. The former Sokol Auditorium, built by Czech immigrants, was reborn as The Admiral — now one of Omaha's best mid-size concert venues. BLUEBARN Theatre relocated here in 2016, adding contemporary theater to the neighborhood's cultural mix.",
+    walk:{name:"Little Italy Heritage Walk",distance:"0.9 mi",time:"30 min",steps:["Start at Orsi's Italian Bakery (621 Pacific)","Walk south on 10th past historic storefronts","Visit the Sons of Italy Lodge marker","Continue to The Admiral / Sokol Auditorium","End at BLUEBARN Theatre"]},
+    spots:[
+      {name:"Orsi's Italian Bakery",type:"Bakery & Deli",cat:"eat",desc:"Family-run since 1919. Italian breads, sausages, groceries.",addr:"621 Pacific",price:"$",icon:"🍞",known:"Italian bread, sausage, cannoli"},
+      {name:"La Casa",type:"Pizzeria",cat:"eat",desc:"Thin biscuity crust with Romano cheese. You either love it or you're wrong.",addr:"4432 Leavenworth",price:"$",icon:"🍕",known:"Thin-crust pizza, fried ravioli"},
+      {name:"Salerno's II",type:"Restaurant",cat:"eat",desc:"Classic Italian-American. Red sauce, big portions.",addr:"S 10th St",price:"$$",icon:"🍝",known:"Pasta, family-style Italian"},
+      {name:"The Underground Kitchen",type:"Supper Club",cat:"eat",desc:"Reservations-only. Intimate multi-course dinners.",addr:"S 13th St",price:"$$$$",icon:"🕯️",known:"Prix fixe, reservations only"},
+      {name:"BLUEBARN Theatre",type:"Theater",cat:"play",desc:"Bold, intimate professional theater. Adventurous productions.",addr:"1106 S 10th",price:"$20-40",icon:"🎭",url:"https://bluebarn.org",known:"New plays, 100-seat space"},
+      {name:"Sokol Auditorium",type:"Venue",cat:"play",desc:"Historic hall hosting punk, metal, indie, and community events.",addr:"S 13th St",price:"$10-30",icon:"🎸",known:"All-ages shows, punk/indie"},
+      {name:"El Museo Latino",type:"Museum",cat:"play",desc:"Latino art and history museum.",addr:"4701 S 25th",price:"$5",icon:"🏛️",known:"Latino art, cultural exhibits"},
+      {name:"St. Cecilia's Cathedral",type:"Landmark",cat:"play",desc:"Stunning Spanish Colonial Revival cathedral.",addr:"701 N 40th",price:"Free",icon:"⛪",known:"Architecture, stained glass"}
+    ],
+    events:[{name:"Santa Lucia Festival",when:"June",desc:"Annual celebration of Italian heritage with procession, food, and music since 1925."}],
+    tags:["Theater","Music","Italian","Heritage","Bakeries"],
+    vibe:"Historic & Authentic",bestFor:"Theater fans, history buffs, Italian food lovers"},
+  {id:"aksarben",name:"Aksarben Village",sub:"67th & Center",desc:"Modern mixed-use with Stinson Park, restaurants, Baxter Arena, and year-round community events.",lat:41.244,lng:-95.96,color:"#B39DDB",
+    imgs:[u("photo-1441974231531-c6227db76b6e"),u("photo-1547347298-4074fc3086f0"),u("photo-1470229722913-7c0e2dbbafd3")],
+    history:"The name is 'Nebraska' spelled backward. The original Ak-Sar-Ben racetrack and coliseum (1919–1995) hosted horse racing, rodeos, and the famous Ak-Sar-Ben Ball. The 250-acre site was redeveloped starting in 2007 into a mixed-use village anchored by Stinson Park and Baxter Arena (home of UNO Mavericks). The development is considered one of the most successful urban revitalization projects in the Midwest.",
+    spots:[
+      {name:"Flagship Commons",type:"Food Hall",cat:"eat",desc:"Multi-vendor food hall. Something for everyone.",addr:"Aksarben Village",price:"$$",icon:"🍱",known:"Multiple vendors, communal tables"},
+      {name:"Voodoo Taco",type:"Taqueria",cat:"eat",desc:"Creative tacos with wild toppings.",addr:"Aksarben Village",price:"$",icon:"🌮",url:"https://www.voodootaco.com",known:"Creative tacos, cocktails"},
+      {name:"Spirit World",type:"Restaurant",cat:"eat",desc:"Global street food and encyclopedic cocktail program.",addr:"Aksarben Village",price:"$$",icon:"🌍",known:"Global bites, 300+ spirits"},
+      {name:"Jones Bros. Cupcakes",type:"Bakery",cat:"sweet",desc:"Gourmet cupcakes in seasonal flavors.",addr:"Aksarben Village",price:"$",icon:"🧁",known:"Cupcakes, seasonal flavors"},
+      {name:"Betty Rae's",type:"Ice Cream",cat:"sweet",desc:"KC-based artisan ice cream. First Nebraska location.",addr:"Near Aksarben",price:"$",icon:"🍦",known:"Artisan flavors"},
+      {name:"DJ's Dugout",type:"Sports Bar",cat:"drink",desc:"Go-to sports bar with tons of TVs.",addr:"Aksarben Village",price:"$",icon:"🏈",known:"Game day, wings"},
+      {name:"Stinson Park",type:"Park",cat:"play",desc:"Green heart of Aksarben. MAHA Festival, farmer's market.",addr:"Aksarben Village",price:"Free",icon:"🌳",known:"MAHA, farmer's market"},
+      {name:"Baxter Arena",type:"Arena",cat:"play",desc:"UNO Mavericks home court. Concerts and events.",addr:"67th & Center",price:"Varies",icon:"🏟️",known:"UNO sports, concerts"},
+      {name:"Farmer's Market",type:"Market",cat:"play",desc:"Saturday mornings May-Oct. Local produce, baked goods.",addr:"Aksarben Village",price:"Free",icon:"🥬",known:"Local produce, Saturdays"}
+    ],
+    events:[{name:"Aksarben Stock Show",when:"September",desc:"Agriculture expo, rodeo, and carnival."},{name:"Food Truck Fridays",when:"Summer Fridays",desc:"Rotating trucks at Stinson Park."}],
+    tags:["Parks","Events","Dining","Family","Arena"],
+    vibe:"Modern & Community",bestFor:"Families, UNO fans, festival-goers"},
+  {id:"west-omaha",name:"West Omaha",sub:"144th to Elkhorn",desc:"Suburban dining, Barnato lounge, Zorinsky Lake, and family-friendly activities. Where Omaha spreads out.",lat:41.258,lng:-96.07,color:"#4DD0E1",
+    imgs:[u("photo-1500534314263-0869cef27f7d"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1470229722913-7c0e2dbbafd3")],
+    history:"West Omaha's rapid expansion began in the 1990s as families moved to newly developed subdivisions. Village Pointe shopping center, the Funny Bone comedy club, and Barnato (an art-deco music lounge attached to a Bentley dealership) represent the eclectic mix of suburban convenience and unexpected cultural offerings.",
+    spots:[
+      {name:"Barnato",type:"Lounge",cat:"eat",desc:"Art-deco cocktail lounge attached to the Bentley dealership. And it's great.",addr:"West Dodge",price:"$$$",icon:"🍸",known:"Craft cocktails, art-deco"},
+      {name:"Mahogany Prime",type:"Steakhouse",cat:"eat",desc:"West Omaha's premier steakhouse.",addr:"West Dodge Rd",price:"$$$$",icon:"🥩",known:"Prime steaks, wine cellar"},
+      {name:"Shucks Fish House",type:"Seafood",cat:"eat",desc:"Casual seafood with great oysters.",addr:"West Omaha",price:"$$",icon:"🦐",known:"Oysters, fish tacos"},
+      {name:"Funny Bone",type:"Comedy Club",cat:"play",desc:"National touring comedians and local acts.",addr:"17305 Dayton Cir",price:"$20-50",icon:"😂",known:"Stand-up comedy, dinner shows"},
+      {name:"Zorinsky Lake",type:"Park",cat:"play",desc:"360-acre lake with 6-mile trail loop.",addr:"156th & F St",price:"Free",icon:"🏞️",known:"Running/biking, fishing"},
+      {name:"Village Pointe",type:"Shopping",cat:"shop",desc:"Open-air lifestyle center.",addr:"168th & Dodge",price:"Varies",icon:"🛍️",known:"Shopping, dining, events"},
+      {name:"TopGolf",type:"Entertainment",cat:"play",desc:"High-tech driving range with food and drinks.",addr:"West Omaha",price:"$$",icon:"⛳",known:"Golf bays, food & drinks"}
+    ],
+    events:[{name:"Elkhorn Days",when:"August",desc:"Small-town festival with parade, carnival, and fireworks."}],
+    tags:["Family","Dining","Parks","Comedy","Shopping"],
+    vibe:"Suburban & Varied",bestFor:"Families, comedy fans, lake lovers"},
+  {id:"south-omaha",name:"South Omaha",sub:"24th & L Street",desc:"Authentic taquerias, the Zoo, Lauritzen Gardens, and deep cultural roots. Omaha's most flavorful neighborhood.",lat:41.23,lng:-95.94,color:"#FF8A65",
+    imgs:[u("photo-1534567153574-2b12153a87f0"),u("photo-1585320806297-9794b3e4eeae"),u("photo-1555939594-58d7cb561ad1")],
+    history:"South Omaha was an independent city from 1886–1915, built around the Union Stockyards — once the world's largest livestock market. Waves of immigrants (Czech, Polish, Irish, Lithuanian, Mexican) came to work the yards. The stockyards closed in 1999, but the neighborhood's multicultural DNA endures. South 24th Street is now the heart of Omaha's vibrant Latino community, with some of the most authentic Mexican food between Chicago and Denver.",
+    walk:{name:"South O Taco Trail",distance:"1.8 mi",time:"1 hr",steps:["Start at 24th & L Street","Walk south on 24th past taco trucks and taquerias","Stop at El Dorado for birria tacos","Continue to Jacobo's grocery for pan dulce","Detour east to the Golden Spike monument","End at Lauritzen Gardens or the Zoo"]},
+    spots:[
+      {name:"El Dorado",type:"Restaurant",cat:"eat",desc:"S. 24th Street icon. Parrilladas, ceviche, live mariachi weekends.",addr:"5025 S 24th",price:"$$",icon:"🇲🇽",known:"Seafood parrillada, mariachi"},
+      {name:"Jacobo's Grocery",type:"Grocery & Taqueria",cat:"eat",desc:"Mexican grocery with incredible hot deli. Tamales, carnitas, tortas.",addr:"4621 S 24th",price:"$",icon:"🫔",known:"Tamales, carnitas, tortillas"},
+      {name:"Johnny's Cafe",type:"Steakhouse",cat:"eat",desc:"Century-old steakhouse in the Stockyards. Family-run since 1922.",addr:"4702 S 27th",price:"$$$",icon:"🥩",known:"Prime rib, Stockyards history"},
+      {name:"Taqueria Tijuana",type:"Taqueria",cat:"eat",desc:"Authentic street tacos — al pastor, lengua, cabeza.",addr:"S 24th St",price:"$",icon:"🌮",known:"Street tacos, al pastor"},
+      {name:"La Herradura",type:"Restaurant",cat:"eat",desc:"Upscale Mexican seafood. Mariscos done right.",addr:"S 24th St",price:"$$",icon:"🦐",known:"Mariscos, aguachile"},
+      {name:"Henry Doorly Zoo",type:"Zoo",cat:"play",desc:"World-class zoo. Indoor rainforest, desert dome, aquarium.",addr:"3701 S 10th",price:"$27",icon:"🦁",known:"Indoor jungle, desert dome"},
+      {name:"Lauritzen Gardens",type:"Botanical Garden",cat:"play",desc:"100-acre garden with stunning conservatory.",addr:"100 Bancroft",price:"$14",icon:"🌺",known:"Rose garden, holiday displays"},
+      {name:"El Museo Latino",type:"Museum",cat:"play",desc:"Latino art, history, and culture.",addr:"4701 S 25th",price:"$5",icon:"🏛️",known:"Heritage, art exhibits"},
+      {name:"Mural Trail",type:"Public Art",cat:"play",desc:"Walking trail of murals celebrating immigrant heritage.",addr:"S 24th corridor",price:"Free",icon:"🎨",known:"Murals, heritage art"},
+      {name:"Livestock Exchange",type:"Landmark",cat:"play",desc:"1926 Art Deco landmark. Once the world's largest stockyard nerve center.",addr:"4920 S 30th",price:"Free",icon:"🏛️",known:"Art Deco, Stockyards history"}
+    ],
+    events:[{name:"Cinco de Mayo",when:"May 5th",desc:"Mariachi, street food, folklorico dancing on 24th Street."},{name:"Dia de los Muertos",when:"November",desc:"Community altars, face painting, and celebration of life."}],
+    tags:["Food","Culture","Zoo","Gardens","Latino","Tacos"],
+    vibe:"Flavorful & Cultural",bestFor:"Foodies, culture seekers, families"},
+  {id:"midtown",name:"Midtown Crossing",sub:"Turner Blvd",desc:"Turner Park, Mutual of Omaha campus, restaurants, and the summer home of Jazz on the Green.",lat:41.255,lng:-95.96,color:"#AED581",
+    imgs:[u("photo-1465847899084-d164df4dedc6"),u("photo-1441974231531-c6227db76b6e"),u("photo-1470229722913-7c0e2dbbafd3")],
+    history:"The Mutual of Omaha headquarters campus has anchored this area since 1957. Midtown Crossing, a mixed-use development opening in phases from 2009, brought residential towers, restaurants, and retail around Turner Park. Jazz on the Green (free outdoor concerts on Thursday evenings in summer) has been a beloved Omaha tradition since 1993.",
+    spots:[
+      {name:"Blue Sushi Sake Grill",type:"Restaurant",cat:"eat",desc:"Creative sushi and strong sake program.",addr:"Midtown Crossing",price:"$$",icon:"🍣",known:"Creative rolls, sake flights"},
+      {name:"Taxi's Grille & Bar",type:"Restaurant",cat:"eat",desc:"Casual American dining with solid cocktails.",addr:"Midtown Crossing",price:"$$",icon:"🍗",known:"American classics, happy hour"},
+      {name:"Pickleman's",type:"Cafe",cat:"eat",desc:"Gourmet sandwiches and salads. Quick lunch.",addr:"Midtown Crossing",price:"$",icon:"🥪",known:"Sandwiches, delivery"},
+      {name:"The Jewell",type:"Jazz Club",cat:"drink",desc:"Intimate jazz lounge. Live performances Thu-Sat.",addr:"Midtown Crossing",price:"$$",icon:"🎷",known:"Live jazz, cocktails"},
+      {name:"Kona Grill",type:"Bar & Restaurant",cat:"drink",desc:"Full bar, happy hour, global-inspired fare.",addr:"Midtown Crossing",price:"$$",icon:"🍹",known:"Happy hour, sushi"},
+      {name:"Turner Park",type:"Park",cat:"play",desc:"Green heart of Midtown. Jazz on the Green free Thursdays all summer.",addr:"Midtown Crossing",price:"Free",icon:"🌳",known:"Jazz on the Green, events"},
+      {name:"Mutual of Omaha HQ",type:"Landmark",cat:"play",desc:"Iconic mid-century tower (1957). The Indian Head logo building.",addr:"Dodge & 33rd",price:"Free",icon:"🏢",known:"Mid-century architecture"}
+    ],
+    events:[{name:"Jazz on the Green",when:"Thursdays, Jun–Aug",desc:"Free outdoor jazz concerts. Omaha's favorite summer tradition."}],
+    tags:["Jazz","Dining","Events","Parks","Free"],
+    vibe:"Relaxed & Musical",bestFor:"Jazz lovers, summer evenings, casual dining"},
+];
+const EVENTS=[
+  {id:1,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",city:"omaha",date:"Sat",time:"8 PM",price:"$35–65",emoji:"🎸",desc:"Pink Floyd's The Wall note-for-note with full visual production.",feat:true},
+  {id:2,title:"Tig Notaro",cat:"comedy",venue:"Holland PAC",date:"Sat",time:"7:30 PM",price:"$45–85",emoji:"🎙️",desc:"Grammy-nominated deadpan comedy. Star of 'One Mississippi'.",feat:true},
+  {id:3,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",city:"omaha",date:"Tue",time:"7 PM",price:"$25–90",emoji:"🏀",desc:"Big East basketball. Bluejays host DePaul at the CHI.",feat:true},
+  {id:4,title:"Nate Jackson Live",cat:"comedy",venue:"Steelhouse Omaha",city:"omaha",date:"Fri",time:"8 PM",price:"$40–80",emoji:"😂",desc:"Instagram-famous comedian with electric crowd work.",feat:true},
+  {id:5,title:"Ethel Cain",cat:"concerts",venue:"The Astro",date:"Wed",time:"8 PM",price:"$40–75",emoji:"🕯️",desc:"Southern gothic sensation. 'Preacher's Daughter' live.",feat:true},
+  {id:6,title:"LOVB Nebraska",cat:"sports",venue:"Baxter Arena",date:"Sat",time:"7 PM",price:"$20–50",emoji:"🏐",desc:"Pro volleyball. League One Volleyball's Nebraska franchise."},
+  {id:7,title:"All Them Witches",cat:"concerts",venue:"The Slowdown",date:"Mon",time:"8 PM",price:"$25–35",emoji:"🎸",desc:"Heavy psychedelic rock double-header with King Buffalo."},
+  {id:8,title:"Backline Improv",cat:"comedy",venue:"Backline Comedy",date:"Sat",time:"8 PM",price:"$10–15",emoji:"😂",desc:"House improv team takes audience suggestions and runs."},
+  {id:9,title:"Storm Chasers Opener",cat:"sports",venue:"Werner Park",date:"Fri",time:"6:35 PM",price:"$12–45",emoji:"⚾",desc:"2026 MiLB season kickoff with postgame fireworks.",feat:true},
+  {id:10,title:"Pinewood Bowl Concert",cat:"concerts",venue:"Pinewood Bowl Theater",city:"lincoln",date:"Sat",time:"7 PM",price:"$25-55",emoji:"🎶",desc:"Outdoor amphitheater in Pioneers Park. Live music under the stars.",feat:false},
+  {id:11,title:"Husker Volleyball",cat:"sports",venue:"Devaney Center",city:"lincoln",date:"Fri",time:"7 PM",price:"$15-40",emoji:"🏐",desc:"Nebraska volleyball at home. Electric atmosphere, sell-out crowd.",feat:true}
+]
+
+/* ═══ VENUES ═══ */
+const VENUES=[
+  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"Premier arena for the biggest global tours and Creighton Basketball.",url:"https://www.chihealthcenteromaha.com",img:u("photo-1540039155733-5bb30b53aa14"),city:"omaha"},
+  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:u("photo-1547347298-4074fc3086f0"),city:"omaha"},
+  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue for large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:u("photo-1501386761578-eac5c94b800a"),city:"omaha"},
+  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) for world-class acts.",url:"https://www.theastrotheater.com",img:u("photo-1470229722913-7c0e2dbbafd3"),city:"omaha"},
+  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic 1927 theater hosting Broadway tours, comedians, and concerts.",url:"https://o-pa.org",img:u("photo-1503095396549-807759245b35"),city:"omaha"},
+  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:u("photo-1465847899084-d164df4dedc6"),city:"omaha"},
+  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records.",url:"https://theslowdown.com",img:u("photo-1459749411175-04bf5292ceea"),city:"omaha"},
+  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"Legendary heart of Omaha's alt/indie scene. A must-play for touring bands.",url:"https://waitingroomlounge.com",img:u("photo-1511671782779-c97d3d27a1d4"),city:"omaha"},
+  {id:10,name:"Reverb Lounge",area:"Benson",cap:"150",type:"Indie / Club",lat:41.2808,lng:-95.9545,desc:"Sleek, mid-century modern listening room with great sound.",url:"https://reverblounge.com",img:u("photo-1508854710579-5cecc3a9ff17"),city:"omaha"},
+  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic hall hosting punk, metal, hip-hop, EDM.",url:"https://www.admiralomaha.com",img:u("photo-1574391884720-bbc3740c59d1"),city:"omaha"},
+  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge. Premium cocktails and vibes.",url:"https://barnato.bar",img:u("photo-1511671782779-c97d3d27a1d4"),city:"omaha"},
+  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",url:"https://www.stircove.com",img:u("photo-1506157786151-b8491531f063"),city:"cb"},
+  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"World's best zoo. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:u("photo-1534567153574-2b12153a87f0"),city:"omaha"},
+  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with massive 42,000 sq ft expansion. Free admission.",url:"https://joslyn.org",img:u("photo-1531243269054-5ebf6f34081e"),city:"omaha"},
+  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films.",url:"https://filmstreams.org",img:u("photo-1489599849927-2ee91cede3ba"),city:"omaha"},
+  {id:25,name:"Liberty First CU Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:u("photo-1540039155733-5bb30b53aa14"),city:"omaha"},
+  {id:30,name:"The Jewell",area:"Capitol District",cap:"Intimate",type:"Bar / Venue",lat:41.2577,lng:-95.9370,desc:"Omaha's premier jazz club. National and local jazz and blues.",url:"https://jewellomaha.com",img:u("photo-1415201364774-f6f0bb35f28f"),city:"omaha"},
+  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"Interactive science center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:u("photo-1531243269054-5ebf6f34081e"),city:"omaha"},
+  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station with train cars and soda fountain.",url:"https://durhammuseum.org",img:u("photo-1503095396549-807759245b35"),city:"omaha"},
+  {id:43,name:"Fontenelle Forest",area:"Bellevue",cap:"Varies",type:"Museum / Attraction",lat:41.1570,lng:-95.9000,desc:"2,000 acres of forest, wetlands, and boardwalk trails.",url:"https://fontenelleforest.org",img:u("photo-1552674605-db6ffd4facb5"),city:"omaha"},
+  {id:50,name:"Funny Bone",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians.",url:"https://omaha.funnybone.com",img:u("photo-1585699324551-f6c309eedeca"),city:"omaha"},
+  {id:51,name:"Backline Comedy",area:"Downtown",cap:"150",type:"Comedy Club",lat:41.2555,lng:-95.9340,desc:"HQ for Omaha's local comedy. Improv, sketch, open mics, stand-up.",url:"https://backlinecomedy.com",img:u("photo-1585699324551-f6c309eedeca"),city:"omaha"},
+  {id:60,name:"Pinewood Bowl Theater",area:"Pioneers Park",cap:"4,500",type:"Outdoor",lat:40.7885,lng:-96.7272,desc:"Lincoln's outdoor amphitheater in a wooded setting.",url:"https://pinewoodbowl.org",img:u("photo-1506157786151-b8491531f063"),city:"lincoln"},
+  {id:61,name:"Bourbon Theatre",area:"Downtown Lincoln",cap:"800",type:"Indie / Club",lat:40.8136,lng:-96.7026,desc:"Lincoln's go-to live music venue for touring and local bands.",url:"https://bourbontheatre.com",img:u("photo-1459749411175-04bf5292ceea"),city:"lincoln"},
+  {id:62,name:"Lied Center",area:"UNL Campus",cap:"2,200",type:"Performing Arts",lat:40.8206,lng:-96.7014,desc:"UNL's performing arts center. Broadway, dance, orchestra, comedy.",url:"https://liedcenter.org",img:u("photo-1503095396549-807759245b35"),city:"lincoln"},
+];
+const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
+
+
+/* ═══ REAL-TIME SUN POSITION ═══ */
+const SUN_TABLE=[
+  {sr:7.5,ss:17.2},{sr:7.1,ss:17.8},{sr:7.3,ss:19.3},{sr:6.5,ss:20},{sr:6,ss:20.5},
+  {sr:5.8,ss:20.8},{sr:6,ss:20.7},{sr:6.4,ss:20.1},{sr:7,ss:19.3},{sr:7.4,ss:18.4},
+  {sr:7,ss:17},{sr:7.4,ss:16.8}
+];
+function getNowTv(){
+  const now=new Date(),mo=now.getMonth(),hr=now.getHours()+now.getMinutes()/60;
+  const{sr,ss}=SUN_TABLE[mo];
+  if(hr<=sr-1)return 95;if(hr<=sr)return 85+(sr-hr)*10;
+  if(hr>=ss+1)return 95;if(hr>=ss)return 85+(hr-ss)*10;
+  return 5+((hr-sr)/(ss-sr))*80;
 }
+const WX_ICONS={clear:"☀️",cloudy:"☁️",rainy:"🌧️",snowy:"❄️"};
 
-function FeatSlide({ev,isD,isT,favs,tog,setSel,playVideo}){
-  const fav=favs.includes(ev.id);const accent=CA[ev.cat]||T.accent;const grad=CG[ev.cat]||CG._;
-  return(
-    <div onClick={()=>setSel(ev)} className="ecard" style={{background:grad,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?360:isT?320:275,minWidth:isD?360:isT?320:275,flexShrink:0,cursor:"pointer",scrollSnapAlign:"start"}}>
-      <ImgCard src={pickImg(ev)} h={isD?170:isT?150:130} grad={grad}>
-        <div style={{position:"absolute",top:10,left:10,padding:"3px 10px",borderRadius:99,background:"rgba(20,22,24,0.6)",backdropFilter:"blur(6px)",display:"flex",alignItems:"center",gap:4}}>
-          <div style={{width:5,height:5,borderRadius:99,background:accent}}/><span style={{fontSize:9,fontWeight:700,letterSpacing:1.5,color:accent,textTransform:"uppercase"}}>{fmtFull(ev.date).split(",")[0]}</span>
-        </div>
-        <button onClick={e=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{position:"absolute",top:10,right:10,width:32,height:32,borderRadius:99,background:"rgba(20,22,24,0.5)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:fav?T.gold:T.textDim}}>{I.heart(fav?T.gold:T.textDim,16,fav)}</button>
-        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 14px 12px"}}>
-          <h3 style={{margin:0,fontSize:isD?18:16,fontWeight:600,color:T.textHi,letterSpacing:0.5,lineHeight:1.2}}>{ev.title}</h3>
-        </div>
-      </ImgCard>
-      <div style={{padding:"12px 14px 14px"}}>
-        <p style={{margin:0,fontSize:12,color:T.textBody,letterSpacing:0.4,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{ev.desc}</p>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-          <span style={{fontSize:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{ev.price==="TBD"&&ev.url&&ev.url!=="#"?"See Tickets →":ev.price}</span>
-          <div style={{display:"flex",alignItems:"center",gap:6}}>
-            {ev.ytId&&<button onClick={e=>{e.stopPropagation();playVideo(ev);}} className="hbtn" style={{background:"rgba(232,54,79,0.15)",border:"none",borderRadius:99,width:28,height:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.play("#E8364F",10)}</button>}
-            <span style={{fontSize:11,color:T.venue,letterSpacing:1}}>{ev.time}</span>
-          </div>
-        </div>
-        <p style={{margin:"6px 0 0",fontSize:11,color:T.venue,letterSpacing:1.1,fontWeight:500}}>{ev.venue}</p>
-      </div>
-    </div>
-  );
-}
-
-function VenueCard({v,cnt,isD,isT,i=0}){
-  return(
-    <div className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:10,animation:`cardIn 0.3s ${i*0.04}s both`}}>
-      <ImgCard src={v.img} h={isD?155:isT?135:115} grad={CG._}>
-        {cnt>0&&<div style={{position:"absolute",top:10,right:10,padding:"3px 11px",borderRadius:99,background:"rgba(94,196,182,0.15)",border:"1px solid rgba(94,196,182,0.2)"}}>
-          <span style={{fontSize:10,fontWeight:700,color:T.accent,letterSpacing:0.8}}>{cnt} event{cnt>1?"s":""}</span>
-        </div>}
-        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 14px 12px"}}>
-          <h3 style={{margin:0,fontSize:isD?19:16,fontWeight:600,color:T.textHi,letterSpacing:0.5}}>{v.name}</h3>
-          <p style={{margin:"2px 0 0",fontSize:11,color:T.venue,letterSpacing:1,fontWeight:500}}>{v.area} · {v.cap}{v.type?` · ${v.type}`:""}</p>
-        </div>
-      </ImgCard>
-      <div style={{padding:"12px 14px 14px"}}>
-        <p style={{margin:0,fontSize:12,color:T.textBody,letterSpacing:0.3,lineHeight:1.5}}>{v.desc}</p>
-        <div style={{display:"flex",gap:7,marginTop:12}}>
-          {v.url&&v.url!=="#"&&<a href={v.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"9px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.accent,fontSize:11,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>{I.link(T.accent,12)} Website</a>}
-          <a href={mapsDir(v.lat,v.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"9px 0",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:11,fontWeight:600,letterSpacing:1,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>{I.dir(T.textBody,12)} Directions</a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ═══ EXPANDABLE EXPLORE SECTION ═══ */
-function ExploreSection({section,isD,isM}){
-  const[open,setOpen]=useState(false);
-  return(
-    <div style={{marginBottom:10,borderRadius:18,border:`1px solid ${T.border}`,background:CG._,overflow:"hidden"}}>
-      <button onClick={()=>setOpen(!open)} className="ecard" style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"16px 16px",background:"transparent",border:"none",cursor:"pointer",color:T.text}}>
-        <span style={{fontSize:20}}>{section.icon}</span>
-        <div style={{flex:1,textAlign:"left"}}>
-          <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi,letterSpacing:0.6}}>{section.title}</h3>
-          <p style={{margin:"2px 0 0",fontSize:11,color:T.textSec,letterSpacing:0.5}}>{section.items.length} places</p>
-        </div>
-        <div style={{transform:open?"rotate(90deg)":"rotate(0)",transition:"transform 0.25s"}}>{I.chev(T.textDim,18)}</div>
-      </button>
-      {open&&<div style={{padding:"0 12px 12px"}}>
-        {section.items.map((item,i)=>(
-          <div key={i} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"13px 10px",borderRadius:14,background:i%2===0?"rgba(255,255,255,0.02)":"transparent",marginBottom:2}}>
-            <div style={{width:36,height:36,borderRadius:10,background:"rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>{section.icon}</div>
-            <div style={{flex:1,minWidth:0}}>
-              <h4 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi,letterSpacing:0.5}}>{item.name}</h4>
-              <p style={{margin:"3px 0 0",fontSize:12,color:T.textBody,letterSpacing:0.3,lineHeight:1.4}}>{item.desc}</p>
-              <div style={{display:"flex",gap:5,marginTop:6,flexWrap:"wrap"}}>
-                {(item.tags||[]).map(t=><span key={t} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,0.04)",color:T.textSec,fontWeight:500,letterSpacing:0.5}}>{t}</span>)}
-              </div>
-              <div style={{display:"flex",gap:8,marginTop:8}}>
-                <a href={mapsDir(item.lat,item.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"5px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:0.8,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{I.dir(T.textBody,11)} Directions</a>
-                {item.url&&item.url!=="#"&&<a href={item.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"5px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",border:`1px solid ${T.border}`,color:T.accent,fontSize:10,fontWeight:600,letterSpacing:0.8,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{I.link(T.accent,11)} Info</a>}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>}
-    </div>
-  );
-}
-
-/* ═══ VIDEO FACADE — lightweight thumbnail, loads iframe on play ═══ */
-function VideoFacade({ytId,onPlay,h=200}){
-  const thumb=`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-  return(
-    <div onClick={onPlay} style={{position:"relative",width:"100%",height:h,borderRadius:14,overflow:"hidden",cursor:"pointer",background:"#000"}}>
-      <img src={thumb} alt="" crossOrigin="anonymous" referrerPolicy="no-referrer" style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.85}} onError={e=>{e.target.style.display="none";}}/>
-      <div style={{position:"absolute",inset:0,background:"radial-gradient(circle at center,rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.5) 100%)"}}/>
-      <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:56,height:56,borderRadius:99,background:"rgba(232,54,79,0.95)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 20px rgba(232,54,79,0.4)",transition:"transform 0.2s"}} className="hbtn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="8,5 20,12 8,19"/></svg>
-      </div>
-      <div style={{position:"absolute",bottom:8,left:10,display:"flex",alignItems:"center",gap:5}}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z" fill="#FF0000"/><polygon points="9.75,15.02 15.5,11.75 9.75,8.48" fill="#fff"/></svg>
-        <span style={{fontSize:10,color:"rgba(255,255,255,0.75)",fontWeight:500,letterSpacing:0.5}}>Preview</span>
-      </div>
-    </div>
-  );
-}
-
-/* ═══ STICKY MINI-PLAYER — docks to top when video is playing ═══ */
-function StickyPlayer({video,onClose,isD,isT}){
-  if(!video)return null;
-  const mx=isD?860:isT?680:600;
-  return(
-    <div style={{position:"sticky",top:0,zIndex:90,background:"#0A0B0C",borderBottom:`1px solid ${T.border}`,animation:"fadeIn 0.25s"}}>
-      <div style={{maxWidth:mx,margin:"0 auto",padding:isD?"0 32px":"0"}}>
-        <div style={{position:"relative",width:"100%",aspectRatio:"16/9",maxHeight:isD?320:isT?260:220,background:"#000"}}>
-          <iframe
-            src={`https://www.youtube.com/embed/${video.ytId}?autoplay=1&rel=0&modestbranding=1`}
-            title={video.title}
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-            style={{width:"100%",height:"100%",border:"none"}}
-          />
-          <button onClick={onClose} className="hbtn" style={{position:"absolute",top:8,right:8,width:36,height:36,borderRadius:99,background:"rgba(10,11,12,0.8)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(242,239,233,0.9)",fontSize:16,fontWeight:300,zIndex:2}}>✕</button>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px 10px"}}>
-          <div style={{flex:1,minWidth:0}}>
-            <p style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi,letterSpacing:0.4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{video.title}</p>
-            <p style={{margin:"1px 0 0",fontSize:10,color:T.textSec,letterSpacing:0.8,fontWeight:500}}>{video.venue}{video.date?` · ${fmt(video.date)}`:""}</p>
-          </div>
-          <button onClick={onClose} className="hbtn" style={{padding:"5px 12px",borderRadius:99,background:"rgba(255,255,255,0.06)",border:`1px solid ${T.border}`,color:T.textSec,cursor:"pointer",fontSize:10,fontWeight:600,letterSpacing:0.8}}>Close</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════ APP ════════════════════════════ */
-export default function App(){
-  const w=useW();const isM=w<600;const isT=w>=600&&w<960;const isD=w>=960;
-  const[aiEvents,setAiEvents]=useState([]);
-  const[tab,setTab]=useState("events");
-  const[cat,setCat]=useState("all");
-  const[subTag,setSubTag]=useState(null);
-  const[sel,setSel]=useState(null);
-  const[favs,setFavs]=useState([]);
-  const[q,setQ]=useState("");
-  const[selDays,setSelDays]=useState(()=>{const t=new Date();t.setHours(0,0,0,0);return[toDS(t)];});
-  const[preset,setPreset]=useState("today");
-  const[refreshing,setRefreshing]=useState(false);
-  const[rStatus,setRStatus]=useState(null);
-  const[lastRefresh,setLastRefresh]=useState(null);
-  const[exploreQ,setExploreQ]=useState("");
-  const[shareMsg,setShareMsg]=useState(false);
+/* ═══ APP ═══ */
+export default function GOPrototype(){
+  const initTv=typeof window!=="undefined"?getNowTv():50;
+  const[nowTv,setNowTv]=useState(initTv);
+  const[tv,setTv]=useState(initTv);
+  const[isLive,setIsLive]=useState(true);
+  const[drag,setDrag]=useState(false);
+  const[weather,setWeather]=useState({temp:null,cond:"clear",icon:""});
+  const[timeLabel,setTimeLabel]=useState(()=>{const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();return`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`;});
+  const[cities,setCities]=useState(new Set(["omaha"]));
   const[venCat,setVenCat]=useState("all");
-  const[activeVideo,setActiveVideo]=useState(null); // {ytId, title, venue, date}
-  const playVideo=(ev)=>{if(ev.ytId)setActiveVideo({ytId:ev.ytId,title:ev.title,venue:ev.venue,date:ev.date});};
+  const[spotCat,setSpotCat]=useState("all");
+  const[w,setW]=useState(typeof window!=="undefined"?window.innerWidth:375);
+  const[tab,setTab]=useState("today");
+  const[favs,setFavs]=useState([]);
+  useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
+  useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
+  useEffect(()=>{fetch("https://api.open-meteo.com/v1/forecast?latitude=41.26&longitude=-95.94&current=temperature_2m,weather_code&temperature_unit=fahrenheit").then(r=>r.json()).then(d=>{const t=Math.round(d.current.temperature_2m),wc=d.current.weather_code;const cond=wc<=1?"clear":wc<=48?"cloudy":wc<=67?"rainy":"snowy";setWeather({temp:t,cond,icon:WX_ICONS[cond]});}).catch(()=>{});},[]);
+  const goLive=()=>{setIsLive(true);setTv(nowTv);};
+  const togCity=(c)=>setCities(prev=>{const s=new Set(prev);if(s.has(c)){s.delete(c);if(s.size===0)s.add("omaha");}else s.add(c);return s;});
+  const cityMatch=(ev)=>cities.size===3||!ev.city||cities.has(ev.city);
 
+  const isM=w<600,isT=w>=600&&w<960,isD=w>=960;
+  const mxW=isD?860:isT?680:600,px=isD?32:isT?24:16;
+  const sec={maxWidth:mxW,margin:"0 auto",padding:`0 ${px}px`};
+  const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
-  const today=new Date();today.setHours(0,0,0,0);
-  /* Merge seed + ingested + AI-refreshed events, deduplicate */
-  const seedKeys=new Set(EV.map(dedupeKey));
-  const mergedIngested=INGESTED_EVENTS.filter(e=>!seedKeys.has(dedupeKey(e)));
-  const all=[...EV,...mergedIngested,...aiEvents].filter(e=>new Date(e.date+"T23:59:59")>=today);
-  const dateDays=Array.from({length:30},(_,i)=>{const d=new Date(today);d.setDate(d.getDate()+i);return d;});
-
-  /* Preset handlers */
-  const applyPreset=(p)=>{
-    setPreset(p);setSubTag(null);
-    if(p==="today"){setSelDays([toDS(today)]);}
-    else if(p==="week"){setSelDays(dateDays.slice(0,7).map(d=>toDS(d)));}
-    else if(p==="month"){setSelDays(dateDays.map(d=>toDS(d)));}
-    else{setSelDays([toDS(today)]);}
+  const nb=Math.max(0,Math.min(1,(tv-50)/20));
+  const isDay=tv<60,isNite=tv>=60;
+  const mLabel=isDay?"Today":"Tonight";
+  const nowHr=new Date().getHours()+new Date().getMinutes()/60;
+  const getBadge=(ev)=>{
+    if(!ev.time)return null;
+    const m=ev.time.match(/(\d+)(?::(\d+))?\s*(AM|PM)/i);
+    if(!m)return null;
+    let h=parseInt(m[1]);const min=parseInt(m[2]||"0"),ap=m[3].toUpperCase();
+    if(ap==="PM"&&h!==12)h+=12;if(ap==="AM"&&h===12)h=0;
+    const evHr=h+min/60,diff=evHr-nowHr;
+    if(diff<-2)return{text:"Ended",color:T.textDim,bg:"rgba(255,255,255,.05)"};
+    if(diff<0)return{text:"Live Now",color:"#7DD4A0",bg:"rgba(125,212,160,.12)"};
+    if(diff<1)return{text:"< 1 hr",color:"#FFB74D",bg:"rgba(255,183,77,.12)"};
+    if(diff<2)return{text:"Starts Soon",color:"#FFB74D",bg:"rgba(255,183,77,.1)"};
+    return null;
   };
-
-  const toggleDay=ds=>{
-    setPreset(null);setSubTag(null);
-    setSelDays(prev=>{if(prev.includes(ds)){const n=prev.filter(d=>d!==ds);return n.length?n:[ds];}return[...prev,ds];});
+  const getVenueBadge=(name)=>{
+    const h=new Date().getHours();
+    if(name==="Henry Doorly Zoo")return h>=9&&h<17?{text:"Open Now",color:"#7DD4A0",bg:"rgba(125,212,160,.12)"}:{text:"Closed",color:T.textDim,bg:"rgba(255,255,255,.05)"};
+    return null;
   };
+  const mColor=isDay?"#81C784":T.accent;
+  const sunX=12+(tv/100)*76;
+  const tr=drag?"none":"all 0.4s ease";
 
-  const dayFiltered=all.filter(e=>selDays.includes(e.date));
-  const catFiltered=dayFiltered.filter(e=>cat==="all"||e.cat===cat);
-  const tagFiltered=catFiltered.filter(e=>!subTag||(e.tags||[]).includes(subTag));
-  const filtered=tagFiltered.filter(e=>!q||(e.title+e.venue+(e.tags||[]).join("")).toLowerCase().includes(q.toLowerCase()));
-  const featured=dayFiltered.filter(e=>e.feat);
-  const availTags=cat!=="all"?[...new Set(dayFiltered.filter(e=>e.cat===cat).flatMap(e=>e.tags||[]).filter(t=>t!=="Free"))]:[];
-  const allCatTags=cat!=="all"?[...new Set(all.filter(e=>e.cat===cat).flatMap(e=>e.tags||[]).filter(t=>t!=="Free"))]:[];
-  const dayCnts={};all.forEach(e=>{dayCnts[e.date]=(dayCnts[e.date]||0)+1;});
-  const vCnt={};all.forEach(e=>{vCnt[e.venue]=(vCnt[e.venue]||0)+1;});
+  const Head=({text,count,mt=20,color})=>(
+    <div style={{display:"flex",alignItems:"baseline",gap:10,margin:`${mt}px 0 10px`}}>
+      <h2 style={{fontSize:12,fontWeight:600,color:color||T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:0}}>{text}</h2>
+      {count!=null&&<span style={{fontSize:11,color:T.textDim,letterSpacing:1}}>{count}</span>}
+    </div>
+  );
+  const tabsD=[{id:"today",icon:IC.today,label:"Today"},{id:"events",icon:IC.calendar,label:"Events"},{id:"explore",icon:IC.explore,label:"Explore"},{id:"saved",icon:IC.saved,label:"Saved"}];
 
-  const refresh=useCallback(async()=>{
-    setRefreshing(true);setRStatus("Searching for new events...");
-    try{const ds=new Date().toISOString().split("T")[0];
-      const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Find upcoming events in Omaha NE. Today is ${ds}. Return ONLY a JSON array. Each: {"title":"...","cat":"sports|concerts|festivals|family|arts","venue":"...","date":"YYYY-MM-DD","time":"H:MM PM","price":"$X–$Y or Free","desc":"2 sentences","tags":["tag1"],"emoji":"emoji"}. 8-12 events. No markdown.`,messages:[{role:"user",content:`Find upcoming Omaha NE events next 2 months from ${ds}. All categories.`}],tools:[{type:"web_search_20250305",name:"web_search"}]})});
-      const data=await r.json();const text=data.content?.map(i=>i.text||"").filter(Boolean).join("\n")||"";
-      const jm=text.match(/\[[\s\S]*\]/);
-      if(jm){const parsed=JSON.parse(jm[0]);const ek=new Set(all.map(e=>`${e.title.toLowerCase().trim()}|${e.date}`));
-        const ne=parsed.filter(e=>!ek.has(`${(e.title||"").toLowerCase().trim()}|${e.date}`)).map((e,i)=>({...e,id:9000+Date.now()+i,url:"#",feat:false,tags:e.tags||[]}));
-        setAiEvents(prev=>[...prev.filter(e=>new Date(e.date+"T23:59:59")>=today),...ne]);setRStatus(`Found ${ne.length} new events`);}
-      else setRStatus("Everything up to date");setLastRefresh(new Date());
-    }catch{setRStatus("Could not refresh");}
-    setRefreshing(false);setTimeout(()=>setRStatus(null),4000);
-  },[]);
+  /* ── COMPACT HERO for interior pages ──
+     fullHero = Today + Events only (full skyline with sun/moon/stars/weather)
+     All other tabs get compact strip (95-135px) showing bottom third of skyline.
+     SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
+     GO: title stays visible at reduced size. No celestial or weather elements. */
+  const fullHero=tab==="today"||tab==="events";
+  const heroH=fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
+  const heroMin=fullHero?(isD?400:320):(isD?120:95);
+  const heroMax=fullHero?560:135;
 
-  const fmtRel=d=>{if(!d)return"";const s=Math.floor((Date.now()-d.getTime())/1000);if(s<60)return"just now";if(s<3600)return`${Math.floor(s/60)}m ago`;return`${Math.floor(s/3600)}h ago`;};
-  const mx=isD?860:isT?680:600;const px=isD?32:isT?24:16;const sec={maxWidth:mx,margin:"0 auto",padding:`0 ${px}px`};
-  const Head=({text,count,mt=24})=>(<div style={{display:"flex",alignItems:"baseline",gap:10,margin:`${mt}px 0 10px`}}><h2 style={{fontSize:isD?13:12,fontWeight:600,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:0}}>{text}</h2>{count!=null&&<span style={{fontSize:11,color:T.textDim,letterSpacing:1}}>{count}</span>}</div>);
+  return (
+    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:130}}>
 
-  const showPrice=(ev)=>ev.price==="TBD"&&ev.url&&ev.url!=="#"?"See Tickets →":ev.price;
+      {/* ═══ HERO ═══ */}
+      <div style={{position:"relative",height:heroH,minHeight:heroMin,maxHeight:heroMax,overflow:"hidden",transition:"height 0.5s ease, min-height 0.5s ease, max-height 0.5s ease"}}>
+        {/* Sky */}
+        <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg, ${sk.s1} 0%, ${sk.s2} 50%, ${sk.s3} 90%)`,transition:tr}}/>
 
-  const EventCard=({ev,i=0})=>{
-    const fav=favs.includes(ev.id),free=ev.price?.includes("Free"),accent=CA[ev.cat]||T.accent,grad=CG[ev.cat]||CG._,icon=CATICON[ev.cat];
-    return(
-      <div onClick={()=>setSel(ev)} className="ecard" style={{background:grad,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px 14px 16px":"16px 20px 18px",marginBottom:8,cursor:"pointer",animation:`cardIn 0.3s ${i*0.03}s both`}}>
-        <div style={{display:"flex",alignItems:"flex-start",gap:isM?11:13}}>
-          <div style={{width:isM?40:44,height:isM?40:44,borderRadius:13,background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{icon?icon(accent,isM?18:20):<span style={{fontSize:isM?18:20}}>{ev.emoji}</span>}</div>
-          <div style={{flex:1,minWidth:0}}>
-            <h3 style={{margin:0,fontSize:isD?17:15,fontWeight:600,color:T.textHi,letterSpacing:0.5,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ev.title}</h3>
-            <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.6,textTransform:"uppercase",color:accent}}>{fmtFull(ev.date).split(",")[0]} · {ev.time}</p>
-          </div>
-          {I.chev(T.textDim,18)}
+        {/* Horizon glow — fades with sun */}
+        {fullHero&&<div style={{position:"absolute",bottom:"28%",left:0,right:0,height:"30%",background:`radial-gradient(ellipse 70% 100% at ${sunX}% 100%, ${sk.glow}25 0%, transparent 70%)`,opacity:sk.sunOp,transition:tr,pointerEvents:"none"}}/>}
+
+        {/* Stars */}
+        {fullHero&&<div style={{position:"absolute",inset:0,opacity:sk.starOp,transition:tr,pointerEvents:"none"}}>
+          {STARS.map((s,i)=><div key={i} style={{position:"absolute",left:`${s.x}%`,top:`${s.y}%`,width:s.sz,height:s.sz,borderRadius:"50%",background:"#fff",animation:`twinkle ${s.dur}s ${s.dl}s ease-in-out infinite`}}/>)}
+        </div>}
+
+        {/* Sun & Moon — same 180° arc, moon trails behind */}
+        {fullHero&&(()=>{
+          /* Shared arc function: progress 0→1 maps to left-horizon → peak → right-horizon */
+          const arcTop = (p) => 82 - 68 * Math.sin(Math.PI * Math.max(0, Math.min(1, p)));
+          const arcX = (p) => 12 + Math.max(0, Math.min(1, p)) * 76;
+          /* Sun: slider 0→100 maps to full arc */
+          const sunP = tv / 100;
+          /* Moon: starts rising at tv≈60, so offset by ~60 ticks */
+          const moonP = (tv - 60) / 100;
+          return(<div style={{position:"absolute",inset:0,pointerEvents:"none"}}>
+            {/* Sun */}
+            {sk.sunOp>0.01&&<div style={{position:"absolute",left:`${arcX(sunP)}%`,top:`${arcTop(sunP)}%`,transform:"translate(-50%,-50%)",zIndex:3,pointerEvents:"none",transition:tr}}>
+              <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:sk.sunSz*3.5,height:sk.sunSz*3.5,borderRadius:"50%",background:`radial-gradient(circle, ${sk.glow}20 0%, transparent 70%)`,opacity:sk.sunOp,transition:tr}}/>
+              <div style={{width:sk.sunSz,height:sk.sunSz,borderRadius:"50%",background:`radial-gradient(circle at 40% 40%, #fff 0%, ${sk.sunC} 30%, ${sk.sunC}AA 65%, transparent 100%)`,boxShadow:`0 0 ${sk.sunSz*.8}px ${sk.sunC}66`,opacity:sk.sunOp,transition:tr}}/>
+            </div>}
+            {/* Moon — same arc, delayed */}
+            {sk.moonOp>0.01&&moonP>0&&<div style={{position:"absolute",left:`${arcX(moonP)}%`,top:`${arcTop(moonP)}%`,transform:"translate(-50%,-50%)",zIndex:3,pointerEvents:"none",transition:tr}}>
+              <div style={{width:34,height:34,borderRadius:"50%",background:"radial-gradient(circle at 35% 35%, #EBE7DB, #C8C0B0)",boxShadow:"0 0 25px rgba(200,192,176,0.25), 0 0 80px rgba(200,192,176,0.06)",opacity:sk.moonOp,transition:tr}}>
+                <div style={{position:"absolute",top:"20%",left:"26%",width:7,height:7,borderRadius:"50%",background:"rgba(0,0,0,0.06)"}}/>
+                <div style={{position:"absolute",top:"50%",left:"60%",width:5,height:5,borderRadius:"50%",background:"rgba(0,0,0,0.04)"}}/>
+                <div style={{position:"absolute",top:"70%",left:"34%",width:3.5,height:3.5,borderRadius:"50%",background:"rgba(0,0,0,0.035)"}}/>
+              </div>
+            </div>}
+          </div>);
+        })()}
+
+        {/* ★ SVG SKYLINE ★ */}
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:fullHero?"78%":"100%",zIndex:5,transition:tr}}>
+          <Skyline color={sk.bldg} winOp={sk.winOp}/>
         </div>
-        <div style={{marginTop:9,marginLeft:isM?51:57}}>
-          <p style={{margin:0,fontSize:13,color:T.textBody,letterSpacing:0.3,lineHeight:1.5,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{ev.desc}</p>
-          <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>
-            {(ev.tags||[]).slice(0,3).map(t=><span key={t} style={{fontSize:9,padding:"3px 9px",borderRadius:99,background:"rgba(255,255,255,0.05)",color:T.textSec,fontWeight:500,letterSpacing:0.6}}>{t}</span>)}
-          </div>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-            <div style={{display:"flex",alignItems:"center",gap:10}}>
-              <span style={{fontSize:isD?21:17,fontWeight:300,color:T.textHi,letterSpacing:0.7}}>{showPrice(ev)}</span>
-              {free&&<span style={{fontSize:9,fontWeight:700,letterSpacing:1.5,color:T.green,background:"rgba(125,212,160,0.1)",padding:"2px 8px",borderRadius:99}}>FREE</span>}
-            </div>
-            <div style={{display:"flex",alignItems:"center",gap:5}}>
-              {ev.ytId&&<button onClick={e=>{e.stopPropagation();playVideo(ev);}} className="hbtn" style={{background:"rgba(232,54,79,0.12)",border:"1px solid rgba(232,54,79,0.25)",borderRadius:99,padding:"5px 11px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:"#E8364F"}}>
-                {I.play("#E8364F",10)}<span style={{fontSize:10,letterSpacing:0.6,fontWeight:600}}>Play</span>
-              </button>}
-              <button onClick={e=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,0.05)",border:"none",borderRadius:99,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:fav?T.gold:T.textSec}}>
-                {I.heart(fav?T.gold:T.textSec,13,fav)}<span style={{fontSize:10,letterSpacing:0.6,fontWeight:500}}>{fav?"Saved":"Save"}</span>
-              </button>
-            </div>
-          </div>
-          <p style={{margin:"6px 0 0",fontSize:11,color:T.venue,letterSpacing:1.2,textTransform:"uppercase",fontWeight:500}}>{ev.venue}</p>
-        </div>
-      </div>
-    );
-  };
 
-  const tabs=[{id:"events",icon:I.events,label:"Events"},{id:"explore",icon:I.explore,label:"Explore"},{id:"venues",icon:I.venues,label:"Venues"},{id:"saved",icon:I.saved,label:"Saved"}];
+        {/* Fade skyline base into bg */}
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:fullHero?60:35,zIndex:6,background:`linear-gradient(180deg,transparent,${T.bg})`}}/>
 
-  return(
-    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:isD?40:96}}>
-
-
-      {/* HERO — parallax skyline */}
-      <div style={{position:"relative",height:isD?280:isT?250:220,overflow:"hidden",background:"linear-gradient(135deg,#1a1510,#1e1c18 40%,#1a1814 70%,#161412)"}}>
-        <div style={{position:"absolute",inset:0,top:"-20%",height:"140%",willChange:"transform"}}>
-          <img src="/skyline.jpg" alt="Omaha skyline at sunset" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"left 40%",filter:"brightness(0.5) saturate(0.85)",transform:"scale(1.05)"}} onError={e=>{e.target.style.display="none";}}/>
-        </div>
-        <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,0.05) 0%,rgba(20,22,24,0.35) 40%,rgba(20,22,24,0.85) 75%,${T.bg} 100%)`,zIndex:1}}/>
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(90deg,rgba(20,22,24,0.3) 0%,transparent 60%)",zIndex:1}}/>
-        <div style={{position:"relative",zIndex:2,height:"100%",display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:`0 ${px}px ${isD?24:18}px`,maxWidth:mx,margin:"0 auto"}}>
-          <p style={{margin:"0 0 5px",fontSize:10,fontWeight:600,color:T.accent,letterSpacing:3.5,textTransform:"uppercase"}}>Omaha · Council Bluffs</p>
-          <h1 style={{fontSize:isD?42:isT?36:28,fontWeight:300,margin:0,color:T.text,letterSpacing:1.5,lineHeight:1.1}}>
-            <span style={{fontWeight:700,letterSpacing:3}}>GO</span><span style={{color:T.accent,margin:"0 6px",fontWeight:200}}>:</span><span style={{fontWeight:300}}>Guide to Omaha</span>
+        {/* Hero text */}
+        <div style={{position:"absolute",bottom:0,left:0,right:0,zIndex:10,padding:`0 ${px}px ${fullHero?(isD?30:22):(isD?10:7)}px`,maxWidth:mxW,margin:"0 auto"}}>
+          <h1 style={{fontSize:fullHero?(isD?44:isT?36:28):(isD?20:isT?18:16),fontWeight:300,margin:0,color:T.text,letterSpacing:fullHero?1.5:1,lineHeight:1.1,textShadow:"0 2px 12px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.6), 0 0 60px rgba(0,0,0,0.4)",transition:"font-size 0.4s ease"}}>
+            <span style={{fontWeight:800,letterSpacing:fullHero?3:2}}>GO</span>
+            <span style={{color:T.accent,margin:"0 6px",fontWeight:200}}>:</span>
+            <span style={{fontWeight:400}}>Guide to Omaha</span>
           </h1>
-          {lastRefresh&&<p style={{fontSize:11,color:T.textDim,margin:"6px 0 0",letterSpacing:0.6}}>Updated {fmtRel(lastRefresh)}</p>}
+          {fullHero&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:6}}>
+            <div style={{display:"flex",gap:6,flexWrap:"nowrap"}}>
+              {[["omaha","Omaha"],["cb","Council Bluffs"],["lincoln","Lincoln"]].map(([k,label])=><button key={k} onClick={()=>togCity(k)} style={{background:cities.has(k)?"rgba(230,149,107,.18)":"rgba(255,255,255,.06)",border:`1px solid ${cities.has(k)?"rgba(230,149,107,.4)":"rgba(255,255,255,.12)"}`,borderRadius:99,padding:"3px 10px",cursor:"pointer",backdropFilter:"blur(4px)",whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:10,fontWeight:600,color:cities.has(k)?"#E6956B":"rgba(242,239,233,.7)",letterSpacing:1.5,textTransform:"uppercase",textShadow:"0 2px 8px rgba(0,0,0,0.6)"}}>{label}</span></button>)}
+            </div>
+            {weather.temp!==null&&<div style={{display:"flex",alignItems:"center",gap:6,marginTop:4}}><span style={{fontSize:14}}>{weather.icon}</span><span style={{fontSize:13,fontWeight:300,color:T.text,textShadow:"0 2px 8px rgba(0,0,0,0.8)"}}>{weather.temp}°F</span></div>}
+          </div>}
         </div>
       </div>
 
-      {/* ═══ STICKY VIDEO PLAYER ═══ */}
-      <StickyPlayer video={activeVideo} onClose={()=>setActiveVideo(null)} isD={isD} isT={isT}/>
+      {/* ═══ CONTENT ═══ */}
+      {tab==="today"&&<div style={sec}>
 
-      {/* ═══ PRESET BUTTONS + DATE SLIDER ═══ */}
-      <div style={{...sec,marginTop:10}}>
-        {/* Presets: Today / This Week / This Month / Clear */}
-        <div style={{display:"flex",gap:6,marginBottom:16}}>
-          {[{id:"today",label:"Today"},{id:"week",label:"This Week"},{id:"month",label:"This Month"},{id:"clear",label:"Clear"}].map(p=>{
-            const active=preset===p.id||(p.id==="clear"&&!preset&&selDays.length===1&&selDays[0]===toDS(today));
-            return(<button key={p.id} onClick={()=>applyPreset(p.id==="clear"?"today":p.id)} className="pill" style={{
-              padding:"7px 16px",borderRadius:99,border:active?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.25)",
-              background:active?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.12)",
-              color:active?T.accent:"rgba(235,230,220,0.85)",cursor:"pointer",fontSize:11,fontWeight:active?600:500,letterSpacing:1,
-            }}>{p.label}</button>);
-          })}
-        </div>
-        {/* Date strip */}
-        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:6,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none"}}>
-          {dateDays.map(d=>{
-            const ds=toDS(d);const isTd=d.getTime()===today.getTime();const active=selDays.includes(ds);const cnt=dayCnts[ds]||0;
-            return(<button key={ds} onClick={()=>toggleDay(ds)} className="daybtn" style={{
-              padding:"7px 0",borderRadius:12,display:"flex",flexDirection:"column",alignItems:"center",gap:1,
-              minWidth:isD?54:isT?50:46,cursor:"pointer",position:"relative",
-              background:active?"rgba(94,196,182,0.12)":"rgba(255,255,255,0.02)",
-              boxShadow:active?`0 0 14px ${T.accentGlow}`:"none",
-              border:active?`1.5px solid rgba(94,196,182,0.45)`:`1px solid ${isTd?T.borderHi:T.border}`,
-              outline:"none",transition:"all 0.2s",
-            }}>
-              <span style={{fontSize:9,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",color:active?T.accent:isTd?T.textBody:T.textDim}}>{DN[d.getDay()]}</span>
-              <span style={{fontSize:isD?18:16,fontWeight:active?600:300,color:active?T.textHi:isTd?T.text:T.textSec,lineHeight:1.3}}>{d.getDate()}</span>
-              {cnt>0&&<div style={{width:4,height:4,borderRadius:99,background:active?T.accent:T.textDim,marginTop:1}}/>}
-            </button>);
-          })}
-        </div>
-        {selDays.length>1&&<p style={{fontSize:10,color:T.accent,letterSpacing:0.8,marginTop:3,fontWeight:500}}>{selDays.length} days selected · {dayFiltered.length} events</p>}
-      </div>
+        {isDay&&<div style={{opacity:Math.min(1,(1-nb)*1.3),transition:"opacity 0.5s"}}>
+          <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",margin:"16px 0 12px"}}><h2 style={{fontSize:14,fontWeight:700,color:mColor,letterSpacing:1,textTransform:"uppercase",margin:0}}>{mLabel}</h2><span style={{fontSize:10,color:T.textDim,letterSpacing:1}}>{timeLabel}</span></div>
+          <Head text="Trails & Rides" count={TRAILS.length} mt={4} color="#81C784"/>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+            {TRAILS.map(t=>(
+              <div key={t.id} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start"}}>
+                <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
+                  <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
+                  <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
+                    <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(125,212,160,.15)",color:"#81C784",fontWeight:700}}>{t.difficulty}</span>
+                    <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:600}}>{t.distance}</span>
+                  </div>
+                  <div style={{position:"absolute",bottom:10,left:12}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{t.name}</h3>{(()=>{const b=getVenueBadge(t.name);return b?<span style={{marginLeft:6,fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                </div>
+                <div style={{padding:"10px 12px 12px"}}>
+                  <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{t.desc}</p>
+                  <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{t.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+                  <div style={{fontSize:10,color:T.venue,marginTop:6}}>⛰ {t.elev} · {t.surface}</div>
+                  <div style={{display:"flex",gap:6,marginTop:10}}>
+                    <a href={mapsDir(t.lat,t.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"8px 0",borderRadius:99,background:"rgba(125,212,160,.1)",border:"1px solid rgba(125,212,160,.2)",color:"#81C784",fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.dir("#81C784",12)} Trail Map</a>
+                    {t.url&&<a href={t.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"8px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.link(T.textBody,11)} Info</a>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-      {rStatus&&<div style={sec}><div style={{marginTop:8,padding:"9px 14px",borderRadius:12,background:T.accentSoft,border:"1px solid rgba(94,196,182,0.15)",fontSize:12,fontWeight:500,color:T.accent,letterSpacing:0.6,display:"flex",alignItems:"center",gap:7}}>{refreshing&&<span style={{display:"inline-block",width:12,height:12,border:"2px solid transparent",borderTop:`2px solid ${T.accent}`,borderRadius:99,animation:"spin 0.8s linear infinite"}}/>}{rStatus}</div></div>}
+          <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
+          {WALKS.map((wk,i)=>(
+            <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+              <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{wk.icon("#FFB74D",20)}</div>
+                <div style={{flex:1}}>
+                  <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
+                  <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
+                  <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{wk.desc}</p>
+                  <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{wk.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"3px 9px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+                  <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
+          {DAYTIME.map((a,i)=>(
+            <div key={a.id} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+              <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
+                <div style={{flex:1}}>
+                  <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{a.name}</h3>
+                  <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>
+                  <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
+                  <div style={{display:"flex",gap:6,marginTop:10}}>
+                    <a href={mapsDir(a.lat,a.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.dir(T.textBody,11)} Directions</a>
+                    {a.url&&<a href={a.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(94,196,182,.1)",border:"1px solid rgba(94,196,182,.2)",color:T.accent,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.link(T.accent,11)} Visit</a>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>}
+
+        {false&&<div style={{marginTop:16}}>
+          <Head text="Sunset Spots" count={SUNSETS.length} color="#FFB74D"/>
+          <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8}}>
+            {SUNSETS.map((s,i)=>(
+              <div key={s.id} className="ecard" style={{background:CG.sunset,borderRadius:18,border:`1px solid ${T.border}`,padding:"14px 16px",animation:`cardIn .3s ${i*.05}s both`}}>
+                <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+                  <div style={{width:40,height:40,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{s.icon("#FFB74D",20)}</div>
+                  <div style={{flex:1}}>
+                    <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{s.name}</h3>
+                    <p style={{margin:"4px 0 0",fontSize:12,color:T.textBody,lineHeight:1.45}}>{s.desc}</p>
+                    <a href={mapsDir(s.lat,s.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:8,padding:"6px 12px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Go</a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>}
+
+        {isNite&&<div style={{opacity:Math.min(1,nb*1.5),transition:"opacity 0.5s"}}>
+          <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",margin:"16px 0 12px"}}><h2 style={{fontSize:14,fontWeight:700,color:mColor,letterSpacing:1,textTransform:"uppercase",margin:0}}>{mLabel}</h2><span style={{fontSize:10,color:T.textDim,letterSpacing:1}}>{timeLabel}</span></div>
+          <Head text={"Tonight's Events"} count={EVENTS.length} mt={4} color={T.accent}/>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory",marginBottom:10}}>
+            {EVENTS.filter(e=>e.feat&&(cityMatch(e))).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+              <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,width:isD?340:isM?265:290,minWidth:isD?340:isM?265:290,flexShrink:0,scrollSnapAlign:"start",padding:"16px 16px 18px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+                  <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{ev.emoji}</div>
+                  <div><div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:16,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div><p style={{margin:"1px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4,textTransform:"uppercase"}}>{ev.date} · {ev.time}</p></div>
+                </div>
+                <p style={{margin:"0 0 10px",fontSize:12,color:T.textBody,lineHeight:1.45}}>{ev.desc}</p>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <span style={{fontSize:18,fontWeight:300,color:T.textHi}}>{ev.price}</span>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    <button onClick={()=>tog(ev.id)} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
+                    <span style={{fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{ev.venue}</span>
+                  </div>
+                </div>
+              </div>
+            )})}
+          </div>
+          {EVENTS.filter(e=>!e.feat).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+            <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+              <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+                <div style={{flex:1}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                  <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
+                  <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
+                    <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
+                    <span style={{fontSize:11,color:T.venue,letterSpacing:1.2,textTransform:"uppercase",fontWeight:500}}>{ev.venue}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )})}
+        </div>}
+
+        {isDay&&<div style={{textAlign:"center",padding:"20px 0",marginTop:8}}><p style={{fontSize:11,color:T.textDim,letterSpacing:.8}}>Slide forward to preview tonight →</p></div>}
+      </div>}
 
       {/* ═══ EVENTS TAB ═══ */}
       {tab==="events"&&<div style={sec}>
-        <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",borderRadius:12,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,marginTop:8}}>
-          {I.search(T.textDim,14)}
-          <input type="text" placeholder="Search events..." value={q} onChange={e=>setQ(e.target.value)} style={{background:"transparent",border:"none",outline:"none",color:T.text,fontSize:13,fontFamily:T.sans,width:"100%",letterSpacing:0.5}}/>
-          {q&&<button onClick={()=>setQ("")} className="hbtn" style={{background:"rgba(255,255,255,0.08)",border:"none",borderRadius:99,width:20,height:20,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:T.textSec}}>✕</button>}
-        </div>
-
-        {/* Category pills with icons */}
-        <div style={{display:"flex",gap:5,overflowX:"auto",marginTop:8,paddingBottom:2,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none"}}>
-          {CATS.map(c=>{const active=cat===c.id;const cnt=dayFiltered.filter(e=>c.id==="all"||e.cat===c.id).length;const icon=CATICON[c.id];return(
-            <button key={c.id} onClick={()=>{setCat(c.id);setSubTag(null);}} className="pill" style={{padding:"6px 13px",borderRadius:99,display:"flex",alignItems:"center",gap:5,background:active?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.12)",border:active?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.25)",color:active?T.accent:"rgba(235,230,220,0.85)",cursor:"pointer",fontSize:11,fontWeight:active?600:500,whiteSpace:"nowrap",letterSpacing:1.2,textTransform:"uppercase"}}>
-              {icon?icon(active?c.dot||T.accent:"rgba(235,230,220,0.6)",13):null}{c.label}<span style={{fontSize:10,color:active?T.accent:"rgba(235,230,220,0.5)",fontWeight:400}}>({cnt})</span>
-            </button>);})}
-        </div>
-
-        {/* Sub-tags */}
-        {cat!=="all"&&allCatTags.length>0&&<div style={{display:"flex",gap:4,overflowX:"auto",marginTop:6,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none"}}>
-          <button onClick={()=>setSubTag(null)} className="pill" style={{padding:"4px 10px",borderRadius:99,background:!subTag?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.10)",border:!subTag?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.2)",color:!subTag?T.accent:"rgba(235,230,220,0.7)",cursor:"pointer",fontSize:10,fontWeight:!subTag?600:500,letterSpacing:0.8,whiteSpace:"nowrap"}}>All</button>
-          {allCatTags.map(tag=>{const avail=availTags.includes(tag);const active=subTag===tag;return(<button key={tag} onClick={()=>avail&&setSubTag(active?null:tag)} className="pill" style={{padding:"4px 10px",borderRadius:99,background:active?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.10)",border:active?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.2)",color:active?T.accent:avail?"rgba(235,230,220,0.7)":"rgba(235,230,220,0.15)",cursor:avail?"pointer":"default",opacity:avail?1:0.5,fontSize:10,fontWeight:active?600:500,letterSpacing:0.8,whiteSpace:"nowrap"}}>{tag}</button>);})}
-        </div>}
-
-        {!q&&featured.length>0&&cat==="all"&&!subTag&&<>
-          <Head text="Featured" count={featured.length} mt={16}/>
-          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,position:"relative",scrollbarWidth:"none",msOverflowStyle:"none",scrollSnapType:"x mandatory"}}>
-            {featured.map(ev=><FeatSlide key={ev.id} ev={ev} isD={isD} isT={isT} favs={favs} tog={tog} setSel={setSel} playVideo={playVideo}/>)}
+        <Head text="Upcoming Events" count={EVENTS.filter(e=>cityMatch(e)).length} mt={16} color={T.accent}/>
+        {EVENTS.filter(e=>cityMatch(e)).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+          <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
+                <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
+                  <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    {ev.city&&<span style={{fontSize:9,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:600,letterSpacing:.5,textTransform:"uppercase"}}>{ev.city==="cb"?"Council Bluffs":ev.city==="lincoln"?"Lincoln":"Omaha"}</span>}
+                    <button onClick={()=>tog(ev.id)} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
+                    <span style={{fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{ev.venue}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </>}
-
-        <Head text={cat==="all"?(q?"Results":"Events"):CATS.find(c=>c.id===cat)?.label+(subTag?` · ${subTag}`:"")} count={filtered.length} mt={16}/>
-        {filtered.length===0&&<div style={{textAlign:"center",padding:"36px 0"}}><p style={{fontSize:28,marginBottom:6,opacity:0.12}}>{I.search(T.textDim,28)}</p><p style={{fontSize:12,color:T.textDim,letterSpacing:1}}>No events found</p></div>}
-        {filtered.map((e,i)=><EventCard key={e.id} ev={e} i={i}/>)}
-
-        <div style={{marginTop:16,padding:"13px 14px",borderRadius:16,background:CG._,border:`1px solid ${T.border}`,display:"flex",alignItems:"center",gap:12}}>
-          <div style={{width:36,height:36,borderRadius:10,background:"rgba(255,255,255,0.04)",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.refresh(T.accent,16)}</div>
-          <div style={{flex:1}}><p style={{margin:0,fontSize:13,fontWeight:500,color:T.text,letterSpacing:0.5}}>Nightly Refresh</p><p style={{margin:"2px 0 0",fontSize:10,color:T.textDim,letterSpacing:0.8}}>Auto-updates at 11 PM</p></div>
-          <button onClick={()=>refresh()} disabled={refreshing} className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(255,255,255,0.05)",border:`1px solid ${T.border}`,color:T.accent,cursor:refreshing?"wait":"pointer",fontSize:11,fontWeight:600,letterSpacing:1}}>{refreshing?"···":"Refresh"}</button>
-        </div>
+        );})}
       </div>}
 
       {/* ═══ EXPLORE TAB ═══ */}
       {tab==="explore"&&<div style={sec}>
-        <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",borderRadius:12,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,marginTop:12}}>
-          {I.search(T.textDim,14)}
-          <input type="text" placeholder="Search places, activities..." value={exploreQ} onChange={e=>setExploreQ(e.target.value)} style={{background:"transparent",border:"none",outline:"none",color:T.text,fontSize:13,fontFamily:T.sans,width:"100%",letterSpacing:0.5}}/>
+
+        {/* ── Parks ── */}
+        <Head text="Parks & Gardens" count={PARKS.length} mt={16} color="#81C784"/>
+        <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+          {PARKS.map(p=>(
+            <div key={p.id} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start"}}>
+              <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
+                <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
+                <div style={{position:"absolute",top:10,left:10}}><span style={{fontSize:18}}>{p.icon}</span></div>
+                <div style={{position:"absolute",bottom:10,left:12}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{p.name}</h3></div>
+              </div>
+              <div style={{padding:"10px 12px 12px"}}>
+                <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.desc}</p>
+                <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{p.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+                <div style={{display:"flex",gap:6,marginTop:10}}>
+                  <a href={mapsDir(p.lat,p.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(125,212,160,.1)",border:"1px solid rgba(125,212,160,.2)",color:"#81C784",fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.dir("#81C784",11)} Directions</a>
+                  {p.url&&<a href={p.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.link(T.textBody,11)} Info</a>}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <Head text="Explore Omaha" mt={16}/>
-        {EXPLORE.filter(s=>!exploreQ||s.title.toLowerCase().includes(exploreQ.toLowerCase())||s.items.some(i=>i.name.toLowerCase().includes(exploreQ.toLowerCase()))).map(s=>
-          <ExploreSection key={s.id} section={exploreQ?{...s,items:s.items.filter(i=>i.name.toLowerCase().includes(exploreQ.toLowerCase())||i.desc.toLowerCase().includes(exploreQ.toLowerCase())||!exploreQ)}:s} isD={isD} isM={isM}/>
-        )}
+
+        {/* ── Trails ── */}
+        <Head text="Trails & Rides" count={TRAILS.length} color="#81C784"/>
+        <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+          {TRAILS.map(t=>(
+            <div key={t.id} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start"}}>
+              <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
+                <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
+                <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
+                <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
+                  <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(125,212,160,.15)",color:"#81C784",fontWeight:700}}>{t.difficulty}</span>
+                  <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:600}}>{t.distance}</span>
+                </div>
+                <div style={{position:"absolute",bottom:10,left:12}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{t.name}</h3></div>
+              </div>
+              <div style={{padding:"10px 12px 12px"}}>
+                <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{t.desc}</p>
+                <a href={mapsDir(t.lat,t.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(125,212,160,.1)",border:"1px solid rgba(125,212,160,.2)",color:"#81C784",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#81C784",11)} Trail Map</a>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Walking Tours ── */}
+        <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
+        {WALKS.map((wk,i)=>(
+          <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{wk.icon("#FFB74D",20)}</div>
+              <div style={{flex:1}}>
+                <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
+                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
+                <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{wk.desc}</p>
+                <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* ── Neighborhoods ── */}
+        <Head text="Neighborhoods" count={HOODS.length} color="#CE93D8"/>
+        <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+          {HOODS.map(h=>(
+            <div key={h.id} onClick={()=>{setSpotCat("all");setTab("hood:"+h.id);}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?220:isM?180:200,minWidth:isD?220:isM?180:200,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+              <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
+                <img src={h.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
+                <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)`}}/>
+                <div style={{position:"absolute",top:10,left:10}}>
+                  <div style={{width:8,height:8,borderRadius:"50%",background:h.color,boxShadow:`0 0 8px ${h.color}66`}}/>
+                </div>
+                <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 12px 10px"}}>
+                  <h3 style={{margin:0,fontSize:15,fontWeight:700,color:T.textHi,letterSpacing:.3}}>{h.name}</h3>
+                  <p style={{margin:"1px 0 0",fontSize:10,color:h.color,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>{h.sub}</p>
+                </div>
+              </div>
+              <div style={{padding:"8px 12px 10px"}}>
+                <p style={{margin:0,fontSize:11,color:T.textBody,lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{h.desc}</p>
+                <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>{h.tags.slice(0,3).map(tag=><span key={tag} style={{fontSize:8,padding:"2px 6px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textDim,fontWeight:500}}>{tag}</span>)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Things To Do ── */}
+        <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
+        {DAYTIME.map((a,i)=>(
+          <div key={a.id} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
+              <div style={{flex:1}}>
+                <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{a.name}</h3>
+                {a.url?<a href={a.url} target="_blank" rel="noopener noreferrer" style={{fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent,textDecoration:"none"}}>{a.time} · {a.price}</a>:<p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>}
+                <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* ── Venues (compact link to venues view) ── */}
+        <div onClick={()=>setTab("venues")} className="ecard" style={{background:"linear-gradient(135deg,#1A2E32 0%,#213740 60%,#1C3035 100%)",borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"16px":"20px 24px",marginTop:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:14}}>
+            <div style={{width:48,height:48,borderRadius:14,background:"rgba(94,196,182,.1)",display:"flex",alignItems:"center",justifyContent:"center"}}>{IC.venues(T.accent,24)}</div>
+            <div>
+              <h3 style={{margin:0,fontSize:16,fontWeight:700,color:T.textHi}}>Venues</h3>
+              <p style={{margin:"2px 0 0",fontSize:11,color:T.textSec,letterSpacing:.5}}>{VENUES.length} venues · Arenas, clubs, theaters & more</p>
+            </div>
+          </div>
+          <div style={{transform:"rotate(0)",flexShrink:0}}>{IC.chev(T.textSec,20)}</div>
+        </div>
+
+        <div style={{height:90}}/>
       </div>}
 
-      {/* ═══ VENUES TAB ═══ */}
+      {/* ═══ VENUES TAB (accessed from Explore) ═══ */}
       {tab==="venues"&&<div style={sec}>
-        {/* Venue category filters */}
-        {(()=>{const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars & Restaurants"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
-        const fv=venCat==="all"?VENUES:VENUES.filter(v=>v.type===venCat);
-        return(<>
-          <div style={{display:"flex",gap:5,overflowX:"auto",marginTop:12,paddingBottom:2,WebkitOverflowScrolling:"touch"}}>
-            {VCATS.map(c=>{const active=venCat===c.id;const cnt=c.id==="all"?VENUES.length:VENUES.filter(v=>v.type===c.id).length;return(
-              <button key={c.id} onClick={()=>setVenCat(c.id)} className="pill" style={{padding:"6px 13px",borderRadius:99,background:active?"rgba(94,196,182,0.15)":"rgba(235,230,220,0.12)",border:active?`1px solid ${T.accent}`:"1px solid rgba(235,230,220,0.25)",color:active?T.accent:"rgba(235,230,220,0.85)",cursor:"pointer",fontSize:11,fontWeight:active?600:500,whiteSpace:"nowrap",letterSpacing:1.2,textTransform:"uppercase"}}>
-                {c.label}<span style={{fontSize:10,color:active?T.accent:"rgba(235,230,220,0.5)",fontWeight:400,marginLeft:4}}>({cnt})</span>
-              </button>);})}
-          </div>
-          <Head text={venCat==="all"?"Venues":VCATS.find(c=>c.id===venCat)?.label||"Venues"} count={fv.length} mt={14}/>
-          {isD?<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>{fv.map((v,i)=><VenueCard key={v.id} v={v} cnt={vCnt[v.name]||0} isD={isD} isT={isT} i={i}/>)}</div>
-            :fv.map((v,i)=><VenueCard key={v.id} v={v} cnt={vCnt[v.name]||0} isD={isD} isT={isT} i={i}/>)}
-        </>);})()}
+        <div style={{display:"flex",alignItems:"center",gap:10,marginTop:16,marginBottom:12}}>
+          <button onClick={()=>setTab("explore")} className="hbtn" style={{background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,borderRadius:99,padding:"6px 10px",cursor:"pointer",display:"flex",alignItems:"center"}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textSec} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <h2 style={{margin:0,fontSize:16,fontWeight:700,color:T.textHi,letterSpacing:.5}}>Venues</h2>
+          <span style={{fontSize:11,color:T.textDim}}>{VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).filter(v=>venCat==="all"||v.type===venCat).length}</span>
+        </div>
+        <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",marginBottom:8}}>
+          {VCATS.map(c=>{const active=venCat===c.id;const cnt=c.id==="all"?VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).length:VENUES.filter(v=>(cities.size===3||!v.city||cities.has(v.city))&&v.type===c.id).length;return(
+            <button key={c.id} onClick={()=>setVenCat(c.id)} className="pill" style={{padding:"5px 12px",borderRadius:99,background:active?`${T.accent}15`:"rgba(255,255,255,.06)",border:`1px solid ${active?T.accent+"44":T.border}`,color:active?T.accent:T.textSec,cursor:"pointer",fontSize:10,fontWeight:active?600:500,whiteSpace:"nowrap",letterSpacing:1,textTransform:"uppercase"}}>
+              {c.label}<span style={{fontSize:9,color:active?T.accent:T.textDim,marginLeft:3}}>({cnt})</span>
+            </button>);})}
+        </div>
+        {VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).filter(v=>venCat==="all"||v.type===venCat).map((v,i)=>(
+          <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`}}>
+            <div style={{position:"relative",height:isD?140:isM?100:115,overflow:"hidden"}}>
+              <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+              <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
+              <div style={{position:"absolute",top:10,right:10,display:"flex",gap:5}}>
+                <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:600}}>{v.type}</span>
+                {v.city&&v.city!=="omaha"&&<span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(230,149,107,.15)",color:"#E6956B",fontWeight:600}}>{v.city==="cb"?"CB":"Lincoln"}</span>}
+              </div>
+              <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 14px 10px"}}>
+                <h3 style={{margin:0,fontSize:isD?17:15,fontWeight:600,color:T.textHi,letterSpacing:.5}}>{v.name}</h3>
+                <p style={{margin:"2px 0 0",fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{v.area} · {v.cap}</p>
+              </div>
+            </div>
+            <div style={{padding:"10px 14px 12px"}}>
+              <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45}}>{v.desc}</p>
+              {(()=>{const b=getVenueBadge(v.name);return b?<span style={{display:"inline-block",marginTop:6,fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}
+            </div>
+          </a>
+        ))}
+        <div style={{height:90}}/>
       </div>}
+
+      {/* ═══ NEIGHBORHOOD DETAIL (accessed from Explore) ═══ */}
+      {tab.startsWith("hood:")&&(()=>{
+        const hoodId=tab.split(":")[1];
+        const hood=HOODS.find(h=>h.id===hoodId);
+        if(!hood)return null;
+        const hoodVenues=VENUES.filter(v=>{
+          const areaMap={"old-market":["Old Market","Downtown"],"benson":["Benson"],"dundee":["Dundee","Memorial Park"],"blackstone":["Blackstone"],"north-downtown":["North Downtown"],"little-italy":["Little Italy","Little Bohemia"],"aksarben":["Aksarben"],"west-omaha":["West Omaha","La Vista"],"south-omaha":["South Omaha"],"midtown":["Central","Midtown","Capitol District"]};
+          return (areaMap[hoodId]||[]).some(a=>v.area.includes(a));
+        });
+        const hoodEvents=EVENTS.filter(ev=>hoodVenues.some(v=>v.name===ev.venue));
+        const hImgs=hood.imgs||[hood.img];
+        return <div style={{maxWidth:mxW,margin:"0 auto"}}>
+
+          {/* ── HERO IMAGE ── */}
+          <div style={{position:"relative",height:isD?280:isM?220:250,overflow:"hidden",borderRadius:"0 0 24px 24px"}}>
+            <img src={hImgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
+            <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)`}}/>
+            <button onClick={()=>setTab("explore")} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(20,22,24,.6)",backdropFilter:"blur(8px)",border:`1px solid ${T.border}`,borderRadius:99,padding:"8px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:.5}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Explore</button>
+            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:`0 ${px}px 20px`}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                <div style={{width:10,height:10,borderRadius:"50%",background:hood.color,boxShadow:`0 0 12px ${hood.color}`}}/>
+                <span style={{fontSize:10,fontWeight:700,color:hood.color,letterSpacing:2,textTransform:"uppercase"}}>{hood.sub}</span>
+              </div>
+              <h1 style={{margin:0,fontSize:isD?32:26,fontWeight:300,color:T.textHi,letterSpacing:1.5,lineHeight:1.1}}>{hood.name}</h1>
+              <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
+                {hood.vibe&&<span style={{fontSize:10,padding:"4px 10px",borderRadius:99,background:`${hood.color}18`,border:`1px solid ${hood.color}33`,color:hood.color,fontWeight:600,letterSpacing:.5}}>{hood.vibe}</span>}
+                {hood.bestFor&&<span style={{fontSize:10,padding:"4px 10px",borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,color:T.textSec,fontWeight:500}}>Best for: {hood.bestFor}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div style={{padding:`0 ${px}px`}}>
+
+          {/* ── ABOUT ── */}
+          <p style={{fontSize:13,color:T.textBody,lineHeight:1.7,margin:"20px 0 0",letterSpacing:.3}}>{hood.desc}</p>
+
+          {/* ── IMAGE CAROUSEL ── */}
+          {hImgs.length>1&&<div style={{display:"flex",gap:8,overflowX:"auto",margin:"16px 0",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
+            {hImgs.map((img,i)=><div key={i} style={{width:isD?200:isM?150:170,height:isD?130:isM?100:110,borderRadius:14,overflow:"hidden",flexShrink:0,border:`1px solid ${T.border}`}}>
+              <img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.65}}/>
+            </div>)}
+          </div>}
+
+          {/* ── DIRECTIONS CTA ── */}
+          <a href={mapsDir(hood.lat,hood.lng)} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,width:"100%",padding:"13px 0",borderRadius:99,background:hood.color,color:T.bg,fontSize:12,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.5,textTransform:"uppercase",marginTop:8}}>{IC.dir(T.bg,14)} Get Directions</a>
+
+          {/* ── WALKING PATH ── */}
+          {hood.walk&&<div style={{marginTop:24}}>
+            <Head text={hood.walk.name} color={hood.color}/>
+            <div style={{display:"flex",gap:12,marginBottom:12}}>
+              <span style={{fontSize:10,padding:"3px 10px",borderRadius:99,background:"rgba(255,255,255,.06)",color:T.textSec,fontWeight:600}}>{hood.walk.distance}</span>
+              <span style={{fontSize:10,padding:"3px 10px",borderRadius:99,background:"rgba(255,255,255,.06)",color:T.textSec,fontWeight:600}}>{hood.walk.time}</span>
+            </div>
+            <div style={{position:"relative",paddingLeft:20}}>
+              <div style={{position:"absolute",left:6,top:4,bottom:4,width:2,background:`${hood.color}33`,borderRadius:2}}/>
+              {hood.walk.steps.map((step,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:12,position:"relative"}}>
+                <div style={{width:14,height:14,borderRadius:"50%",background:i===0||i===hood.walk.steps.length-1?hood.color:`${hood.color}44`,border:`2px solid ${hood.color}`,flexShrink:0,marginTop:1,position:"absolute",left:-7}}/>
+                <p style={{margin:0,fontSize:12,color:i===0?T.textHi:T.textBody,lineHeight:1.5,paddingLeft:16,fontWeight:i===0?600:400}}>{step}</p>
+              </div>)}
+            </div>
+          </div>}
+
+          {/* ── DIRECTORY: restaurants, bars, shops, entertainment ── */}
+          {hood.spots&&hood.spots.length>0&&(()=>{
+            const SCATS=[{id:"all",label:"All",icon:"✦"},{id:"eat",label:"Eat",icon:"🍽️"},{id:"drink",label:"Drink",icon:"🍸"},{id:"sweet",label:"Coffee & Sweets",icon:"☕"},{id:"shop",label:"Shop",icon:"🛍️"},{id:"play",label:"Do",icon:"🎬"}];
+            const filtered=spotCat==="all"?hood.spots:hood.spots.filter(s=>s.cat===spotCat);
+            return <div style={{marginTop:24}}>
+              <div style={{display:"flex",alignItems:"baseline",gap:10,margin:"0 0 10px"}}>
+                <h2 style={{fontSize:isD?22:18,fontWeight:300,color:T.textHi,letterSpacing:1.5,margin:0}}>{hood.name} <span style={{color:hood.color,fontWeight:300}}>Directory</span></h2>
+                <span style={{fontSize:11,color:T.textDim,letterSpacing:1}}>{filtered.length}</span>
+              </div>
+              <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch",marginBottom:4}}>
+                {SCATS.map(c=>{const active=spotCat===c.id;const cnt=c.id==="all"?hood.spots.length:hood.spots.filter(s=>s.cat===c.id).length;if(cnt===0&&c.id!=="all")return null;return(
+                  <button key={c.id} onClick={()=>setSpotCat(c.id)} className="pill" style={{padding:"6px 12px",borderRadius:99,background:active?`${hood.color}18`:"rgba(255,255,255,.05)",border:`1px solid ${active?hood.color+"44":T.border}`,color:active?hood.color:T.textSec,cursor:"pointer",fontSize:10,fontWeight:active?600:500,whiteSpace:"nowrap",letterSpacing:.8,textTransform:"uppercase",display:"flex",alignItems:"center",gap:4}}>
+                    <span style={{fontSize:12}}>{c.icon}</span>{c.label}<span style={{fontSize:9,color:active?hood.color:T.textDim,marginLeft:2}}>({cnt})</span>
+                  </button>);})}
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:6}}>
+                {filtered.map((spot,i)=>{
+                  const card=<div key={i} className="ecard" style={{background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"14px 16px",display:"flex",flexDirection:"column",gap:4}}>
+                    <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+                      <div style={{width:40,height:40,borderRadius:11,background:"rgba(255,255,255,.05)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0}}>{spot.icon}</div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                          <h4 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{spot.name}</h4>
+                          {spot.price&&<span style={{fontSize:9,color:T.textDim,fontWeight:500}}>{spot.price}</span>}
+                        </div>
+                        <div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}>
+                          <span style={{fontSize:9,padding:"1px 7px",borderRadius:99,background:`${hood.color}15`,color:hood.color,fontWeight:600,letterSpacing:.4,textTransform:"uppercase"}}>{spot.type}</span>
+                          {spot.addr&&<span style={{fontSize:10,color:T.textDim,letterSpacing:.3}}>{spot.addr}</span>}
+                        </div>
+                        <p style={{margin:"5px 0 0",fontSize:12,color:T.textBody,lineHeight:1.45}}>{spot.desc}</p>
+                        {spot.known&&<p style={{margin:"4px 0 0",fontSize:10,color:T.textSec,letterSpacing:.3,fontStyle:"italic"}}>Known for: {spot.known}</p>}
+                      </div>
+                    </div>
+                  </div>;
+                  return spot.url?<a key={i} href={spot.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",color:"inherit"}}>{card}</a>:card;
+                })}
+              </div>
+            </div>;
+          })()}
+
+          {/* ── AREA EVENTS ── */}
+          {hood.events&&hood.events.length>0&&<div style={{marginTop:24}}>
+            <Head text="Events & Happenings" count={hood.events.length} color={hood.color}/>
+            {hood.events.map((ev,i)=>(
+              <div key={i} className="ecard" style={{background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:6}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <h4 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{ev.name}</h4>
+                  <span style={{fontSize:9,padding:"3px 9px",borderRadius:99,background:`${hood.color}15`,border:`1px solid ${hood.color}33`,color:hood.color,fontWeight:600,letterSpacing:.5}}>{ev.when}</span>
+                </div>
+                <p style={{margin:"4px 0 0",fontSize:12,color:T.textBody,lineHeight:1.45}}>{ev.desc}</p>
+              </div>
+            ))}
+            {hoodEvents.length>0&&hoodEvents.map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+              <div key={ev.id} className="ecard" style={{background:gr,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:6}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:16}}>{ev.emoji}</span>
+                  <div style={{flex:1}}>
+                    <h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{ev.title}</h4>
+                    <p style={{margin:"1px 0 0",fontSize:10,fontWeight:600,color:ac,letterSpacing:1}}>{ev.date} \u00b7 {ev.time} \u00b7 {ev.price}</p>
+                  </div>
+                </div>
+              </div>
+            );})}
+          </div>}
+
+          {/* ── VENUES ── */}
+          {hoodVenues.length>0&&<div style={{marginTop:24}}>
+            <Head text={"Venues in "+hood.name} count={hoodVenues.length} color={hood.color}/>
+            {hoodVenues.map((v,i)=>(
+              <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{display:"flex",alignItems:"center",gap:12,textDecoration:"none",color:"inherit",background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 14px",marginBottom:6}}>
+                <div style={{width:48,height:48,borderRadius:14,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.05)"}}>
+                  <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.6}} onError={e=>{e.target.style.display="none"}}/>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <h4 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{v.name}</h4>
+                  <p style={{margin:"1px 0 0",fontSize:10,color:T.textSec,letterSpacing:.5}}>{v.type} \u00b7 {v.cap}</p>
+                </div>
+                {IC.chev(T.textDim,16)}
+              </a>
+            ))}
+          </div>}
+
+          {/* ── HISTORY ── */}
+          {hood.history&&<div style={{marginTop:24}}>
+            <Head text="History" color={T.textSec}/>
+            <div style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px 16px":"18px 22px"}}>
+              <p style={{margin:0,fontSize:13,color:T.textBody,lineHeight:1.8,letterSpacing:.3}}>{hood.history}</p>
+            </div>
+          </div>}
+
+          {/* ── TAGS ── */}
+          <div style={{display:"flex",gap:5,marginTop:20,flexWrap:"wrap"}}>
+            {hood.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"4px 10px",borderRadius:99,background:`${hood.color}12`,border:`1px solid ${hood.color}25`,color:hood.color,fontWeight:600,letterSpacing:.5}}>{tag}</span>)}
+          </div>
+
+          <div style={{height:100}}/>
+          </div>
+        </div>;
+      })()}
 
       {/* ═══ SAVED TAB ═══ */}
       {tab==="saved"&&<div style={sec}>
-        <Head text="Saved" count={favs.length} mt={12}/>
-        {favs.length===0?(<div style={{textAlign:"center",padding:"44px 0"}}>{I.heart(T.textDim,32)}<p style={{fontSize:12,color:T.textDim,letterSpacing:1,marginTop:10}}>Nothing saved yet</p><button onClick={()=>setTab("events")} className="hbtn" style={{marginTop:14,padding:"9px 22px",borderRadius:99,background:"rgba(255,255,255,0.05)",border:`1px solid ${T.border}`,color:T.accent,cursor:"pointer",fontSize:11,fontWeight:600,letterSpacing:1}}>BROWSE EVENTS</button></div>)
-          :(all.filter(e=>favs.includes(e.id)).sort((a,b)=>new Date(a.date)-new Date(b.date)).map((e,i)=><EventCard key={e.id} ev={e} i={i}/>))}
+        <Head text="Saved Events" count={favs.length} mt={16} color={T.gold}/>
+        {favs.length===0?<div style={{textAlign:"center",padding:"40px 0"}}><p style={{fontSize:13,color:T.textDim}}>No saved events yet. Tap the heart on any event to save it.</p></div>
+        :EVENTS.filter(ev=>favs.includes(ev.id)).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+          <div key={ev.id} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+              <div style={{flex:1}}>
+                <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>
+                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
+                  <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
+                  <button onClick={()=>tog(ev.id)} className="hbtn" style={{background:"rgba(212,173,101,.1)",border:"1px solid rgba(212,173,101,.2)",borderRadius:99,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:T.gold,fontSize:10,fontWeight:600}}>{IC.heart(T.gold,12,true)} Saved</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );})}
+        <div style={{height:90}}/>
       </div>}
 
-      {/* ═══ DETAIL MODAL ═══ */}
-      {sel&&(<div onClick={()=>setSel(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(12px)",zIndex:100,display:"flex",alignItems:isD?"center":"flex-end",justifyContent:"center",animation:"fadeIn 0.2s"}}>
-        <div onClick={e=>e.stopPropagation()} style={{background:T.surface,borderRadius:isD?22:"22px 22px 0 0",maxWidth:isD?500:560,width:"100%",maxHeight:isD?"85vh":"92vh",overflow:"auto",animation:isD?"zoomIn 0.3s cubic-bezier(0.16,1,0.3,1)":"sheetUp 0.4s cubic-bezier(0.16,1,0.3,1)",margin:isD?"0 20px":0}}>
-          {!isD&&<div style={{width:32,height:3,borderRadius:99,background:T.textDim,margin:"10px auto 4px"}}/>}
-          <div style={{position:"relative",margin:isD?"12px 16px 0":"6px 12px 0",borderRadius:16,overflow:"hidden",height:isD?230:isT?200:170,background:CG[sel.cat]||CG._}}>
-            <img src={pickImg(sel)} alt="" referrerPolicy="no-referrer" onError={e=>{e.target.style.display="none";}} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.1) 0%,rgba(20,22,24,0.9) 100%)"}}/>
-            <button onClick={()=>setSel(null)} className="hbtn" style={{position:"absolute",top:12,right:12,width:42,height:42,borderRadius:99,background:"rgba(30,32,36,0.7)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.15)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(242,239,233,0.85)",zIndex:2,fontSize:18,fontWeight:300}}>✕</button>
-            <div style={{position:"absolute",top:12,left:12,display:"flex",gap:8,zIndex:2}}>
-              <button onClick={()=>tog(sel.id)} className="hbtn" style={{width:42,height:42,borderRadius:99,background:"rgba(30,32,36,0.7)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.15)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.heart(favs.includes(sel.id)?T.gold:"rgba(242,239,233,0.85)",20,favs.includes(sel.id))}</button>
-              <button onClick={()=>{const txt=`${sel.title}\n${fmtFull(sel.date)} · ${sel.time}\n${sel.venue}\n${sel.price}\n\n${sel.desc}${sel.url&&sel.url!=="#"?"\n\n"+sel.url:""}`;if(navigator.share){navigator.share({title:sel.title,text:txt}).catch(()=>{});}else{navigator.clipboard?.writeText(txt);setShareMsg(true);setTimeout(()=>setShareMsg(false),2000);}}} className="hbtn" style={{width:42,height:42,borderRadius:99,background:"rgba(30,32,36,0.7)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.15)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.share("rgba(242,239,233,0.85)",20)}</button>
+      {/* ═══ BOTTOM SLIDER + NAV ═══ */}
+      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 14px max(4px,env(safe-area-inset-bottom))",display:"flex",flexDirection:"column",alignItems:"center"}}>
+        <div style={{width:"100%",maxWidth:isD?480:isT?400:360,padding:"8px 14px 4px",background:"rgba(20,22,24,.95)",backdropFilter:"blur(22px)",borderRadius:"14px 14px 0 0",borderTop:`1px solid ${T.border}`,borderLeft:`1px solid ${T.border}`,borderRight:`1px solid ${T.border}`}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>
+            <div style={{flex:1,position:"relative",height:36,borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,overflow:"hidden",cursor:"pointer"}}>
+              <div style={{position:"absolute",left:0,top:0,bottom:0,width:`${Math.max(4,Math.min(96,tv))}%`,borderRadius:99,background:"linear-gradient(90deg,#F4C97E 0%,#87CEEB 22%,#E6956B 52%,#5C3470 78%,#1A2444 100%)",opacity:.35,transition:drag?"none":"width .4s ease"}}/>
+              {!isLive&&<div style={{position:"absolute",left:`${Math.max(2,Math.min(98,nowTv))}%`,top:4,bottom:4,width:2,background:"rgba(255,255,255,.3)",borderRadius:1,transform:"translateX(-1px)",zIndex:1}}/>}
+              <div style={{position:"absolute",left:`clamp(18px, ${tv}%, calc(100% - 18px))`,top:"50%",transform:"translate(-50%,-50%)",width:drag?30:26,height:drag?30:26,borderRadius:"50%",background:mColor,border:"2.5px solid rgba(255,255,255,.9)",boxShadow:`0 0 10px ${mColor}55`,transition:drag?"none":"all .25s ease",pointerEvents:"none",zIndex:3}}/>
+              <input type="range" min="0" max="100" value={tv} onChange={e=>{setTv(Number(e.target.value));setIsLive(false);}} onMouseDown={()=>setDrag(true)} onMouseUp={()=>setDrag(false)} onTouchStart={()=>setDrag(true)} onTouchEnd={()=>setDrag(false)} style={{position:"absolute",width:"100%",height:"100%",opacity:0,cursor:"pointer",zIndex:4,margin:0}}/>
             </div>
-            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 18px 14px"}}>
-              <p style={{margin:"0 0 3px",fontSize:10,fontWeight:700,color:CA[sel.cat]||T.accent,letterSpacing:2.5,textTransform:"uppercase"}}>{sel.cat}</p>
-              <h2 style={{fontSize:isD?24:20,fontWeight:600,margin:0,color:T.textHi,letterSpacing:0.5,lineHeight:1.2}}>{sel.title}</h2>
-            </div>
+            <span style={{fontSize:14,opacity:.7,flexShrink:0}}>🌙</span>
           </div>
-          <div style={{padding:isD?"18px 22px 24px":"14px 18px 24px"}}>
-            <p style={{fontSize:14,color:T.textBody,lineHeight:1.7,margin:"0 0 16px",letterSpacing:0.3}}>{sel.desc}</p>
-            {sel.ytId&&<div style={{marginBottom:16}}>
-              <VideoFacade ytId={sel.ytId} h={isD?220:isT?190:160} onPlay={()=>{playVideo(sel);setSel(null);}}/>
-            </div>}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:16}}>
-              {[{l:"Date",v:fmtFull(sel.date)},{l:"Time",v:sel.time},{l:"Venue",v:sel.venue},{l:"Price",v:showPrice(sel)}].map(r=>(
-                <div key={r.l} style={{padding:"10px 12px",borderRadius:12,background:CG._,border:`1px solid ${T.border}`}}>
-                  <p style={{margin:0,fontSize:9,color:T.textDim,fontWeight:600,letterSpacing:1.8,textTransform:"uppercase"}}>{r.l}</p>
-                  <p style={{margin:"4px 0 0",fontSize:13,fontWeight:500,color:T.textHi,letterSpacing:0.3}}>{r.v}</p>
-                </div>))}
-            </div>
-            <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:20}}>
-              {(sel.tags||[]).map(t=><span key={t} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,0.05)",color:T.textSec,fontWeight:500,letterSpacing:0.6}}>{t}</span>)}
-            </div>
-            {sel.url&&sel.url!=="#"&&<a href={sel.url} target="_blank" rel="noopener noreferrer" className="cta" style={{display:"block",width:"100%",padding:"14px 0",borderRadius:99,background:T.accent,color:T.bg,fontSize:13,fontWeight:700,textAlign:"center",textDecoration:"none",letterSpacing:1.8,textTransform:"uppercase"}}>{sel.url.includes("/event")||sel.url.includes("/ticket")||sel.url.includes("ticketmaster")||sel.url.includes("etix.com")||sel.url.includes("axs.com")||sel.url.includes("eventbrite")?"Get Tickets":"Visit Venue"}</a>}
-            {shareMsg&&<p style={{textAlign:"center",marginTop:8,fontSize:11,color:T.accent,letterSpacing:1,fontWeight:500,animation:"fadeIn 0.2s"}}>Event info copied to clipboard!</p>}
+          <div style={{display:"flex",justifyContent:"center",padding:"4px 0 0"}}>
+            <button onClick={goLive} style={{background:isLive?`${T.accent}15`:"rgba(255,255,255,.06)",border:`1px solid ${isLive?T.accent+"33":T.border}`,borderRadius:99,padding:"2px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
+              {isLive&&<div style={{width:5,height:5,borderRadius:"50%",background:T.accent,animation:"twinkle 1.5s ease-in-out infinite"}}/>}
+              <span style={{fontSize:9,fontWeight:600,color:isLive?T.accent:T.textSec,letterSpacing:.6}}>{timeLabel}</span>
+            </button>
           </div>
         </div>
-      </div>)}
-
-      {/* ═══ FOOTER ═══ */}
-      <div style={{maxWidth:mx,margin:"32px auto 100px",padding:`0 ${px}px`,textAlign:"center"}}>
-        <div style={{borderTop:`1px solid ${T.border}`,paddingTop:16}}>
-          <p style={{fontSize:10,color:T.textDim,letterSpacing:0.6,lineHeight:1.7,margin:"0 0 8px"}}>
-            {all.length} events across {new Set(all.map(e=>e.venue)).size} venues · Updated {BUILD_META.lastPipeline?new Date(BUILD_META.lastPipeline).toLocaleDateString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"recently"}
-            {lastRefresh&&` · Live refresh ${fmtRel(lastRefresh)}`}
-          </p>
-          <p style={{fontSize:9,color:"rgba(235,230,220,0.25)",letterSpacing:0.5,lineHeight:1.6,margin:0}}>
-            Some ticket links may earn a small commission at no extra cost to you.
-          </p>
-          <p style={{fontSize:9,color:"rgba(235,230,220,0.2)",letterSpacing:0.4,margin:"6px 0 0"}}>
-            © {new Date().getFullYear()} GO: Guide to Omaha
-          </p>
-        </div>
-      </div>
-
-      {/* BOTTOM NAV */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 14px max(8px, env(safe-area-inset-bottom))",display:"flex",justifyContent:"center"}}>
-        <div style={{background:"rgba(27,29,33,0.93)",backdropFilter:"blur(22px)",borderRadius:16,display:"flex",justifyContent:"space-around",padding:"4px 2px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`}}>
-          {tabs.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,background:tab===t.id?"rgba(94,196,182,0.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"7px 10px",borderRadius:11,minWidth:isD?76:isT?58:48,color:tab===t.id?T.accent:T.textDim,transition:"all 0.2s"}}>
-              <span style={{position:"relative"}}>{t.icon(tab===t.id?T.accent:T.textDim,isD?20:17)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
-              <span style={{fontSize:isD?10:9,fontWeight:tab===t.id?600:400,letterSpacing:0.8,textTransform:"uppercase"}}>{t.label}</span>
+        <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:"0 0 16px 16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:"none"}}>
+          {tabsD.map(t=>(
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
+              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
+              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:"))))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>
           ))}
         </div>
       </div>
 
+      <style>{`
+        @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+        @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        input[type="range"]{-webkit-appearance:none;appearance:none}
+        input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:40px;height:40px}
+        .ecard{transition:all .22s cubic-bezier(.25,.8,.25,1)}.ecard:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)!important}
+        .hbtn{transition:all .18s ease}.hbtn:hover{color:#fff!important;background:rgba(255,255,255,.1)!important}.hbtn:active{transform:scale(.96)}
+      `}</style>
     </div>
   );
 }

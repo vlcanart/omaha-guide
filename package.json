@@ -34,9 +34,12 @@
     "ingest:dry": "node scripts/ingest-events.js --dry-run"
   },
   "dependencies": {
+    "@react-leaflet/core": "^2.1.0",
     "dotenv": "^17.3.1",
+    "leaflet": "^1.9.4",
     "next": "^14.2.0",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "react-leaflet": "^4.2.1"
   }
 }

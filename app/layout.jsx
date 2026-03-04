@@ -8,19 +8,21 @@ export const metadata = {
   creator: 'GO: Guide to Omaha',
   publisher: 'GO: Guide to Omaha',
   robots: 'index, follow',
-  alternates: { canonical: 'https://goguideomaha.com' },
+  alternates: { canonical: 'https://go-omaha.com' },
   openGraph: {
     title: 'GO: Guide to Omaha',
     description: 'Your guide to everything happening in Omaha — concerts, sports, comedy, festivals & more across 60+ venues.',
     type: 'website',
     locale: 'en_US',
     siteName: 'GO: Guide to Omaha',
-    url: 'https://goguideomaha.com',
+    url: 'https://go-omaha.com',
+    images: [{ url: 'https://go-omaha.com/skyline.jpg', width: 1200, height: 630, alt: 'GO: Guide to Omaha — Omaha skyline' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'GO: Guide to Omaha',
     description: 'Discover events, venues & things to do in Omaha. Updated twice daily.',
+    images: ['https://go-omaha.com/skyline.jpg'],
   },
   manifest: '/manifest.json',
 };
@@ -39,7 +41,7 @@ export default function RootLayout({ children }) {
     "@type": "WebApplication",
     name: "GO: Guide to Omaha",
     description: "Comprehensive events guide for the Omaha metro area",
-    url: "https://goguideomaha.com",
+    url: "https://go-omaha.com",
     applicationCategory: "EntertainmentApplication",
     operatingSystem: "Any",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -69,10 +71,10 @@ export default function RootLayout({ children }) {
         />
 
         {/* Plausible Analytics — privacy-friendly, no cookie banner needed */}
-        {/* Replace goguideomaha.com with your actual domain */}
+        {/* Replace go-omaha.com with your actual domain */}
         <script
           defer
-          data-domain="goguideomaha.com"
+          data-domain="go-omaha.com"
           src="https://plausible.io/js/script.js"
         />
 

@@ -215,6 +215,18 @@ function inferTags(title, cat) {
   return tags.length > 0 ? tags : ["Event"];
 }
 
+// ═══ CONTENT-BASED ID ═══
+// Deterministic hash from event content — prevents ID collisions and gives
+// stable IDs across pipeline runs (good for React keys & saved/favorited events)
+function stableId(str) {
+  let h = 0x811c9dc5; // FNV-1a offset basis
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = (h * 0x01000193) | 0; // FNV prime
+  }
+  return (h >>> 0); // ensure unsigned 32-bit
+}
+
 // ═══ EMOJI MAP ═══
 function catEmoji(cat) {
   return { concerts:"🎵", comedy:"😂", sports:"🏆", festivals:"🎉", family:"👨‍👩‍👧", arts:"🎨" }[cat] || "🎵";
@@ -239,7 +251,7 @@ async function validate(rawEvents, options = {}) {
   kept.forEach(e => {
     e.tags = inferTags(e.title, e.cat);
     e.emoji = catEmoji(e.cat);
-    e.id = e.id || Date.now() + Math.floor(Math.random() * 10000);
+    e.id = e.id || stableId(`${e.title}|${e.date}|${e.venue}|${e.sourceId || ""}`);
     e.status = e.status || "active";
   });
 

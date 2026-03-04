@@ -3,6 +3,20 @@
     "visitomaha": {
       "history": [
         {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 9,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
           "method": "jina",
@@ -10,12 +24,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 8,
+      "totalRuns": 3,
+      "totalEvents": 17,
       "failures": 0
     },
     "reader": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -24,26 +52,31 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "familyfun": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
           "success": true,
-          "method": "jina",
-          "events": 6,
+          "method": "cache (fresh)",
+          "events": 21,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 6,
-      "failures": 0
-    },
-    "eventbrite": {
-      "history": [
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "direct",
+          "events": 0,
+          "errors": [
+            {
+              "method": "jina",
+              "error": "The operation was aborted due to timeout"
+            }
+          ]
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -52,8 +85,36 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 6,
+      "totalRuns": 3,
+      "totalEvents": 27,
+      "failures": 0
+    },
+    "eventbrite": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 1,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 6,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
+      "totalEvents": 7,
       "failures": 0
     },
     "ticketomaha": {
@@ -73,6 +134,20 @@
     "chi": {
       "history": [
         {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 5,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
           "method": "jina",
@@ -80,12 +155,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 7,
+      "totalRuns": 3,
+      "totalEvents": 12,
       "failures": 0
     },
     "baxter": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 12,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -94,12 +183,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 12,
+      "totalRuns": 3,
+      "totalEvents": 24,
       "failures": 0
     },
     "opa": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 9,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -108,12 +211,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 4,
+      "totalRuns": 3,
+      "totalEvents": 13,
       "failures": 0
     },
     "admiral": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 12,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -122,12 +239,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 12,
+      "totalRuns": 3,
+      "totalEvents": 24,
       "failures": 0
     },
     "slowdown": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -136,26 +267,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "waitingroom": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
           "success": true,
           "method": "jina",
           "events": 0,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 0,
-      "failures": 0
-    },
-    "reverb": {
-      "history": [
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -164,12 +295,54 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
+      "totalEvents": 0,
+      "failures": 0
+    },
+    "reverb": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "filmstreams": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 24,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -178,12 +351,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 24,
+      "totalRuns": 3,
+      "totalEvents": 48,
       "failures": 0
     },
     "joslyn": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 18,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -192,12 +379,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 16,
+      "totalRuns": 3,
+      "totalEvents": 34,
       "failures": 0
     },
     "bemis": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 17,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -206,12 +407,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 17,
+      "totalRuns": 3,
+      "totalEvents": 34,
       "failures": 0
     },
     "kaneko": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 4,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -220,12 +435,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 4,
+      "totalRuns": 3,
+      "totalEvents": 8,
       "failures": 0
     },
     "hotshops": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 9,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -234,12 +463,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 7,
+      "totalRuns": 3,
+      "totalEvents": 16,
       "failures": 0
     },
     "playhouse": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -248,12 +491,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "rose": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 10,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -262,12 +519,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 10,
+      "totalRuns": 3,
+      "totalEvents": 20,
       "failures": 0
     },
     "riverfront": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 6,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -276,26 +547,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 8,
+      "totalRuns": 3,
+      "totalEvents": 14,
       "failures": 0
     },
     "luminarium": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
           "success": true,
-          "method": "jina",
+          "method": "cache (fresh)",
           "events": 9,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 9,
-      "failures": 0
-    },
-    "lauritzen": {
-      "history": [
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -304,12 +575,54 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 9,
+      "totalRuns": 3,
+      "totalEvents": 18,
+      "failures": 0
+    },
+    "lauritzen": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 2,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 9,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
+      "totalEvents": 11,
       "failures": 0
     },
     "durham": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 3,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -318,26 +631,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 2,
+      "totalRuns": 3,
+      "totalEvents": 5,
       "failures": 0
     },
     "zoo": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
           "success": true,
-          "method": "jina",
+          "method": "cache (fresh)",
           "events": 1,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 1,
-      "failures": 0
-    },
-    "aksarben": {
-      "history": [
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -346,12 +659,54 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 1,
+      "totalRuns": 3,
+      "totalEvents": 2,
+      "failures": 0
+    },
+    "aksarben": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 1,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 1,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
+      "totalEvents": 2,
       "failures": 0
     },
     "midtown": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -360,13 +715,27 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "oldmarket": {
       "history": [
         {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
           "method": "jina",
@@ -374,12 +743,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "blackstone": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 11,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -388,12 +771,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 10,
+      "totalRuns": 3,
+      "totalEvents": 21,
       "failures": 0
     },
     "benson": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 11,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -402,12 +799,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 19,
+      "totalRuns": 3,
+      "totalEvents": 30,
       "failures": 0
     },
     "bensontheatre": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -416,12 +827,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "unleashcb": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 7,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -430,12 +855,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 12,
+      "totalRuns": 3,
+      "totalEvents": 19,
       "failures": 0
     },
     "cbcity": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -444,26 +883,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "midamerica": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
           "success": true,
-          "method": "jina",
+          "method": "cache (fresh)",
           "events": 4,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 4,
-      "failures": 0
-    },
-    "stircove": {
-      "history": [
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -472,12 +911,54 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 4,
+      "totalRuns": 3,
+      "totalEvents": 8,
+      "failures": 0
+    },
+    "stircove": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 4,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 4,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
+      "totalEvents": 8,
       "failures": 0
     },
     "paceevents": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 13,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -486,12 +967,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 10,
+      "totalRuns": 3,
+      "totalEvents": 23,
       "failures": 0
     },
     "pacecal": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -500,13 +995,27 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "iwcc": {
       "history": [
         {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
           "method": "jina",
@@ -514,12 +1023,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "cblibrary": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 12,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -528,12 +1051,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 11,
+      "totalRuns": 3,
+      "totalEvents": 23,
       "failures": 0
     },
     "papillion": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -542,26 +1079,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "sumtur": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
           "success": true,
           "method": "jina",
           "events": 0,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 0,
-      "failures": 0
-    },
-    "landing": {
-      "history": [
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -570,12 +1107,59 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
+      "totalEvents": 0,
+      "failures": 0
+    },
+    "landing": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "wernerspecial": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "direct",
+          "events": 0,
+          "errors": [
+            {
+              "method": "jina",
+              "error": "Jina 451"
+            }
+          ]
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -589,12 +1173,26 @@
           ]
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "werneraxs": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 10,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -603,12 +1201,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 0,
+      "totalRuns": 3,
+      "totalEvents": 10,
       "failures": 0
     },
     "lavista": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 19,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -617,12 +1229,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 26,
+      "totalRuns": 3,
+      "totalEvents": 45,
       "failures": 0
     },
     "lavistacitycentre": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -631,12 +1257,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "astro": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 15,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -645,12 +1285,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 15,
+      "totalRuns": 3,
+      "totalEvents": 30,
       "failures": 0
     },
     "libertyfirst": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 11,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -659,12 +1313,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 12,
+      "totalRuns": 3,
+      "totalEvents": 23,
       "failures": 0
     },
     "gretnacal": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 2,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -673,12 +1341,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 1,
+      "totalRuns": 3,
+      "totalEvents": 3,
       "failures": 0
     },
     "gretnadays": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -687,26 +1369,26 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "musiccrossing": {
       "history": [
         {
-          "timestamp": "2026-02-23T20:08:33.236Z",
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 1,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
           "success": true,
           "method": "jina",
           "events": 0,
           "errors": []
-        }
-      ],
-      "totalRuns": 1,
-      "totalEvents": 0,
-      "failures": 0
-    },
-    "visitne": {
-      "history": [
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -715,12 +1397,54 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
+      "totalRuns": 3,
+      "totalEvents": 1,
+      "failures": 0
+    },
+    "visitne": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-23T20:08:33.236Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        }
+      ],
+      "totalRuns": 3,
       "totalEvents": 0,
       "failures": 0
     },
     "traveliowa": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "cache (fresh)",
+          "events": 23,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "jina",
+          "events": 0,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-23T20:08:33.236Z",
           "success": true,
@@ -729,12 +1453,19 @@
           "errors": []
         }
       ],
-      "totalRuns": 1,
-      "totalEvents": 22,
+      "totalRuns": 3,
+      "totalEvents": 45,
       "failures": 0
     },
     "ticketmaster-api": {
       "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "api",
+          "events": 381,
+          "errors": []
+        },
         {
           "timestamp": "2026-02-26T21:53:08.153Z",
           "success": true,
@@ -757,12 +1488,76 @@
           "errors": []
         }
       ],
+      "totalRuns": 4,
+      "totalEvents": 1506,
+      "failures": 0
+    },
+    "ticketomaha-api": {
+      "history": [
+        {
+          "timestamp": "2026-02-27T02:21:11.236Z",
+          "success": true,
+          "method": "json-ld",
+          "events": 120,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:40:32.588Z",
+          "success": true,
+          "method": "json-ld",
+          "events": 120,
+          "errors": []
+        },
+        {
+          "timestamp": "2026-02-27T01:03:16.626Z",
+          "success": true,
+          "method": "json-ld",
+          "events": 123,
+          "errors": []
+        }
+      ],
       "totalRuns": 3,
-      "totalEvents": 1125,
+      "totalEvents": 363,
       "failures": 0
     }
   },
   "runs": [
+    {
+      "timestamp": "2026-02-27T02:21:11.236Z",
+      "totalSources": 53,
+      "sourcesScraped": 53,
+      "sourcesFailed": 0,
+      "rawEvents": 817,
+      "finalEvents": 733,
+      "durationSec": 1528.7
+    },
+    {
+      "timestamp": "2026-02-27T01:40:32.588Z",
+      "totalSources": 52,
+      "sourcesScraped": 52,
+      "sourcesFailed": 0,
+      "rawEvents": 120,
+      "finalEvents": 120,
+      "durationSec": 1949.2
+    },
+    {
+      "timestamp": "2026-02-27T01:03:16.626Z",
+      "totalSources": 52,
+      "sourcesScraped": 1,
+      "sourcesFailed": 0,
+      "rawEvents": 123,
+      "finalEvents": 123,
+      "durationSec": 753.9
+    },
+    {
+      "timestamp": "2026-02-27T00:49:56.200Z",
+      "totalSources": 51,
+      "sourcesScraped": 0,
+      "sourcesFailed": 0,
+      "rawEvents": 0,
+      "finalEvents": 0,
+      "durationSec": 0.7
+    },
     {
       "timestamp": "2026-02-26T21:53:08.153Z",
       "totalSources": 53,

@@ -514,19 +514,20 @@ const WX_ICONS={clear:"☀️",cloudy:"☁️",rainy:"🌧️",snowy:"❄️"};
 
 /* ═══ APP ═══ */
 export default function GOPrototype(){
-  const initTv=typeof window!=="undefined"?getNowTv():50;
-  const[nowTv,setNowTv]=useState(initTv);
-  const[tv,setTv]=useState(initTv);
+  const[mounted,setMounted]=useState(false);
+  const[nowTv,setNowTv]=useState(50);
+  const[tv,setTv]=useState(50);
   const[isLive,setIsLive]=useState(true);
   const[drag,setDrag]=useState(false);
   const[weather,setWeather]=useState({temp:null,cond:"clear",icon:""});
-  const[timeLabel,setTimeLabel]=useState(()=>{const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();return`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`;});
+  const[timeLabel,setTimeLabel]=useState("");
   const[cities,setCities]=useState(new Set(["omaha"]));
   const[venCat,setVenCat]=useState("all");
   const[spotCat,setSpotCat]=useState("all");
-  const[w,setW]=useState(typeof window!=="undefined"?window.innerWidth:375);
+  const[w,setW]=useState(375);
   const[tab,setTab]=useState("today");
   const[favs,setFavs]=useState([]);
+  useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
   useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
   useEffect(()=>{fetch("https://api.open-meteo.com/v1/forecast?latitude=41.26&longitude=-95.94&current=temperature_2m,weather_code&temperature_unit=fahrenheit").then(r=>r.json()).then(d=>{const t=Math.round(d.current.temperature_2m),wc=d.current.weather_code;const cond=wc<=1?"clear":wc<=48?"cloudy":wc<=67?"rainy":"snowy";setWeather({temp:t,cond,icon:WX_ICONS[cond]});}).catch(()=>{});},[]);
@@ -585,6 +586,7 @@ export default function GOPrototype(){
 
   return (
     <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:130}}>
+      {!mounted?<div style={{height:"100vh",background:T.bg}}/>:<>
 
       {/* ═══ HERO ═══ */}
       <div style={{position:"relative",height:heroH,minHeight:heroMin,maxHeight:heroMax,overflow:"hidden",transition:"height 0.5s ease, min-height 0.5s ease, max-height 0.5s ease"}}>
@@ -1176,6 +1178,7 @@ export default function GOPrototype(){
         .ecard{transition:all .22s cubic-bezier(.25,.8,.25,1)}.ecard:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.18)!important}
         .hbtn{transition:all .18s ease}.hbtn:hover{color:#fff!important;background:rgba(255,255,255,.1)!important}.hbtn:active{transform:scale(.96)}
       `}</style>
+      </>}
     </div>
   );
 }

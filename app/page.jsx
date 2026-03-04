@@ -195,11 +195,11 @@ const u=id=>`https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
 
 /* ═══ CONTENT DATA ═══ */
 const TRAILS=[
-  {id:"t1",name:"Keystone Trail",desc:"Omaha's backbone — 50+ miles of paved multi-use trail through the metro.",distance:"52 mi",difficulty:"Easy",surface:"Paved",lat:41.24,lng:-96.02,tags:["Cycling","Running"],img:u("photo-1552674605-db6ffd4facb5"),elev:"Flat",icon:IC.bike},
-  {id:"t2",name:"Bob Kerrey Bridge Loop",desc:"Cross the Missouri River to Iowa and back. Best sunrise views in the city.",distance:"3.2 mi",difficulty:"Easy",surface:"Paved",lat:41.2575,lng:-95.9215,tags:["Walking","River"],img:u("photo-1506157786151-b8491531f063"),elev:"Flat",icon:IC.walk},
-  {id:"t3",name:"Fontenelle Forest",desc:"2,000 acres of old-growth forest. Boardwalk canopy trail. Watch for bald eagles.",distance:"17 mi trails",difficulty:"Moderate",surface:"Dirt / Boardwalk",lat:41.157,lng:-95.9,tags:["Forest","Birding"],img:u("photo-1448375240586-882707db888b"),elev:"+350 ft",url:"https://fontenelleforest.org",icon:IC.tree},
-  {id:"t4",name:"Wehrspann Lake Loop",desc:"8-mile loop at Chalco Hills. Packed gravel, gentle rolling hills, shaded sections.",distance:"8.1 mi",difficulty:"Easy–Mod",surface:"Gravel",lat:41.18,lng:-96.13,tags:["Lake","Loop"],img:u("photo-1500534314263-0869cef27f7d"),elev:"+180 ft",icon:IC.trail},
-  {id:"t5",name:"Zorinsky Lake Trail",desc:"Popular West Omaha loop with prairie views, fishing pier, and waterbird habitat.",distance:"4.8 mi",difficulty:"Easy",surface:"Paved",lat:41.23,lng:-96.075,tags:["Lake","Family"],img:u("photo-1441974231531-c6227db76b6e"),elev:"Flat",icon:IC.walk},
+  {id:"t1",name:"Keystone Trail",desc:"Omaha's backbone — 50+ miles of paved multi-use trail through the metro.",distance:"52 mi",difficulty:"Easy",surface:"Paved",lat:41.24,lng:-96.02,tags:["Cycling","Running"],img:"/images/trails/t1.jpg",elev:"Flat",icon:IC.bike},
+  {id:"t2",name:"Bob Kerrey Bridge Loop",desc:"Cross the Missouri River to Iowa and back. Best sunrise views in the city.",distance:"3.2 mi",difficulty:"Easy",surface:"Paved",lat:41.2575,lng:-95.9215,tags:["Walking","River"],img:"/images/trails/t2.jpg",elev:"Flat",icon:IC.walk},
+  {id:"t3",name:"Fontenelle Forest",desc:"2,000 acres of old-growth forest. Boardwalk canopy trail. Watch for bald eagles.",distance:"17 mi trails",difficulty:"Moderate",surface:"Dirt / Boardwalk",lat:41.157,lng:-95.9,tags:["Forest","Birding"],img:"/images/trails/t3.jpg",elev:"+350 ft",url:"https://fontenelleforest.org",icon:IC.tree},
+  {id:"t4",name:"Wehrspann Lake Loop",desc:"8-mile loop at Chalco Hills. Packed gravel, gentle rolling hills, shaded sections.",distance:"8.1 mi",difficulty:"Easy–Mod",surface:"Gravel",lat:41.18,lng:-96.13,tags:["Lake","Loop"],img:"/images/trails/t4.jpg",elev:"+180 ft",icon:IC.trail},
+  {id:"t5",name:"Zorinsky Lake Trail",desc:"Popular West Omaha loop with prairie views, fishing pier, and waterbird habitat.",distance:"4.8 mi",difficulty:"Easy",surface:"Paved",lat:41.23,lng:-96.075,tags:["Lake","Family"],img:"/images/trails/t5.jpg",elev:"Flat",icon:IC.walk},
 ];
 const WALKS=[
   {id:"w1",name:"Old Market Historic Walk",desc:"Cobblestone streets, 19th-century warehouses, galleries. Start at 10th & Howard.",time:"45 min",distance:"1.2 mi",lat:41.2555,lng:-95.932,tags:["History","Architecture"],icon:IC.camera},
@@ -226,7 +226,7 @@ const PARKS=[
     desc:"A 390-acre lake surrounded by a 1,050-acre park in north central Omaha. Constructed by the U.S. Army Corps of Engineers for flood control and recreation, it opened in 1977. After a major renovation beginning in 2017, the park reopened in 2021 with upgraded trails, a renovated campground, new marina, disc golf course, and improved access.",
     address:"8965 State St, Omaha, NE 68122",lat:41.327,lng:-96.04,phone:"531-201-5754",website:"https://explorethec.com",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1050,color:"#5CA8D4",
-    tags:["Lake","Trails","Fishing","Camping"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🎣",
+    tags:["Lake","Trails","Fishing","Camping"],img:"/images/parks/cunningham-lake.jpg",icon:"🎣",
     lake:{acres:390,maxDepth:"23 ft",
       species:[{name:"Channel Catfish",note:"Regularly stocked, up to 13 lbs"},{name:"Largemouth Bass",note:"Developing fishery, good populations"},{name:"Bluegill",note:"Great for beginners & kids"},{name:"White Bass",note:"Stocked since 2020"},{name:"Crappie",note:"Popular panfish target"},{name:"Saugeye",note:"Stocked seasonally"}],
       license:"Required for ages 16+ — Nebraska sport fishing license",licenseUrl:"https://outdoornebraska.gov",
@@ -252,7 +252,7 @@ const PARKS=[
     desc:"Omaha's flagship urban park, transformed in a $290M renovation completed in 2022. The 72-acre RiverFront spans three connected parks with a performance pavilion, interactive playground, splash pad, slides, and sweeping green lawns against the downtown skyline.",
     address:"1001 Farnam St, Omaha, NE 68102",lat:41.258,lng:-95.93,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
     hours:"6 AM – 11 PM Daily",admission:"Free",acreage:72,color:"#5EC4B6",
-    tags:["Riverfront","Family","Free","Downtown"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🏞️",
+    tags:["Riverfront","Family","Free","Downtown"],img:"/images/parks/gene-leahy-mall.jpg",icon:"🏞️",
     trails:[
       {name:"RiverFront Promenade",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved path connecting Gene Leahy Mall, Heartland of America Park, and Lewis & Clark Landing along the river.",features:["ADA Accessible","Lit Path","River Views"]}],
     activities:[
@@ -268,7 +268,7 @@ const PARKS=[
     desc:"A 255-acre park centered around a 98-acre lake in West Omaha. The 4.8-mile paved loop is one of the most popular trails in the city, winding through prairie, past fishing piers, and alongside waterbird habitat.",
     address:"3808 S 156th St, Omaha, NE 68130",lat:41.23,lng:-96.075,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:255,color:"#7DD4A0",
-    tags:["Lake","Trails","Family","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🚶",
+    tags:["Lake","Trails","Family","Free"],img:"/images/parks/zorinsky-lake.jpg",icon:"🚶",
     lake:{acres:98,maxDepth:"18 ft",
       species:[{name:"Largemouth Bass",note:"Catch and release encouraged"},{name:"Bluegill",note:"Abundant, great for families"},{name:"Channel Catfish",note:"Best in evening hours"},{name:"Crappie",note:"Spring spawning runs"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -289,7 +289,7 @@ const PARKS=[
     desc:"A 135-acre lake surrounded by trails, a nature center, and one of the best kayak launches in the metro. Located in northwest Omaha, Standing Bear offers fishing, paddle sports, and a quieter alternative to the larger lakes.",
     address:"6404 N 132nd St, Omaha, NE 68164",lat:41.306,lng:-96.065,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:220,color:"#4A90A4",
-    tags:["Lake","Kayaking","Nature","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🏞️",
+    tags:["Lake","Kayaking","Nature","Free"],img:"/images/parks/standing-bear-lake.jpg",icon:"🏞️",
     lake:{acres:135,maxDepth:"20 ft",
       species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Plentiful along shore"},{name:"Walleye",note:"Occasional catches"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -310,7 +310,7 @@ const PARKS=[
     desc:"A downtown park featuring a scenic lake with a dramatic fountain, walking paths, and stunning skyline views. Part of the RiverFront revitalization, it connects to Gene Leahy Mall and Lewis & Clark Landing.",
     address:"800 S 10th St, Omaha, NE 68108",lat:41.254,lng:-95.922,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
     hours:"6 AM – 11 PM Daily",admission:"Free",acreage:31,color:"#64B5F6",
-    tags:["Downtown","Lake","Skyline","Free"],img:u("photo-1506157786151-b8491531f063"),icon:"⛲",
+    tags:["Downtown","Lake","Skyline","Free"],img:"/images/parks/heartland-america.jpg",icon:"⛲",
     trails:[
       {name:"Lakeside Path",distance:"0.6 mi",surface:"Paved",difficulty:"Easy",desc:"Walking path around the lake with fountain views and downtown skyline backdrop.",features:["ADA Accessible","Lit at Night","Photo Spots"]}],
     activities:[
@@ -324,7 +324,7 @@ const PARKS=[
     desc:"A 2,000-acre nature preserve in Bellevue featuring old-growth forest, boardwalk canopy trails, and diverse wildlife. Home to TreeRush Adventures (aerial obstacle course) and a raptor rehabilitation center with live birds of prey.",
     address:"1111 Bellevue Blvd N, Bellevue, NE 68005",lat:41.157,lng:-95.9,phone:"402-731-3140",website:"https://fontenelleforest.org",
     hours:"8 AM – 5 PM Daily",admission:"$12 adults / $8 kids",acreage:2000,color:"#6BBF7A",
-    tags:["Forest","Nature","Family","Adventure"],img:u("photo-1448375240586-882707db888b"),icon:"🌲",
+    tags:["Forest","Nature","Family","Adventure"],img:"/images/parks/fontenelle-forest.jpg",icon:"🌲",
     trails:[
       {name:"Boardwalk Trail",distance:"1.0 mi",surface:"Boardwalk",difficulty:"Easy",desc:"Elevated boardwalk through the forest canopy. Fully accessible with stunning tree-top views.",features:["ADA Accessible","Canopy Views","All Ages"]},
       {name:"Riverview Trail",distance:"2.5 mi",surface:"Natural",difficulty:"Moderate",desc:"Descends to the Missouri River floodplain through oak-hickory forest. Watch for deer and wild turkeys.",features:["River Views","Wildlife","Elevation Change"]},
@@ -341,7 +341,7 @@ const PARKS=[
     desc:"A 100-acre botanical garden and arboretum featuring themed garden rooms, a conservatory with tropical plants, seasonal model train displays, and the Marjorie K. Daugherty Conservatory. Beautiful in every season.",
     address:"100 Bancroft St, Omaha, NE 68108",lat:41.2384,lng:-95.9158,phone:"402-346-4002",website:"https://www.lauritzengardens.org",
     hours:"9 AM – 5 PM Daily",admission:"$14 adults / $7 kids",acreage:100,color:"#E88BD4",
-    tags:["Gardens","Seasonal","Family"],img:u("photo-1585320806297-9794b3e4eeae"),icon:"🌺",
+    tags:["Gardens","Seasonal","Family"],img:"/images/parks/lauritzen-gardens.jpg",icon:"🌺",
     trails:[
       {name:"Garden Walk",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Winding paths through themed gardens including the Rose Garden, Victorian Garden, and Japanese Garden.",features:["ADA Accessible","Year-Round Beauty","Benches Throughout"]}],
     activities:[
@@ -356,7 +356,7 @@ const PARKS=[
     desc:"A 204-acre historic park in the heart of the Dundee neighborhood. Features a public golf course, tennis courts, disc golf, rose garden, and shaded trails through mature elm and oak trees. A beloved community gathering spot since 1890.",
     address:"802 S 60th St, Omaha, NE 68106",lat:41.252,lng:-95.971,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:204,color:"#A8D5BA",
-    tags:["Historic","Trails","Golf","Free"],img:u("photo-1448375240586-882707db888b"),icon:"🌳",
+    tags:["Historic","Trails","Golf","Free"],img:"/images/parks/elmwood-park.jpg",icon:"🌳",
     trails:[
       {name:"Park Loop",distance:"2.0 mi",surface:"Paved / Gravel",difficulty:"Easy",desc:"Shaded loop through the park passing the rose garden, golf course, and picnic areas.",features:["Shaded","Historic Trees","Family-Friendly"]}],
     activities:[
@@ -371,7 +371,7 @@ const PARKS=[
     desc:"A sprawling 83-acre park in Central Omaha known for summer concerts, community events, and open green space. Home to large-scale events and a popular running loop. The park honors veterans with memorial installations.",
     address:"6005 Underwood Ave, Omaha, NE 68132",lat:41.262,lng:-95.975,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:83,color:"#FFB74D",
-    tags:["Concerts","Events","Free"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎶",
+    tags:["Concerts","Events","Free"],img:"/images/parks/memorial-park.jpg",icon:"🎶",
     trails:[
       {name:"Memorial Loop",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved loop around the park perimeter. Popular morning running route.",features:["Flat","Lit at Night","Year-Round"]}],
     activities:[
@@ -386,7 +386,7 @@ const PARKS=[
     desc:"A 1,186-acre recreation area in southwest Omaha featuring Wehrspann Lake, restored prairie, and an excellent nature center. The 8-mile trail loop around the lake offers rolling hills and diverse habitats.",
     address:"8901 S 154th St, Omaha, NE 68138",lat:41.18,lng:-96.13,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1186,color:"#C49A6C",
-    tags:["Prairie","Trails","Nature Center","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🦅",
+    tags:["Prairie","Trails","Nature Center","Free"],img:"/images/parks/chalco-hills.jpg",icon:"🦅",
     lake:{acres:255,maxDepth:"15 ft",
       species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Excellent for families"},{name:"Wipers",note:"White bass hybrid — stocked"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -407,7 +407,7 @@ const PARKS=[
     desc:"A 450-acre recreation area featuring a 105-acre lake, modern playground, and paved trails in Papillion. Great for fishing, kayaking, and family outings with newer facilities and easy highway access.",
     address:"14725 Hwy 370, Papillion, NE 68046",lat:41.168,lng:-96.02,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:450,color:"#5DADE2",
-    tags:["Lake","Family","Kayaking","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🛶",
+    tags:["Lake","Family","Kayaking","Free"],img:"/images/parks/walnut-creek.jpg",icon:"🛶",
     lake:{acres:105,maxDepth:"16 ft",
       species:[{name:"Largemouth Bass",note:"Good numbers"},{name:"Channel Catfish",note:"Stocked annually"},{name:"Bluegill",note:"Abundant"},{name:"Crappie",note:"Spring runs"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -427,7 +427,7 @@ const PARKS=[
     desc:"A beloved 10-acre urban park at Midtown Crossing, home to Jazz on the Green (free summer concert series), the Omaha Farmers Market winter location, and seasonal ice rink. Surrounded by restaurants and shops.",
     address:"3110 Farnam St, Omaha, NE 68131",lat:41.255,lng:-95.96,phone:"402-444-5900",website:"https://midtowncrossing.com",
     hours:"6 AM – 11 PM Daily",admission:"Free",acreage:10,color:"#D4AD65",
-    tags:["Jazz","Events","Free","Dining"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎵",
+    tags:["Jazz","Events","Free","Dining"],img:"/images/parks/turner-park.jpg",icon:"🎵",
     activities:[
       {name:"Jazz on the Green",icon:"music",desc:"Free Thursday evening jazz concerts all summer. Bring wine, picnic blankets, and friends.",season:"Jun–Aug"},
       {name:"Ice Rink",icon:"splash",desc:"Outdoor ice skating rink at Midtown Crossing during winter months.",season:"Nov–Feb"},
@@ -438,7 +438,7 @@ const PARKS=[
 ];
 const HOODS=[
   {id:"old-market",name:"Old Market",sub:"Downtown",desc:"Cobblestone streets, galleries, chef-driven restaurants, and Omaha's best nightlife. The cultural heart of the city since the 1800s.",lat:41.2555,lng:-95.932,color:"#5EC4B6",
-    imgs:[u("photo-1519999482648-25049ddd37b1"),u("photo-1555939594-58d7cb561ad1"),u("photo-1503095396549-807759245b35")],
+    imgs:["/images/hoods/old-market-1.jpg","/images/hoods/old-market-2.jpg","/images/hoods/old-market-3.jpg"],
     history:"The Old Market began as a wholesale fruit and vegetable market in the late 1800s. The brick warehouses along Howard and Jones streets housed produce dealers until the 1960s, when artists and entrepreneurs began converting the abandoned spaces into galleries and studios. A pivotal restoration movement in the 1970s preserved the cobblestone streets and iron facades that define the district today. The Passageway, M's Pub (before the 2015 fire), and the Artists Cooperative Gallery were early anchors that proved mixed-use urban revitalization could work.",
     walk:{name:"Old Market Loop",distance:"1.2 mi",time:"45 min",steps:["Start at 10th & Howard by the flower murals","Walk south on 10th — peek into Jackson Street galleries","Cut through The Passageway to Jones Street","West on Jones past Upstream Brewing and M's Pub site","South on 13th to the Bemis Center for Contemporary Arts","Circle back via Howard Street for restaurants and shops"]},
     spots:[
@@ -479,7 +479,7 @@ const HOODS=[
     tags:["Dining","Nightlife","Shopping","Galleries","History","Cobblestone"],
     vibe:"Historic & Walkable",bestFor:"First-time visitors, date nights, weekend strolls"},
   {id:"benson",name:"Benson",sub:"Maple Street",desc:"Omaha's most eclectic neighborhood. Dive bars, vinyl shops, murals, and the undisputed indie music capital of the city.",lat:41.281,lng:-95.954,color:"#CE93D8",
-    imgs:[u("photo-1459749411175-04bf5292ceea"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1508854710579-5cecc3a9ff17")],
+    imgs:["/images/hoods/benson-1.jpg","/images/hoods/benson-2.jpg","/images/hoods/benson-3.jpg"],
     history:"Originally an independent city founded in 1887 by Erastus Benson, a railroad executive. It was annexed into Omaha in 1917 but never lost its fiercely independent spirit. The main drag, Maple Street, went through cycles of boom and decline before a creative renaissance in the 2000s. The Waiting Room opened in 2007, anchoring what became a nationally recognized indie music corridor. Today Benson has more live music per block than anywhere in Nebraska.",
     walk:{name:"Benson Main Drag",distance:"1.5 mi",time:"1 hr",steps:["Start at The Waiting Room (6212 Maple)","Walk west past vinyl shops and vintage stores","Detour south on 60th for murals and street art","Continue west to Reverb Lounge and Beercade","Hit Benson Brewery and Jake's Cigars","End at The Sydney for cocktails or O'Leaver's for punk rock"]},
     spots:[
@@ -516,7 +516,7 @@ const HOODS=[
     tags:["Music","Bars","Vintage","Murals","Indie","Record Shops"],
     vibe:"Eclectic & Creative",bestFor:"Music lovers, night owls, creatives"},
   {id:"dundee",name:"Dundee",sub:"Memorial Park Area",desc:"Tree-lined streets, walkable restaurants on Underwood Ave, and Elmwood Park trails. Classic Omaha at its most charming.",lat:41.262,lng:-95.975,color:"#81C784",
-    imgs:[u("photo-1448375240586-882707db888b"),u("photo-1414235077428-338989a2e8c0"),u("photo-1552674605-db6ffd4facb5")],
+    imgs:["/images/hoods/dundee-1.jpg","/images/hoods/dundee-2.jpg","/images/hoods/dundee-3.jpg"],
     history:"Dundee was platted in 1880 and developed as one of Omaha's first streetcar suburbs. The name comes from Dundee, Scotland. Warren Buffett has lived in the same Dundee house since 1958, purchased for $31,500. Happy Hollow Country Club (1907) and the historic Dundee Theater (1925, now a Film Streams location) anchor the neighborhood's century-old identity. Underwood Avenue's restaurant boom in the 2010s transformed a quiet residential strip into one of Omaha's top dining destinations.",
     walk:{name:"Dundee to Elmwood",distance:"2.1 mi",time:"1 hr",steps:["Start at 50th & Underwood — the restaurant corridor","Walk west past Dario's, Dante, and Pitch Pizzeria","Turn south on 52nd toward Elmwood Park","Loop through Elmwood's shaded trails and bridge","Return via Happy Hollow Blvd past historic homes","End at Dundee Dell for a beer"]},
     spots:[
@@ -560,7 +560,7 @@ const HOODS=[
     tags:["Dining","Parks","Walking","Family","Film","Historic Homes"],
     vibe:"Charming & Walkable",bestFor:"Foodies, families, park lovers"},
   {id:"blackstone",name:"Blackstone",sub:"Farnam Street",desc:"Omaha's cocktail and culinary hub. Speakeasies, breweries, and chef-driven spots packed into a few electric blocks.",lat:41.259,lng:-95.965,color:"#FFB74D",
-    imgs:[u("photo-1470229722913-7c0e2dbbafd3"),u("photo-1415201364774-f6f0bb35f28f"),u("photo-1511671782779-c97d3d27a1d4")],
+    imgs:["/images/hoods/blackstone-1.jpg","/images/hoods/blackstone-2.jpg","/images/hoods/blackstone-3.jpg"],
     history:"Named for the Blackstone Hotel (1916), this stretch of Farnam once housed Omaha's grandest lodging. The hotel hosted JFK, Nixon, and celebrities during its heyday. After decades of decline, a massive revitalization beginning around 2015 transformed the district into Omaha's premier cocktail and dining destination. The Blackstone Social, Scriptown Brewing, and a wave of chef-driven restaurants catalyzed the comeback. The historic hotel itself reopened as a Marriott Autograph Collection property.",
     walk:{name:"Blackstone Bar Hop",distance:"0.8 mi",time:"1.5 hrs",steps:["Start at Scriptown Brewing (38th & Farnam)","Walk east to Berry & Rye speakeasy","Cross to Nite Owl for craft cocktails","Hit Stirnella for dinner (or Yoshitomo for sushi)","End at Crescent Moon for Belgian ales"]},
     spots:[
@@ -592,7 +592,7 @@ const HOODS=[
     tags:["Cocktails","Dining","Nightlife","Craft Beer","Speakeasy"],
     vibe:"Trendy & Buzzy",bestFor:"Date nights, cocktail enthusiasts, foodies"},
   {id:"north-downtown",name:"North Downtown",sub:"NoDo",desc:"The Slowdown, Film Streams, Steelhouse Omaha, and a growing creative corridor between downtown and the riverfront.",lat:41.2691,lng:-95.9251,color:"#64B5F6",
-    imgs:[u("photo-1501386761578-eac5c94b800a"),u("photo-1459749411175-04bf5292ceea"),u("photo-1540039155733-5bb30b53aa14")],
+    imgs:["/images/hoods/north-downtown-1.jpg","/images/hoods/north-downtown-2.jpg","/images/hoods/north-downtown-3.jpg"],
     history:"Once warehouse district and rail yards, NoDo's transformation began with Saddle Creek Records relocating The Slowdown here in 2007. Film Streams' Ruth Sokolof Theater followed. The opening of Steelhouse Omaha (2024) and continued development around 14th and Webster have made this the live entertainment spine of the city. The area connects the Old Market to the north via a creative corridor that grows each year.",
     walk:{name:"NoDo Music Walk",distance:"1 mi",time:"40 min",steps:["Start at The Slowdown (14th & Mike Fahey)","Walk to Film Streams / Ruth Sokolof Theater","Continue south past Steelhouse Omaha","Detour east to the riverfront pedestrian bridge","Return via Capitol Avenue"]},
     spots:[
@@ -613,7 +613,7 @@ const HOODS=[
     tags:["Music","Film","Arts","Venues","Live Shows"],
     vibe:"Creative & Up-and-Coming",bestFor:"Concertgoers, film buffs, night out"},
   {id:"little-italy",name:"Little Italy",sub:"South 10th Street",desc:"Historic neighborhood home to BLUEBARN Theatre, The Admiral, and authentic Italian spots. Gritty charm meets cultural depth.",lat:41.2543,lng:-95.9365,color:"#E8364F",
-    imgs:[u("photo-1503095396549-807759245b35"),u("photo-1574391884720-bbc3740c59d1"),u("photo-1459749411175-04bf5292ceea")],
+    imgs:["/images/hoods/little-italy-1.jpg","/images/hoods/little-italy-2.jpg","/images/hoods/little-italy-3.jpg"],
     history:"Italian immigrants began settling along South 10th Street in the 1890s, establishing bakeries, grocers, and social clubs. The Santa Lucia Festival (started 1925) is still celebrated annually. The former Sokol Auditorium, built by Czech immigrants, was reborn as The Admiral — now one of Omaha's best mid-size concert venues. BLUEBARN Theatre relocated here in 2016, adding contemporary theater to the neighborhood's cultural mix.",
     walk:{name:"Little Italy Heritage Walk",distance:"0.9 mi",time:"30 min",steps:["Start at Orsi's Italian Bakery (621 Pacific)","Walk south on 10th past historic storefronts","Visit the Sons of Italy Lodge marker","Continue to The Admiral / Sokol Auditorium","End at BLUEBARN Theatre"]},
     spots:[
@@ -630,7 +630,7 @@ const HOODS=[
     tags:["Theater","Music","Italian","Heritage","Bakeries"],
     vibe:"Historic & Authentic",bestFor:"Theater fans, history buffs, Italian food lovers"},
   {id:"aksarben",name:"Aksarben Village",sub:"67th & Center",desc:"Modern mixed-use with Stinson Park, restaurants, Baxter Arena, and year-round community events.",lat:41.244,lng:-95.96,color:"#B39DDB",
-    imgs:[u("photo-1441974231531-c6227db76b6e"),u("photo-1547347298-4074fc3086f0"),u("photo-1470229722913-7c0e2dbbafd3")],
+    imgs:["/images/hoods/aksarben-1.jpg","/images/hoods/aksarben-2.jpg","/images/hoods/aksarben-3.jpg"],
     history:"The name is 'Nebraska' spelled backward. The original Ak-Sar-Ben racetrack and coliseum (1919–1995) hosted horse racing, rodeos, and the famous Ak-Sar-Ben Ball. The 250-acre site was redeveloped starting in 2007 into a mixed-use village anchored by Stinson Park and Baxter Arena (home of UNO Mavericks). The development is considered one of the most successful urban revitalization projects in the Midwest.",
     spots:[
       {name:"Flagship Commons",type:"Food Hall",cat:"eat",desc:"Multi-vendor food hall. Something for everyone.",addr:"Aksarben Village",price:"$$",icon:"🍱",known:"Multiple vendors, communal tables"},
@@ -647,7 +647,7 @@ const HOODS=[
     tags:["Parks","Events","Dining","Family","Arena"],
     vibe:"Modern & Community",bestFor:"Families, UNO fans, festival-goers"},
   {id:"west-omaha",name:"West Omaha",sub:"144th to Elkhorn",desc:"Suburban dining, Barnato lounge, Zorinsky Lake, and family-friendly activities. Where Omaha spreads out.",lat:41.258,lng:-96.07,color:"#4DD0E1",
-    imgs:[u("photo-1500534314263-0869cef27f7d"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1470229722913-7c0e2dbbafd3")],
+    imgs:["/images/hoods/west-omaha-1.jpg","/images/hoods/west-omaha-2.jpg","/images/hoods/west-omaha-3.jpg"],
     history:"West Omaha's rapid expansion began in the 1990s as families moved to newly developed subdivisions. Village Pointe shopping center, the Funny Bone comedy club, and Barnato (an art-deco music lounge attached to a Bentley dealership) represent the eclectic mix of suburban convenience and unexpected cultural offerings.",
     spots:[
       {name:"Barnato",type:"Lounge",cat:"eat",desc:"Art-deco cocktail lounge attached to the Bentley dealership. And it's great.",addr:"West Dodge",price:"$$$",icon:"🍸",known:"Craft cocktails, art-deco"},
@@ -662,7 +662,7 @@ const HOODS=[
     tags:["Family","Dining","Parks","Comedy","Shopping"],
     vibe:"Suburban & Varied",bestFor:"Families, comedy fans, lake lovers"},
   {id:"south-omaha",name:"South Omaha",sub:"24th & L Street",desc:"Authentic taquerias, the Zoo, Lauritzen Gardens, and deep cultural roots. Omaha's most flavorful neighborhood.",lat:41.23,lng:-95.94,color:"#FF8A65",
-    imgs:[u("photo-1534567153574-2b12153a87f0"),u("photo-1585320806297-9794b3e4eeae"),u("photo-1555939594-58d7cb561ad1")],
+    imgs:["/images/hoods/south-omaha-1.jpg","/images/hoods/south-omaha-2.jpg","/images/hoods/south-omaha-3.jpg"],
     history:"South Omaha was an independent city from 1886–1915, built around the Union Stockyards — once the world's largest livestock market. Waves of immigrants (Czech, Polish, Irish, Lithuanian, Mexican) came to work the yards. The stockyards closed in 1999, but the neighborhood's multicultural DNA endures. South 24th Street is now the heart of Omaha's vibrant Latino community, with some of the most authentic Mexican food between Chicago and Denver.",
     walk:{name:"South O Taco Trail",distance:"1.8 mi",time:"1 hr",steps:["Start at 24th & L Street","Walk south on 24th past taco trucks and taquerias","Stop at El Dorado for birria tacos","Continue to Jacobo's grocery for pan dulce","Detour east to the Golden Spike monument","End at Lauritzen Gardens or the Zoo"]},
     spots:[
@@ -681,7 +681,7 @@ const HOODS=[
     tags:["Food","Culture","Zoo","Gardens","Latino","Tacos"],
     vibe:"Flavorful & Cultural",bestFor:"Foodies, culture seekers, families"},
   {id:"midtown",name:"Midtown Crossing",sub:"Turner Blvd",desc:"Turner Park, Mutual of Omaha campus, restaurants, and the summer home of Jazz on the Green.",lat:41.255,lng:-95.96,color:"#AED581",
-    imgs:[u("photo-1465847899084-d164df4dedc6"),u("photo-1441974231531-c6227db76b6e"),u("photo-1470229722913-7c0e2dbbafd3")],
+    imgs:["/images/hoods/midtown-1.jpg","/images/hoods/midtown-2.jpg","/images/hoods/midtown-3.jpg"],
     history:"The Mutual of Omaha headquarters campus has anchored this area since 1957. Midtown Crossing, a mixed-use development opening in phases from 2009, brought residential towers, restaurants, and retail around Turner Park. Jazz on the Green (free outdoor concerts on Thursday evenings in summer) has been a beloved Omaha tradition since 1993.",
     spots:[
       {name:"Blue Sushi Sake Grill",type:"Restaurant",cat:"eat",desc:"Creative sushi and strong sake program.",addr:"Midtown Crossing",price:"$$",icon:"🍣",known:"Creative rolls, sake flights"},
@@ -697,47 +697,47 @@ const HOODS=[
     vibe:"Relaxed & Musical",bestFor:"Jazz lovers, summer evenings, casual dining"},
 ];
 const SEED_EVENTS=[
-  {id:1,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",city:"omaha",date:"Sat",time:"8 PM",price:"$35–65",emoji:"🎸",desc:"Pink Floyd's The Wall note-for-note with full visual production. Every song, every note — performed live with a full band, vocalists, and stunning visual effects that bring the album to life.",feat:true,doors:"6:30 PM",address:"1212 Douglas St, Omaha, NE 68102",venueType:"Performing Arts",capacity:"3,000",ageRestriction:"All Ages",url:"https://www.ticketmaster.com",tags:["Classic Rock","Live Music","Tribute","Arena Show"],lineup:[{name:"Black Jacket Symphony",role:"Headliner",time:"8:00 PM",img:"https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=200&h=200&fit=crop"},{name:"Local Opening Act",role:"Support",time:"7:00 PM",img:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=200&h=200&fit=crop"}],pricing:[{tier:"General Admission",price:"$35",note:"Standing room"},{tier:"Reserved Seating",price:"$55",note:"Balcony sections"},{tier:"VIP Experience",price:"$65",note:"Early entry + meet & greet"}]},
-  {id:2,title:"Tig Notaro",cat:"comedy",venue:"Holland PAC",date:"Sat",time:"7:30 PM",price:"$45–85",emoji:"🎙️",desc:"Grammy-nominated deadpan comedy. Star of 'One Mississippi'.",feat:true},
-  {id:3,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",city:"omaha",date:"Tue",time:"7 PM",price:"$25–90",emoji:"🏀",desc:"Big East basketball. Bluejays host DePaul at the CHI.",feat:true,broadcast:"FOX Sports",address:"455 N 10th St, Omaha, NE 68102",venueType:"Arena",capacity:"18,300",url:"https://www.ticketmaster.com",matchup:{home:{name:"Creighton",abbr:"CU",record:"22-5",rank:"#12",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},away:{name:"DePaul",abbr:"DPU",record:"11-16",color:"#005EB8",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/305.png"}},tags:["College Basketball","Big East","Rivalry"]},
-  {id:4,title:"Nate Jackson Live",cat:"comedy",venue:"Steelhouse Omaha",city:"omaha",date:"Fri",time:"8 PM",price:"$40–80",emoji:"😂",desc:"Instagram-famous comedian with electric crowd work.",feat:true},
-  {id:5,title:"Ethel Cain",cat:"concerts",venue:"The Astro",date:"Wed",time:"8 PM",price:"$40–75",emoji:"🕯️",desc:"Southern gothic sensation. 'Preacher's Daughter' live.",feat:true},
-  {id:6,title:"LOVB Nebraska",cat:"sports",venue:"Baxter Arena",date:"Sat",time:"7 PM",price:"$20–50",emoji:"🏐",desc:"Pro volleyball. League One Volleyball's Nebraska franchise."},
-  {id:7,title:"All Them Witches",cat:"concerts",venue:"The Slowdown",date:"Mon",time:"8 PM",price:"$25–35",emoji:"🎸",desc:"Heavy psychedelic rock double-header with King Buffalo."},
-  {id:8,title:"Backline Improv",cat:"comedy",venue:"Backline Comedy",date:"Sat",time:"8 PM",price:"$10–15",emoji:"😂",desc:"House improv team takes audience suggestions and runs."},
-  {id:9,title:"Storm Chasers Opener",cat:"sports",venue:"Werner Park",date:"Fri",time:"6:35 PM",price:"$12–45",emoji:"⚾",desc:"2026 MiLB season kickoff with postgame fireworks. The Omaha Storm Chasers, Triple-A affiliate of the Kansas City Royals, open the season with a Friday night fireworks spectacular.",feat:true,address:"12356 Ballpark Way, Papillion, NE 68046",venueType:"Ballpark",capacity:"9,023",url:"https://www.milb.com/omaha",tags:["Minor League Baseball","Fireworks","Family Night"],matchup:{home:{name:"Storm Chasers",abbr:"OMA",record:"",color:"#003DA5",logo:"https://www.milb.com/assets/images/logos/omaha.svg"},away:{name:"Iowa Cubs",abbr:"IOW",record:"",color:"#CC3433",logo:"https://www.milb.com/assets/images/logos/iowa.svg"}}},
-  {id:10,title:"Pinewood Bowl Concert",cat:"concerts",venue:"Pinewood Bowl Theater",city:"lincoln",date:"Sat",time:"7 PM",price:"$25-55",emoji:"🎶",desc:"Outdoor amphitheater in Pioneers Park. Live music under the stars.",feat:false},
-  {id:11,title:"Husker Volleyball",cat:"sports",venue:"Devaney Center",city:"lincoln",date:"Fri",time:"7 PM",price:"$15-40",emoji:"🏐",desc:"Nebraska volleyball at home. Electric atmosphere, sell-out crowd. The Huskers bring Big Ten volleyball action to Lincoln with one of the most passionate fanbases in all of college sports.",feat:true,broadcast:"Big Ten Network",address:"500 Stadium Dr, Lincoln, NE 68588",venueType:"Arena",capacity:"7,907",url:"https://huskers.com/tickets",tags:["College Volleyball","Big Ten","Nebraska"],matchup:{home:{name:"Nebraska",abbr:"NEB",record:"28-2",rank:"#2",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},away:{name:"Wisconsin",abbr:"WIS",record:"24-6",rank:"#7",color:"#C5050C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/275.png"}}}
+  {id:1,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",city:"omaha",date:"Sat",time:"8 PM",price:"$35–65",emoji:"🎸",image:"/images/seeds/1.jpg",desc:"Pink Floyd's The Wall note-for-note with full visual production. Every song, every note — performed live with a full band, vocalists, and stunning visual effects that bring the album to life.",feat:true,doors:"6:30 PM",address:"1212 Douglas St, Omaha, NE 68102",venueType:"Performing Arts",capacity:"3,000",ageRestriction:"All Ages",url:"https://www.ticketmaster.com",tags:["Classic Rock","Live Music","Tribute","Arena Show"],lineup:[{name:"Black Jacket Symphony",role:"Headliner",time:"8:00 PM",img:"https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=200&h=200&fit=crop"},{name:"Local Opening Act",role:"Support",time:"7:00 PM",img:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=200&h=200&fit=crop"}],pricing:[{tier:"General Admission",price:"$35",note:"Standing room"},{tier:"Reserved Seating",price:"$55",note:"Balcony sections"},{tier:"VIP Experience",price:"$65",note:"Early entry + meet & greet"}]},
+  {id:2,title:"Tig Notaro",cat:"comedy",venue:"Holland PAC",date:"Sat",time:"7:30 PM",price:"$45–85",emoji:"🎙️",image:"/images/seeds/2.jpg",desc:"Grammy-nominated deadpan comedy. Star of 'One Mississippi'.",feat:true},
+  {id:3,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",city:"omaha",date:"Tue",time:"7 PM",price:"$25–90",emoji:"🏀",image:"/images/seeds/3.jpg",desc:"Big East basketball. Bluejays host DePaul at the CHI.",feat:true,broadcast:"FOX Sports",address:"455 N 10th St, Omaha, NE 68102",venueType:"Arena",capacity:"18,300",url:"https://www.ticketmaster.com",matchup:{home:{name:"Creighton",abbr:"CU",record:"22-5",rank:"#12",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},away:{name:"DePaul",abbr:"DPU",record:"11-16",color:"#005EB8",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/305.png"}},tags:["College Basketball","Big East","Rivalry"]},
+  {id:4,title:"Nate Jackson Live",cat:"comedy",venue:"Steelhouse Omaha",city:"omaha",date:"Fri",time:"8 PM",price:"$40–80",emoji:"😂",image:"/images/seeds/4.jpg",desc:"Instagram-famous comedian with electric crowd work.",feat:true},
+  {id:5,title:"Ethel Cain",cat:"concerts",venue:"The Astro",date:"Wed",time:"8 PM",price:"$40–75",emoji:"🕯️",image:"/images/seeds/5.jpg",desc:"Southern gothic sensation. 'Preacher's Daughter' live.",feat:true},
+  {id:6,title:"LOVB Nebraska",cat:"sports",venue:"Baxter Arena",date:"Sat",time:"7 PM",price:"$20–50",emoji:"🏐",image:"/images/seeds/6.jpg",desc:"Pro volleyball. League One Volleyball's Nebraska franchise."},
+  {id:7,title:"All Them Witches",cat:"concerts",venue:"The Slowdown",date:"Mon",time:"8 PM",price:"$25–35",emoji:"🎸",image:"/images/seeds/7.jpg",desc:"Heavy psychedelic rock double-header with King Buffalo."},
+  {id:8,title:"Backline Improv",cat:"comedy",venue:"Backline Comedy",date:"Sat",time:"8 PM",price:"$10–15",emoji:"😂",image:"/images/seeds/8.jpg",desc:"House improv team takes audience suggestions and runs."},
+  {id:9,title:"Storm Chasers Opener",cat:"sports",venue:"Werner Park",date:"Fri",time:"6:35 PM",price:"$12–45",emoji:"⚾",image:"/images/seeds/9.jpg",desc:"2026 MiLB season kickoff with postgame fireworks. The Omaha Storm Chasers, Triple-A affiliate of the Kansas City Royals, open the season with a Friday night fireworks spectacular.",feat:true,address:"12356 Ballpark Way, Papillion, NE 68046",venueType:"Ballpark",capacity:"9,023",url:"https://www.milb.com/omaha",tags:["Minor League Baseball","Fireworks","Family Night"],matchup:{home:{name:"Storm Chasers",abbr:"OMA",record:"",color:"#003DA5",logo:"https://www.milb.com/assets/images/logos/omaha.svg"},away:{name:"Iowa Cubs",abbr:"IOW",record:"",color:"#CC3433",logo:"https://www.milb.com/assets/images/logos/iowa.svg"}}},
+  {id:10,title:"Pinewood Bowl Concert",cat:"concerts",venue:"Pinewood Bowl Theater",city:"lincoln",date:"Sat",time:"7 PM",price:"$25-55",emoji:"🎶",image:"/images/seeds/10.jpg",desc:"Outdoor amphitheater in Pioneers Park. Live music under the stars.",feat:false},
+  {id:11,title:"Husker Volleyball",cat:"sports",venue:"Devaney Center",city:"lincoln",date:"Fri",time:"7 PM",price:"$15-40",emoji:"🏐",image:"/images/seeds/11.jpg",desc:"Nebraska volleyball at home. Electric atmosphere, sell-out crowd. The Huskers bring Big Ten volleyball action to Lincoln with one of the most passionate fanbases in all of college sports.",feat:true,broadcast:"Big Ten Network",address:"500 Stadium Dr, Lincoln, NE 68588",venueType:"Arena",capacity:"7,907",url:"https://huskers.com/tickets",tags:["College Volleyball","Big Ten","Nebraska"],matchup:{home:{name:"Nebraska",abbr:"NEB",record:"28-2",rank:"#2",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},away:{name:"Wisconsin",abbr:"WIS",record:"24-6",rank:"#7",color:"#C5050C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/275.png"}}}
 ];
 const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
 
 /* ═══ VENUES ═══ */
 const VENUES=[
-  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"Premier arena for the biggest global tours and Creighton Basketball.",url:"https://www.chihealthcenteromaha.com",img:u("photo-1540039155733-5bb30b53aa14"),city:"omaha"},
-  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:u("photo-1547347298-4074fc3086f0"),city:"omaha"},
-  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue for large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:u("photo-1501386761578-eac5c94b800a"),city:"omaha"},
-  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) for world-class acts.",url:"https://www.theastrotheater.com",img:u("photo-1470229722913-7c0e2dbbafd3"),city:"omaha"},
-  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic 1927 theater hosting Broadway tours, comedians, and concerts.",url:"https://o-pa.org",img:u("photo-1503095396549-807759245b35"),city:"omaha"},
-  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:u("photo-1465847899084-d164df4dedc6"),city:"omaha"},
-  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records.",url:"https://theslowdown.com",img:u("photo-1459749411175-04bf5292ceea"),city:"omaha"},
-  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"Legendary heart of Omaha's alt/indie scene. A must-play for touring bands.",url:"https://waitingroomlounge.com",img:u("photo-1511671782779-c97d3d27a1d4"),city:"omaha"},
-  {id:10,name:"Reverb Lounge",area:"Benson",cap:"150",type:"Indie / Club",lat:41.2808,lng:-95.9545,desc:"Sleek, mid-century modern listening room with great sound.",url:"https://reverblounge.com",img:u("photo-1508854710579-5cecc3a9ff17"),city:"omaha"},
-  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic hall hosting punk, metal, hip-hop, EDM.",url:"https://www.admiralomaha.com",img:u("photo-1574391884720-bbc3740c59d1"),city:"omaha"},
-  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge. Premium cocktails and vibes.",url:"https://barnato.bar",img:u("photo-1511671782779-c97d3d27a1d4"),city:"omaha"},
-  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",url:"https://www.stircove.com",img:u("photo-1506157786151-b8491531f063"),city:"cb"},
-  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"World's best zoo. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:u("photo-1534567153574-2b12153a87f0"),city:"omaha"},
-  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with massive 42,000 sq ft expansion. Free admission.",url:"https://joslyn.org",img:u("photo-1531243269054-5ebf6f34081e"),city:"omaha"},
-  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films.",url:"https://filmstreams.org",img:u("photo-1489599849927-2ee91cede3ba"),city:"omaha"},
-  {id:25,name:"Liberty First CU Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:u("photo-1540039155733-5bb30b53aa14"),city:"omaha"},
-  {id:30,name:"The Jewell",area:"Capitol District",cap:"Intimate",type:"Bar / Venue",lat:41.2577,lng:-95.9370,desc:"Omaha's premier jazz club. National and local jazz and blues.",url:"https://jewellomaha.com",img:u("photo-1415201364774-f6f0bb35f28f"),city:"omaha"},
-  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"Interactive science center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:u("photo-1531243269054-5ebf6f34081e"),city:"omaha"},
-  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station with train cars and soda fountain.",url:"https://durhammuseum.org",img:u("photo-1503095396549-807759245b35"),city:"omaha"},
-  {id:43,name:"Fontenelle Forest",area:"Bellevue",cap:"Varies",type:"Museum / Attraction",lat:41.1570,lng:-95.9000,desc:"2,000 acres of forest, wetlands, and boardwalk trails.",url:"https://fontenelleforest.org",img:u("photo-1552674605-db6ffd4facb5"),city:"omaha"},
-  {id:50,name:"Funny Bone",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians.",url:"https://omaha.funnybone.com",img:u("photo-1585699324551-f6c309eedeca"),city:"omaha"},
-  {id:51,name:"Backline Comedy",area:"Downtown",cap:"150",type:"Comedy Club",lat:41.2555,lng:-95.9340,desc:"HQ for Omaha's local comedy. Improv, sketch, open mics, stand-up.",url:"https://backlinecomedy.com",img:u("photo-1585699324551-f6c309eedeca"),city:"omaha"},
-  {id:60,name:"Pinewood Bowl Theater",area:"Pioneers Park",cap:"4,500",type:"Outdoor",lat:40.7885,lng:-96.7272,desc:"Lincoln's outdoor amphitheater in a wooded setting.",url:"https://pinewoodbowl.org",img:u("photo-1506157786151-b8491531f063"),city:"lincoln"},
-  {id:61,name:"Bourbon Theatre",area:"Downtown Lincoln",cap:"800",type:"Indie / Club",lat:40.8136,lng:-96.7026,desc:"Lincoln's go-to live music venue for touring and local bands.",url:"https://bourbontheatre.com",img:u("photo-1459749411175-04bf5292ceea"),city:"lincoln"},
-  {id:62,name:"Lied Center",area:"UNL Campus",cap:"2,200",type:"Performing Arts",lat:40.8206,lng:-96.7014,desc:"UNL's performing arts center. Broadway, dance, orchestra, comedy.",url:"https://liedcenter.org",img:u("photo-1503095396549-807759245b35"),city:"lincoln"},
+  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"Premier arena for the biggest global tours and Creighton Basketball.",url:"https://www.chihealthcenteromaha.com",img:"/images/venues/1.jpg",city:"omaha"},
+  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:"/images/venues/2.jpg",city:"omaha"},
+  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue for large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:"/images/venues/4.jpg",city:"omaha"},
+  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) for world-class acts.",url:"https://www.theastrotheater.com",img:"/images/venues/5.jpg",city:"omaha"},
+  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic 1927 theater hosting Broadway tours, comedians, and concerts.",url:"https://o-pa.org",img:"/images/venues/6.jpg",city:"omaha"},
+  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:"/images/venues/7.jpg",city:"omaha"},
+  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records.",url:"https://theslowdown.com",img:"/images/venues/8.jpg",city:"omaha"},
+  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"Legendary heart of Omaha's alt/indie scene. A must-play for touring bands.",url:"https://waitingroomlounge.com",img:"/images/venues/9.jpg",city:"omaha"},
+  {id:10,name:"Reverb Lounge",area:"Benson",cap:"150",type:"Indie / Club",lat:41.2808,lng:-95.9545,desc:"Sleek, mid-century modern listening room with great sound.",url:"https://reverblounge.com",img:"/images/venues/10.jpg",city:"omaha"},
+  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic hall hosting punk, metal, hip-hop, EDM.",url:"https://www.admiralomaha.com",img:"/images/venues/11.jpg",city:"omaha"},
+  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge. Premium cocktails and vibes.",url:"https://barnato.bar",img:"/images/venues/12.jpg",city:"omaha"},
+  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",url:"https://www.stircove.com",img:"/images/venues/14.jpg",city:"cb"},
+  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"World's best zoo. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:"/images/venues/21.jpg",city:"omaha"},
+  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with massive 42,000 sq ft expansion. Free admission.",url:"https://joslyn.org",img:"/images/venues/22.jpg",city:"omaha"},
+  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films.",url:"https://filmstreams.org",img:"/images/venues/23.jpg",city:"omaha"},
+  {id:25,name:"Liberty First CU Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:"/images/venues/25.jpg",city:"omaha"},
+  {id:30,name:"The Jewell",area:"Capitol District",cap:"Intimate",type:"Bar / Venue",lat:41.2577,lng:-95.9370,desc:"Omaha's premier jazz club. National and local jazz and blues.",url:"https://jewellomaha.com",img:"/images/venues/30.jpg",city:"omaha"},
+  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"Interactive science center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:"/images/venues/38.jpg",city:"omaha"},
+  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station with train cars and soda fountain.",url:"https://durhammuseum.org",img:"/images/venues/40.jpg",city:"omaha"},
+  {id:43,name:"Fontenelle Forest",area:"Bellevue",cap:"Varies",type:"Museum / Attraction",lat:41.1570,lng:-95.9000,desc:"2,000 acres of forest, wetlands, and boardwalk trails.",url:"https://fontenelleforest.org",img:"/images/venues/43.jpg",city:"omaha"},
+  {id:50,name:"Funny Bone",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians.",url:"https://omaha.funnybone.com",img:"/images/venues/50.jpg",city:"omaha"},
+  {id:51,name:"Backline Comedy",area:"Downtown",cap:"150",type:"Comedy Club",lat:41.2555,lng:-95.9340,desc:"HQ for Omaha's local comedy. Improv, sketch, open mics, stand-up.",url:"https://backlinecomedy.com",img:"/images/venues/51.jpg",city:"omaha"},
+  {id:60,name:"Pinewood Bowl Theater",area:"Pioneers Park",cap:"4,500",type:"Outdoor",lat:40.7885,lng:-96.7272,desc:"Lincoln's outdoor amphitheater in a wooded setting.",url:"https://pinewoodbowl.org",img:"/images/venues/60.jpg",city:"lincoln"},
+  {id:61,name:"Bourbon Theatre",area:"Downtown Lincoln",cap:"800",type:"Indie / Club",lat:40.8136,lng:-96.7026,desc:"Lincoln's go-to live music venue for touring and local bands.",url:"https://bourbontheatre.com",img:"/images/venues/61.jpg",city:"lincoln"},
+  {id:62,name:"Lied Center",area:"UNL Campus",cap:"2,200",type:"Performing Arts",lat:40.8206,lng:-96.7014,desc:"UNL's performing arts center. Broadway, dance, orchestra, comedy.",url:"https://liedcenter.org",img:"/images/venues/62.jpg",city:"lincoln"},
 ];
 const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
 

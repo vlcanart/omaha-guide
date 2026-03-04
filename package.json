@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/prebuild-events.js",
-    "build": "node scripts/prebuild-events.js && node scripts/generate-sitemap.js && next build",
+    "build": "node scripts/cache-images.js && node scripts/prebuild-events.js && node scripts/generate-sitemap.js && next build",
+    "images:cache": "node scripts/cache-images.js",
+    "images:force": "node scripts/cache-images.js --force",
+    "images:dry": "node scripts/cache-images.js --dry",
     "start": "next start",
     "pipeline": "node scripts/run-pipeline.js --merge",
     "pipeline:full": "node scripts/run-pipeline.js --merge --concurrency 5",
@@ -41,5 +44,8 @@
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-leaflet": "^4.2.1"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

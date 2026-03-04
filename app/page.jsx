@@ -1,5 +1,15 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
+import { TRAIL_MAP_DATA } from "./trail-data";
+const TrailMap=dynamic(()=>import("./TrailMap"),{ssr:false,loading:()=>(
+  <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"80vh",color:"rgba(242,239,233,.58)"}}>
+    <div style={{textAlign:"center"}}>
+      <div style={{width:32,height:32,border:"3px solid rgba(94,196,182,.3)",borderTop:"3px solid #5EC4B6",borderRadius:"50%",animation:"spin 1s linear infinite",margin:"0 auto 12px"}}/>
+      <p style={{fontSize:12,letterSpacing:1}}>Loading trail map...</p>
+    </div>
+  </div>
+)});
 
 /* ═══════════════════════════════════════════════════════════
    GO: GUIDE TO OMAHA — DESIGN SYSTEM NOTES
@@ -806,9 +816,10 @@ export default function GOPrototype(){
      SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
      GO: title stays visible at reduced size. No celestial or weather elements. */
   const fullHero=tab==="today"||tab==="events";
-  const heroH=fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
-  const heroMin=fullHero?(isD?400:320):(isD?120:95);
-  const heroMax=fullHero?560:135;
+  const isTrailPage=tab.startsWith("trail:");
+  const heroH=isTrailPage?"0px":fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
+  const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
+  const heroMax=isTrailPage?0:fullHero?560:135;
 
   return (
     <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:130}}>
@@ -1484,7 +1495,8 @@ export default function GOPrototype(){
             <Head text="Trails" count={park.trails.length} color={pc}/>
             {park.trails.map((t,i)=>{
               const dc=t.difficulty==="Easy"?pc:t.difficulty==="Moderate"?"#E8B54D":T.red;
-              return <div key={i} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12}}>
+              const hasMap=!!TRAIL_MAP_DATA[parkId];
+              return <div key={i} onClick={()=>{if(hasMap){setTab("trail:"+parkId+":"+i);window.scrollTo(0,0);}}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12,cursor:hasMap?"pointer":"default"}}>
                 <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:10}}>
                   <div>
                     <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:0}}>{t.name}</p>
@@ -1499,6 +1511,10 @@ export default function GOPrototype(){
                 <p style={{fontSize:13,color:T.textBody,lineHeight:1.65,margin:"0 0 12px"}}>{t.desc}</p>
                 {t.features&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                   {t.features.map(f=><span key={f} style={{fontSize:10,padding:"4px 10px",borderRadius:99,background:`${pc}0D`,border:`1px solid ${pc}25`,color:pc,fontWeight:500}}>{f}</span>)}
+                </div>}
+                {hasMap&&<div style={{display:"flex",alignItems:"center",gap:6,marginTop:10}}>
+                  <span style={{fontSize:11,color:pc,fontWeight:600,letterSpacing:.5}}>{IC.pin(pc,13)} View Interactive Map</span>
+                  {IC.chev(pc,12)}
                 </div>}
               </div>;
             })}
@@ -1640,6 +1656,21 @@ export default function GOPrototype(){
         </div>;
       })()}
 
+      {/* ═══ TRAIL MAP (accessed from Park Detail) ═══ */}
+      {tab.startsWith("trail:")&&(()=>{
+        const parts=tab.split(":");
+        const tParkId=parts[1];
+        const trailIdx=parseInt(parts[2]||"0",10);
+        const tPark=PARKS.find(p=>p.id===tParkId);
+        if(!tPark)return null;
+        const tData=TRAIL_MAP_DATA[tParkId];
+        if(!tData)return null;
+        return <TrailMap parkId={tParkId} parkName={tPark.name}
+          parkColor={tPark.color||"#81C784"} initialTrailIndex={trailIdx}
+          trailMapData={tData}
+          onBack={()=>{setParkTab("trails");setTab("park:"+tParkId);window.scrollTo(0,0);}}/>;
+      })()}
+
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
       <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 14px max(4px,env(safe-area-inset-bottom))",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <div style={{width:"100%",maxWidth:isD?480:isT?400:360,padding:"8px 14px 4px",background:"rgba(20,22,24,.95)",backdropFilter:"blur(22px)",borderRadius:"14px 14px 0 0",borderTop:`1px solid ${T.border}`,borderLeft:`1px solid ${T.border}`,borderRight:`1px solid ${T.border}`}}>
@@ -1662,9 +1693,9 @@ export default function GOPrototype(){
         </div>
         <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:"0 0 16px 16px",display:"flex",justifyContent:"space-around",padding:"4px 2px 6px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:"none"}}>
           {tabsD.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
-              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
-              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:"))))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"8px 22px":"8px 12px",borderRadius:11,minWidth:isD?76:isT?62:52,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
+              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
+              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:"))))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>
           ))}
         </div>

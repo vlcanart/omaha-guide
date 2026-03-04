@@ -393,7 +393,154 @@ if (zeroDataDropped > 0) {
   console.log(`🗑️  Removed ${zeroDataDropped} zero-data events (no URL and no image)`);
 }
 
-// ═══ OUTPUT ═══
+// ═══ EVENT IMAGE CACHING ═══
+// Downloads external event images to public/images/events/ for local serving.
+// Rewrites ev.image to local path. Runs during prebuild so images are fresh.
+const EVENTS_IMG_DIR = path.join(__dirname, "..", "public", "images", "events");
+
+async function cacheEventImages(events) {
+  if (!fs.existsSync(EVENTS_IMG_DIR)) {
+    fs.mkdirSync(EVENTS_IMG_DIR, { recursive: true });
+  }
+
+  const withImages = events.filter(
+    (e) => e.image && /^https?:\/\//.test(e.image)
+  );
+  if (withImages.length === 0) {
+    console.log("🖼️  No external event images to cache");
+    return;
+  }
+
+  let sharp;
+  try {
+    sharp = require("sharp");
+  } catch {
+    // sharp not available — skip image caching silently in CI
+    console.log(
+      "🖼️  sharp not installed — skipping event image caching (install sharp for local images)"
+    );
+    return;
+  }
+
+  console.log(
+    `🖼️  Caching ${withImages.length} event images to public/images/events/...`
+  );
+
+  const CONCURRENCY = 5;
+  const TIMEOUT = 10000;
+  let cached = 0;
+  let skipped = 0;
+  let failed = 0;
+
+  // Process in batches of CONCURRENCY
+  for (let i = 0; i < withImages.length; i += CONCURRENCY) {
+    const batch = withImages.slice(i, i + CONCURRENCY);
+    await Promise.all(
+      batch.map(async (ev) => {
+        const filename = `${ev.id}.jpg`;
+        const outPath = path.join(EVENTS_IMG_DIR, filename);
+
+        // Skip if already cached
+        if (fs.existsSync(outPath)) {
+          ev.image = `/images/events/${filename}`;
+          skipped++;
+          return;
+        }
+
+        try {
+          const buf = await new Promise((resolve, reject) => {
+            const proto = ev.image.startsWith("https")
+              ? require("https")
+              : require("http");
+            proto
+              .get(ev.image, { timeout: TIMEOUT }, (res) => {
+                if (
+                  [301, 302, 303, 307].includes(res.statusCode) &&
+                  res.headers.location
+                ) {
+                  // Follow one redirect
+                  const rProto = res.headers.location.startsWith("https")
+                    ? require("https")
+                    : require("http");
+                  rProto
+                    .get(res.headers.location, { timeout: TIMEOUT }, (r2) => {
+                      if (r2.statusCode !== 200) {
+                        reject(new Error(`HTTP ${r2.statusCode}`));
+                        r2.resume();
+                        return;
+                      }
+                      const c = [];
+                      r2.on("data", (d) => c.push(d));
+                      r2.on("end", () => resolve(Buffer.concat(c)));
+                      r2.on("error", reject);
+                    })
+                    .on("error", reject);
+                  return;
+                }
+                if (res.statusCode !== 200) {
+                  reject(new Error(`HTTP ${res.statusCode}`));
+                  res.resume();
+                  return;
+                }
+                const chunks = [];
+                res.on("data", (d) => chunks.push(d));
+                res.on("end", () => resolve(Buffer.concat(chunks)));
+                res.on("error", reject);
+              })
+              .on("error", reject)
+              .on("timeout", () => reject(new Error("timeout")));
+          });
+
+          const optimized = await sharp(buf)
+            .resize(600, 400, { fit: "cover", position: "center" })
+            .jpeg({ quality: 80 })
+            .toBuffer();
+
+          fs.writeFileSync(outPath, optimized);
+          ev.image = `/images/events/${filename}`;
+          cached++;
+        } catch {
+          // Keep original URL as fallback
+          failed++;
+        }
+      })
+    );
+  }
+
+  // Clean up stale images (IDs no longer in dataset)
+  const activeIds = new Set(events.map((e) => `${e.id}.jpg`));
+  let cleaned = 0;
+  try {
+    for (const file of fs.readdirSync(EVENTS_IMG_DIR)) {
+      if (file.endsWith(".jpg") && !activeIds.has(file)) {
+        fs.unlinkSync(path.join(EVENTS_IMG_DIR, file));
+        cleaned++;
+      }
+    }
+  } catch {}
+
+  console.log(
+    `🖼️  Event images: ${cached} cached, ${skipped} existing, ${failed} failed${cleaned ? `, ${cleaned} stale removed` : ""}`
+  );
+}
+
+// Run image caching (async wrapper for the sync script)
+const runAsync = (async () => {
+  await cacheEventImages(ingested);
+})();
+
+// Wait for async work, then generate output
+runAsync
+  .then(() => {
+    // ═══ OUTPUT ═══
+    generateOutput();
+  })
+  .catch((err) => {
+    console.warn(`⚠ Event image caching error: ${err.message}`);
+    generateOutput();
+  });
+
+function generateOutput() {
 let lastPipeline = null;
 if (fs.existsSync(LOG_PATH)) {
   try {
@@ -420,3 +567,4 @@ export const dedupeKey = (e) =>
 
 fs.writeFileSync(OUTPUT_PATH, output);
 console.log(`✓ Generated ${OUTPUT_PATH} with ${ingested.length} events (build: ${BUILD_TIME})`);
+} // end generateOutput()

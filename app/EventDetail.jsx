@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Music, Trophy, Laugh, Users, Drama, PartyPopper, CalendarDays } from "lucide-react";
 
 /* ═══ DESIGN TOKENS ═══ */
 const T={
@@ -12,6 +13,7 @@ const T={
   gold:"#D4AD65",green:"#7DD4A0",red:"#E8364F",
   sans:"'Inter',system-ui,-apple-system,sans-serif",
 };
+function isDisplayablePrice(p){if(!p)return false;const s=p.trim().toLowerCase();if(s==="free")return true;return/^\$\d/.test(p.trim());}
 const CG={
   concerts:"linear-gradient(135deg,#1A2E32 0%,#213740 60%,#1C3035 100%)",
   sports:"linear-gradient(135deg,#1A2430 0%,#21303E 60%,#1C2836 100%)",
@@ -23,7 +25,8 @@ const CG={
 };
 const CA={concerts:"#5EC4B6",sports:"#64B5F6",festivals:"#CE93D8",family:"#81C784",arts:"#B39DDB",comedy:"#FFB74D"};
 const CAT_LABEL={concerts:"Concert",sports:"Sports",festivals:"Festival",family:"Family",arts:"Arts",comedy:"Comedy"};
-const CAT_EMOJI={concerts:"🎵",sports:"🏀",festivals:"🎪",family:"👨‍👩‍👧",arts:"🎭",comedy:"🎙️"};
+const CAT_ICON={concerts:Music,sports:Trophy,comedy:Laugh,family:Users,arts:Drama,festivals:PartyPopper};
+function CatIcon({cat,size=20,color}){const Icon=CAT_ICON[cat]||CalendarDays;return <Icon size={size} color={color||CA[cat]||T.accent} strokeWidth={1.8}/>;}
 
 /* ═══ SVG ICONS ═══ */
 const I={
@@ -200,7 +203,6 @@ export default function EventDetail({event:ev,isSaved,onToggleSave,onBack,isM,is
   const hasImg=ev.image&&!imgErr;
   const heroGrad=CG[ev.cat]||CG._;
   const catLabel=CAT_LABEL[ev.cat]||"Event";
-  const catEmoji=ev.emoji||CAT_EMOJI[ev.cat]||"📅";
   const countdown=daysUntil(ev.date);
 
   useEffect(()=>{
@@ -245,8 +247,8 @@ export default function EventDetail({event:ev,isSaved,onToggleSave,onBack,isM,is
 
         {/* Category + countdown badges */}
         <div style={{position:"absolute",top:16,left:px,display:"flex",gap:8,zIndex:2}}>
-          <span style={{fontSize:10,fontWeight:700,letterSpacing:2,textTransform:"uppercase",padding:"5px 14px",borderRadius:99,background:`${ac}22`,color:ac,border:`1px solid ${ac}33`,backdropFilter:"blur(12px)"}}>
-            {catEmoji} {catLabel}
+          <span style={{fontSize:10,fontWeight:700,letterSpacing:2,textTransform:"uppercase",padding:"5px 14px",borderRadius:99,background:`${ac}22`,color:ac,border:`1px solid ${ac}33`,backdropFilter:"blur(12px)",display:"inline-flex",alignItems:"center",gap:5}}>
+            <CatIcon cat={ev.cat} size={12} color={ac}/> {catLabel}
           </span>
           {countdown&&<span style={{fontSize:10,fontWeight:600,letterSpacing:1,textTransform:"uppercase",padding:"5px 14px",borderRadius:99,background:"rgba(20,22,24,0.6)",color:T.text,border:"1px solid rgba(255,255,255,0.12)",backdropFilter:"blur(12px)"}}>
             {countdown}
@@ -286,7 +288,7 @@ export default function EventDetail({event:ev,isSaved,onToggleSave,onBack,isM,is
         {/* Quick info pills */}
         <div style={{display:"flex",gap:8,margin:"20px 0 24px",overflowX:"auto",paddingBottom:2}}>
           {[
-            ev.price&&{label:ev.price.startsWith("$")?`From ${ev.price}`:ev.price,bold:true,icon:I.ticket(ac,13)},
+            isDisplayablePrice(ev.price)&&{label:ev.price.startsWith("$")?`From ${ev.price}`:ev.price,bold:true,icon:I.ticket(ac,13)},
             ev.doors&&{label:`Doors ${ev.doors}`,icon:I.clock(T.textSec,13)},
             ev.capacity&&{label:ev.capacity+" cap",icon:I.users(T.textSec,13)},
             ev.broadcast&&{label:ev.broadcast,icon:I.tv(T.textSec,13)},

@@ -39,6 +39,9 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: write
+
 jobs:
   pipeline:
     runs-on: ubuntu-latest

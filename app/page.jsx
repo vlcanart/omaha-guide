@@ -742,10 +742,11 @@ const VENUES=[
 const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
 
 /* ═══ EVENT FILTER CONSTANTS ═══ */
-const ECATS=[{id:"all",label:"All",emoji:"📅"},{id:"concerts",label:"Concerts",emoji:"🎵"},{id:"sports",label:"Sports",emoji:"🏟️"},{id:"comedy",label:"Comedy",emoji:"😂"},{id:"family",label:"Family",emoji:"👨‍👩‍👧"},{id:"arts",label:"Arts",emoji:"🎭"},{id:"festivals",label:"Festivals",emoji:"🎪"}];
+const ECATS=[{id:"concerts",label:"Concerts",emoji:"🎵"},{id:"sports",label:"Sports",emoji:"🏟️"},{id:"comedy",label:"Comedy",emoji:"😂"},{id:"family",label:"Family",emoji:"👨‍👩‍👧"},{id:"arts",label:"Arts",emoji:"🎭"},{id:"festivals",label:"Festivals",emoji:"🎪"}];
 const ESUBS={concerts:["Rock","Country","Hip-Hop","Jazz","Electronic","Pop","Metal","Folk","R&B","Indie","Classical","Tribute","Live Music"],sports:["Basketball","Football","Baseball","Volleyball","Hockey","Soccer","Wrestling"],comedy:["Stand-Up","Improv","Open Mic"],family:["Museum","Zoo","Science","Outdoor","Workshop"],arts:["Theater","Musical","Dance","Orchestra","Film","Gallery","Opera"],festivals:["Food","Music","Cultural","Holiday"]};
-const DATE_PRESETS=[{id:"all",label:"All Dates"},{id:"today",label:"Today"},{id:"week",label:"This Week"},{id:"month",label:"This Month"}];
-function matchDate(ev,range){if(range==="all")return true;const d=ev.date?.match(/^\d{4}-\d{2}-\d{2}$/)?new Date(ev.date+"T12:00:00"):null;if(!d)return range==="today";const now=new Date();now.setHours(0,0,0,0);if(range==="today")return d.toDateString()===now.toDateString();if(range==="week"){const end=new Date(now);end.setDate(end.getDate()+7);return d>=now&&d<=end;}if(range==="month"){const end=new Date(now);end.setMonth(end.getMonth()+1);return d>=now&&d<=end;}return true;}
+function getCalDates(n){const days=[];const now=new Date();for(let i=0;i<n;i++){const d=new Date(now);d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const wd=d.toLocaleDateString("en-US",{weekday:"short"});const dn=d.getDate();const mn=d.toLocaleDateString("en-US",{month:"short"});days.push({iso,wd:i===0?"Today":i===1?"Tmrw":wd,dn,mn});}return days;}
+const CAL_DATES=getCalDates(14);
+function matchDate(ev,range){if(range==="all")return true;const d=ev.date?.match(/^\d{4}-\d{2}-\d{2}$/)?new Date(ev.date+"T12:00:00"):null;if(!d)return range==="today"||range===new Date().toISOString().slice(0,10);const now=new Date();now.setHours(0,0,0,0);if(range==="today")return d.toDateString()===now.toDateString();if(range==="week"){const end=new Date(now);end.setDate(end.getDate()+7);return d>=now&&d<=end;}if(range==="month"){const end=new Date(now);end.setMonth(end.getMonth()+1);return d>=now&&d<=end;}if(range.match(/^\d{4}-\d{2}-\d{2}$/)){return ev.date===range;}return true;}
 function matchSub(ev,sub){if(sub==="all")return true;const haystack=[...(ev.tags||[]),ev.title||"",ev.desc||""].join(" ").toLowerCase();return haystack.includes(sub.toLowerCase());}
 
 /* ═══ REAL-TIME SUN POSITION ═══ */
@@ -782,9 +783,9 @@ export default function GOPrototype(){
   const[tab,setTab]=useState("today");
   const[prevTab,setPrevTab]=useState("today");
   const[favs,setFavs]=useState([]);
-  const[evCat,setEvCat]=useState("all");
+  const[evCat,setEvCat]=useState("concerts");
   const[evSub,setEvSub]=useState("all");
-  const[dateRange,setDateRange]=useState("all");
+  const[dateRange,setDateRange]=useState("today");
   useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
   useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
@@ -800,9 +801,9 @@ export default function GOPrototype(){
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);scrollTop();};
   const[evShow,setEvShow]=useState(30);
-  useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");setEvShow(30);}},[tab]);
+  useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setDateRange("today");setEvShow(30);}},[tab]);
   useEffect(()=>{setEvShow(30);},[evCat,evSub,dateRange]);
-  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>evCat==="all"||e.cat===evCat).filter(e=>matchDate(e,dateRange)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,dateRange,cities]);
+  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>e.cat===evCat).filter(e=>matchDate(e,dateRange)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,dateRange,cities]);
   const nb=Math.max(0,Math.min(1,(tv-50)/20));
   const isDay=tv<60,isNite=tv>=60;
   const mLabel=isDay?"Today":"Tonight";
@@ -842,7 +843,7 @@ export default function GOPrototype(){
      All other tabs get compact strip (95-135px) showing bottom third of skyline.
      SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
      GO: title stays visible at reduced size. No celestial or weather elements. */
-  const fullHero=tab==="today";
+  const fullHero=tab==="today"||tab==="events";
   const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:");
   const heroH=isTrailPage?"0px":fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
   const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
@@ -1066,27 +1067,29 @@ export default function GOPrototype(){
 
       {/* ═══ EVENTS TAB ═══ */}
       {tab==="events"&&<div style={sec}>
-        {/* City filter */}
-        <div style={{display:"flex",gap:8,flexWrap:"nowrap",overflowX:"auto",paddingTop:16,paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {[["omaha","Omaha"],["cb","Council Bluffs"],["lincoln","Lincoln"]].map(([k,label])=><button key={k} onClick={()=>togCity(k)} style={{background:cities.has(k)?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${cities.has(k)?T.accent+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:36}}><span style={{fontSize:11,fontWeight:600,color:cities.has(k)?T.accent:T.textSec,letterSpacing:1,textTransform:"uppercase"}}>{label}</span></button>)}
-        </div>
-        {/* Date presets */}
-        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {DATE_PRESETS.map(dp=><button key={dp.id} onClick={()=>setDateRange(dp.id)} style={{background:dateRange===dp.id?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${dateRange===dp.id?T.accent+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:36}}><span style={{fontSize:11,fontWeight:600,color:dateRange===dp.id?T.accent:T.textSec,letterSpacing:.8}}>{dp.label}</span></button>)}
+        {/* Calendar date scroller */}
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingTop:16,paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+          {CAL_DATES.map(cd=>{const sel=dateRange===cd.iso||(dateRange==="today"&&cd===CAL_DATES[0]);return(
+            <button key={cd.iso} onClick={()=>setDateRange(cd.iso)} className="daybtn" style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:sel?T.accent:"rgba(255,255,255,.06)",border:`1px solid ${sel?T.accent:T.border}`,borderRadius:14,padding:"8px 10px",cursor:"pointer",flexShrink:0,minWidth:52,minHeight:62}}>
+              <span style={{fontSize:9,fontWeight:600,color:sel?"#000":T.textSec,letterSpacing:.8,textTransform:"uppercase"}}>{cd.wd}</span>
+              <span style={{fontSize:20,fontWeight:700,color:sel?"#000":T.text,lineHeight:1.1}}>{cd.dn}</span>
+              <span style={{fontSize:8,fontWeight:600,color:sel?"#000":T.textDim,letterSpacing:.5,textTransform:"uppercase"}}>{cd.mn}</span>
+            </button>);
+          })}
         </div>
         {/* Category pills */}
         <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
           {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
         </div>
         {/* Subcategory pills */}
-        {evCat!=="all"&&ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+        {ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
           <button onClick={()=>setEvSub("all")} style={{background:evSub==="all"?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub==="all"?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub==="all"?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>All</span></button>
           {ESUBS[evCat].map(s=><button key={s} onClick={()=>setEvSub(s)} style={{background:evSub===s?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub===s?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub===s?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>{s}</span></button>)}
         </div>}
         {/* Events heading */}
-        <Head text={evCat==="all"?"All Events":ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
+        <Head text={ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
         {/* Event cards — paginated for performance */}
-        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvCat("all");setEvSub("all");setDateRange("all");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
+        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvSub("all");setDateRange("today");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
         {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>

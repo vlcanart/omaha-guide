@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { TRAIL_MAP_DATA } from "./trail-data";
 const TrailMap=dynamic(()=>import("./TrailMap"),{ssr:false,loading:()=>(
@@ -766,6 +766,8 @@ const WX_ICONS={clear:"☀️",cloudy:"☁️",rainy:"🌧️",snowy:"❄️"};
 /* ═══ APP ═══ */
 export default function GOPrototype(){
   const[mounted,setMounted]=useState(false);
+  const contentRef=useRef(null);
+  const scrollTop=()=>{if(contentRef.current)contentRef.current.scrollTo(0,0);else scrollTop();};
   const[nowTv,setNowTv]=useState(50);
   const[tv,setTv]=useState(50);
   const[isLive,setIsLive]=useState(true);
@@ -796,7 +798,7 @@ export default function GOPrototype(){
   const sec={maxWidth:mxW,margin:"0 auto",padding:`0 ${px}px`};
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
-  const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);};
+  const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);scrollTop();};
   const[evShow,setEvShow]=useState(30);
   useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");setEvShow(30);}},[tab]);
   useEffect(()=>{setEvShow(30);},[evCat,evSub,dateRange]);
@@ -847,8 +849,9 @@ export default function GOPrototype(){
   const heroMax=isTrailPage?0:fullHero?560:135;
 
   return (
-    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:160}}>
+    <div id="app-shell" style={{background:T.bg,color:T.text,fontFamily:T.sans}}>
       {!mounted?<div style={{height:"100vh",background:T.bg}}/>:<>
+      <div id="app-content" ref={contentRef}>
 
       {/* ═══ HERO ═══ */}
       <div style={{position:"relative",height:heroH,minHeight:heroMin,maxHeight:heroMax,overflow:"hidden",transition:"height 0.5s ease, min-height 0.5s ease, max-height 0.5s ease"}}>
@@ -921,7 +924,7 @@ export default function GOPrototype(){
           <Head text="Trails & Rides" count={TRAILS.length} mt={4} color="#81C784"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {TRAILS.map(t=>(
-              <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+              <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
                   <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -947,7 +950,7 @@ export default function GOPrototype(){
           <Head text="Parks" count={6} color="#81C784"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {PARKS.filter(p=>["gene-leahy-mall","heartland-america","elmwood-park","memorial-park","zorinsky-lake","cunningham-lake"].includes(p.id)).map(p=>(
-              <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?260:isM?220:240,minWidth:isD?260:isM?220:240,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+              <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);scrollTop();}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?260:isM?220:240,minWidth:isD?260:isM?220:240,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?110:90,overflow:"hidden"}}>
                   <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -965,7 +968,7 @@ export default function GOPrototype(){
           <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {WALKS.map(wk=>(
-              <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+              <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
                   {wk.icon("#FFB74D",36)}
                   <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
@@ -984,7 +987,7 @@ export default function GOPrototype(){
 
           <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
           {DAYTIME.map((a,i)=>(
-            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("venue:"+a.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
+            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("venue:"+a.id);scrollTop();}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
                 <div style={{flex:1}}>
@@ -1115,7 +1118,7 @@ export default function GOPrototype(){
         <Head text="Parks & Gardens" count={PARKS.length} mt={16} color="#81C784"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {PARKS.map(p=>(
-            <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+            <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);scrollTop();}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
                 <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -1127,7 +1130,7 @@ export default function GOPrototype(){
                 <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{p.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
                 <div style={{display:"flex",gap:6,marginTop:10}}>
                   <a href={mapsDir(p.lat,p.lng)} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:`${p.color||"#81C784"}18`,border:`1px solid ${p.color||"#81C784"}33`,color:p.color||"#81C784",fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.dir(p.color||"#81C784",11)} Directions</a>
-                  <button onClick={e=>{e.stopPropagation();setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.chev(T.textBody,11)} Details</button>
+                  <button onClick={e=>{e.stopPropagation();setParkTab("overview");setTab("park:"+p.id);scrollTop();}} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.chev(T.textBody,11)} Details</button>
                 </div>
               </div>
             </div>
@@ -1138,7 +1141,7 @@ export default function GOPrototype(){
         <Head text="Trails & Rides" count={TRAILS.length} color="#81C784"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {TRAILS.map(t=>(
-            <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+            <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
                 <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -1160,7 +1163,7 @@ export default function GOPrototype(){
         <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {WALKS.map(wk=>(
-            <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+            <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
                 {wk.icon("#FFB74D",36)}
                 <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
@@ -1458,7 +1461,7 @@ export default function GOPrototype(){
         if(!ev)return null;
         return <EventDetail event={ev} isSaved={favs.includes(ev.id)}
           onToggleSave={()=>tog(ev.id)}
-          onBack={()=>{setTab(prevTab);window.scrollTo(0,0);}}
+          onBack={()=>{setTab(prevTab);scrollTop();}}
           isM={isM} isT={isT} isD={isD}/>;
       })()}
 
@@ -1581,7 +1584,7 @@ export default function GOPrototype(){
             {park.trails.map((t,i)=>{
               const dc=t.difficulty==="Easy"?pc:t.difficulty==="Moderate"?"#E8B54D":T.red;
               const hasMap=!!TRAIL_MAP_DATA[parkId];
-              return <div key={i} onClick={()=>{if(hasMap){setTab("trail:"+parkId+":"+i);window.scrollTo(0,0);}}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12,cursor:hasMap?"pointer":"default"}}>
+              return <div key={i} onClick={()=>{if(hasMap){setTab("trail:"+parkId+":"+i);scrollTop();}}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12,cursor:hasMap?"pointer":"default"}}>
                 <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:10}}>
                   <div>
                     <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:0}}>{t.name}</p>
@@ -1751,7 +1754,7 @@ export default function GOPrototype(){
         return <TrailMap parkId={dataKey} parkName={TRAILS.find(t=>t.id===trailId)?.name||"Trail"}
           parkColor={tData.trails[0]?.color||"#81C784"} initialTrailIndex={0}
           trailMapData={tData}
-          onBack={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}}/>;
+          onBack={()=>{setTab(prevTab||"today");scrollTop();}}/>;
       })()}
 
       {/* ═══ VENUE DETAIL PAGE ═══ */}
@@ -1764,7 +1767,7 @@ export default function GOPrototype(){
           <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
             {venue.img?<img src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
-            <button onClick={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
             <div style={{position:"absolute",bottom:20,left:20,right:20}}>
               <span style={{fontSize:36,marginBottom:8,display:"block"}}>{venue.icon}</span>
               <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{venue.name}</h1>
@@ -1830,7 +1833,7 @@ export default function GOPrototype(){
             <div style={{width:"100%",height:"100%",background:CG.hood}}/>
             <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{walk.icon("#FFB74D",64)}</div>
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
-            <button onClick={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
             <div style={{position:"absolute",bottom:20,left:20,right:20}}>
               <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{walk.name}</h1>
             </div>
@@ -1866,11 +1869,13 @@ export default function GOPrototype(){
         return <TrailMap parkId={tParkId} parkName={tPark.name}
           parkColor={tPark.color||"#81C784"} initialTrailIndex={trailIdx}
           trailMapData={tData}
-          onBack={()=>{setParkTab("trails");setTab("park:"+tParkId);window.scrollTo(0,0);}}/>;
+          onBack={()=>{setParkTab("trails");setTab("park:"+tParkId);scrollTop();}}/>;
       })()}
 
+      </div>{/* end #app-content */}
+
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
-      <div className="bottom-nav-fixed" style={{display:"flex",flexDirection:"column",background:"#000"}}>
+      <div id="app-nav" style={{display:"flex",flexDirection:"column",background:"#000"}}>
         {tab==="today"&&<div style={{width:"100%",maxWidth:isD?560:isT?480:9999,padding:"8px 14px 4px",background:"rgba(32,34,38,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.1)`,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,maxWidth:440,margin:"0 auto"}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>

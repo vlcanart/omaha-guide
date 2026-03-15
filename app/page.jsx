@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import { Music, Trophy, Laugh, Users, Drama, PartyPopper, CalendarDays } from "lucide-react";
 import dynamic from "next/dynamic";
 import { TRAIL_MAP_DATA } from "./trail-data";
 const TrailMap=dynamic(()=>import("./TrailMap"),{ssr:false,loading:()=>(
@@ -101,8 +100,6 @@ const CG = {
   _: "linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
 };
 const CA = { concerts:"#5EC4B6", sports:"#64B5F6", comedy:"#FFB74D", family:"#81C784", arts:"#CE93D8", festivals:"#FF8A65" };
-const CAT_ICON={concerts:Music,sports:Trophy,comedy:Laugh,family:Users,arts:Drama,festivals:PartyPopper};
-function CatIcon({cat,size=20,color}){const Icon=CAT_ICON[cat]||CalendarDays;return <Icon size={size} color={color||CA[cat]||T.accent} strokeWidth={1.8}/>;}
 
 /* ═══ COLOR MATH ═══ */
 const h2r=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
@@ -198,11 +195,11 @@ const u=id=>`https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
 
 /* ═══ CONTENT DATA ═══ */
 const TRAILS=[
-  {id:"t1",name:"Keystone Trail",desc:"Omaha's backbone — 50+ miles of paved multi-use trail through the metro.",distance:"52 mi",difficulty:"Easy",surface:"Paved",lat:41.24,lng:-96.02,tags:["Cycling","Running"],img:"/images/trails/t1.jpg",elev:"Flat",icon:IC.bike},
-  {id:"t2",name:"Bob Kerrey Bridge Loop",desc:"Cross the Missouri River to Iowa and back. Best sunrise views in the city.",distance:"3.2 mi",difficulty:"Easy",surface:"Paved",lat:41.2575,lng:-95.9215,tags:["Walking","River"],img:"/images/trails/t2.jpg",elev:"Flat",icon:IC.walk},
-  {id:"t3",name:"Fontenelle Forest",desc:"2,000 acres of old-growth forest. Boardwalk canopy trail. Watch for bald eagles.",distance:"17 mi trails",difficulty:"Moderate",surface:"Dirt / Boardwalk",lat:41.157,lng:-95.9,tags:["Forest","Birding"],img:"/images/trails/t3.jpg",elev:"+350 ft",url:"https://fontenelleforest.org",icon:IC.tree},
-  {id:"t4",name:"Wehrspann Lake Loop",desc:"8-mile loop at Chalco Hills. Packed gravel, gentle rolling hills, shaded sections.",distance:"8.1 mi",difficulty:"Easy–Mod",surface:"Gravel",lat:41.18,lng:-96.13,tags:["Lake","Loop"],img:"/images/trails/t4.jpg",elev:"+180 ft",icon:IC.trail},
-  {id:"t5",name:"Zorinsky Lake Trail",desc:"Popular West Omaha loop with prairie views, fishing pier, and waterbird habitat.",distance:"4.8 mi",difficulty:"Easy",surface:"Paved",lat:41.23,lng:-96.075,tags:["Lake","Family"],img:"/images/trails/t5.jpg",elev:"Flat",icon:IC.walk},
+  {id:"t1",name:"Keystone Trail",desc:"Omaha's backbone — 50+ miles of paved multi-use trail through the metro. Connects Keystone Lake to Walnut Creek, passing through neighborhoods, parks, and green corridors. The longest continuous trail in the metro area.",distance:"52 mi",difficulty:"Easy",surface:"Paved",lat:41.24,lng:-96.02,tags:["Cycling","Running"],img:"/images/trails/t1.jpg",elev:"Flat",icon:IC.bike,bestFor:"Road cycling and long-distance running",parkingNote:"Multiple trailheads — Keystone Lake and 108th & West Maple are popular starting points",highlights:["Longest paved trail in the Omaha metro","Connects to 10+ parks and neighborhoods","Flat terrain ideal for all fitness levels","Well-maintained year-round"]},
+  {id:"t2",name:"Bob Kerrey Bridge Loop",desc:"Cross the Missouri River to Iowa and back. Best sunrise views in the city. The 3,000-foot pedestrian bridge connects Omaha's riverfront to Council Bluffs with stunning views of both skylines.",distance:"3.2 mi",difficulty:"Easy",surface:"Paved",lat:41.2575,lng:-95.9215,tags:["Walking","River"],img:"/images/trails/t2.jpg",elev:"Flat",icon:IC.walk,bestFor:"Sunrise walks and casual strolls",parkingNote:"Free parking at Gene Leahy Mall or Lewis & Clark Landing",highlights:["Walk across the Missouri River to Iowa","Stunning sunrise and sunset panoramas","Connects to both Omaha & Council Bluffs trail systems","LED lighting for evening walks"]},
+  {id:"t3",name:"Fontenelle Forest",desc:"2,000 acres of old-growth forest with 17 miles of trails. Boardwalk canopy trail and raptor woodland give unique perspectives. Watch for bald eagles, deer, and over 200 bird species throughout the year.",distance:"17 mi trails",difficulty:"Moderate",surface:"Dirt / Boardwalk",lat:41.157,lng:-95.9,tags:["Forest","Birding"],img:"/images/trails/t3.jpg",elev:"+350 ft",url:"https://fontenelleforest.org",icon:IC.tree,bestFor:"Nature hiking and birdwatching",parkingNote:"Main parking lot at 1111 Bellevue Blvd N",highlights:["Elevated boardwalk through forest canopy","Over 200 bird species including bald eagles","Raptor Recovery center with live birds","Seasonal wildflower displays in spring"]},
+  {id:"t4",name:"Wehrspann Lake Loop",desc:"8-mile loop at Chalco Hills Recreation Area. Packed gravel with gentle rolling hills and shaded sections along the lake. Nature center offers exhibits and programs for families.",distance:"8.1 mi",difficulty:"Easy–Mod",surface:"Gravel",lat:41.18,lng:-96.13,tags:["Lake","Loop"],img:"/images/trails/t4.jpg",elev:"+180 ft",icon:IC.trail,bestFor:"Trail running and moderate hiking",parkingNote:"Chalco Hills Nature Center parking lot off 154th St",highlights:["Scenic lake views throughout the loop","Chalco Hills Nature Center with exhibits","Rolling prairie hills with shaded sections","Popular fishing spots along the route"]},
+  {id:"t5",name:"Zorinsky Lake Trail",desc:"Popular West Omaha loop with prairie views, fishing pier, and waterbird habitat. Paved and flat, perfect for families with strollers or casual walkers. Connects to Keystone Trail.",distance:"4.8 mi",difficulty:"Easy",surface:"Paved",lat:41.23,lng:-96.075,tags:["Lake","Family"],img:"/images/trails/t5.jpg",elev:"Flat",icon:IC.walk,bestFor:"Family walks and casual cycling",parkingNote:"Main lot off 156th & F St, additional lots on south side",highlights:["Fully paved and stroller-friendly","Great birdwatching at the waterbird habitat","Fishing pier open year-round","Connects to Keystone Trail network"]},
 ];
 const WALKS=[
   {id:"w1",name:"Old Market Historic Walk",desc:"Cobblestone streets, 19th-century warehouses, galleries. Start at 10th & Howard.",time:"45 min",distance:"1.2 mi",lat:41.2555,lng:-95.932,tags:["History","Architecture"],icon:IC.camera},
@@ -212,11 +209,11 @@ const WALKS=[
   {id:"w5",name:"RiverFront Trail",desc:"Gene Leahy Mall → Heartland of America Park → Lewis & Clark Landing.",time:"40 min",distance:"1.4 mi",lat:41.258,lng:-95.928,tags:["Riverfront","Family"],icon:IC.walk},
 ];
 const DAYTIME=[
-  {id:"d1",name:"Henry Doorly Zoo",desc:"Consistently ranked #1 zoo in the world. Desert Dome, Lied Jungle, and Scott Aquarium.",price:"$26.95",time:"3–5 hrs",lat:41.226,lng:-95.9287,tags:["Zoo","Family"],icon:"🦁",url:"https://www.omahazoo.com"},
-  {id:"d2",name:"Joslyn Art Museum",desc:"World-class collection with massive Snøhetta expansion. Free admission.",price:"Free",time:"1.5–2 hrs",lat:41.2635,lng:-95.9394,tags:["Art","Free"],icon:"🎨",url:"https://joslyn.org"},
-  {id:"d3",name:"Kiewit Luminarium",desc:"Interactive science center on the riverfront. 100+ hands-on exhibits.",price:"$24",time:"2–3 hrs",lat:41.2565,lng:-95.923,tags:["Science","Family"],icon:"🔬",url:"https://kiewitluminarium.org"},
-  {id:"d4",name:"Lauritzen Gardens",desc:"100-acre botanical garden with seasonal model trains and conservatory.",price:"$14",time:"1.5–2 hrs",lat:41.2384,lng:-95.9158,tags:["Gardens"],icon:"🌺",url:"https://www.lauritzengardens.org"},
-  {id:"d5",name:"The Durham Museum",desc:"Art Deco Union Station turned museum. Vintage train cars and 1930s soda fountain.",price:"$12",time:"1.5–2 hrs",lat:41.2553,lng:-95.931,tags:["History"],icon:"🚂",url:"https://durhammuseum.org"},
+  {id:"d1",name:"Henry Doorly Zoo",desc:"Consistently ranked #1 zoo in the world by TripAdvisor. Home to the world's largest indoor desert (Desert Dome), largest indoor rainforest (Lied Jungle), and one of the largest aquariums in the country. Over 17,000 animals across 160 acres of exhibits.",price:"$26.95",time:"3–5 hrs",lat:41.226,lng:-95.9287,tags:["Zoo","Family"],icon:"🦁",url:"https://www.omahazoo.com",address:"3701 S 10th St, Omaha, NE 68107",highlights:["Desert Dome — world's largest indoor desert","Lied Jungle — 1.5 acre indoor rainforest","Scott Aquarium — shark tunnel and coral reef","Kingdoms of the Night — largest nocturnal exhibit","African Grasslands — giraffes, elephants, lions"]},
+  {id:"d2",name:"Joslyn Art Museum",desc:"World-class art museum with a stunning Snøhetta-designed expansion that doubled gallery space. The permanent collection spans 5,000 years from ancient to contemporary, with strengths in European and American art. Always free admission.",price:"Free",time:"1.5–2 hrs",lat:41.2635,lng:-95.9394,tags:["Art","Free"],icon:"🎨",url:"https://joslyn.org",address:"2200 Dodge St, Omaha, NE 68102",highlights:["Snøhetta expansion with modern gallery spaces","European masters including Monet and El Greco","American Western art collection","Free admission — always","Sculpture garden and outdoor installations"]},
+  {id:"d3",name:"Kiewit Luminarium",desc:"State-of-the-art interactive science center on Omaha's riverfront. Over 100 hands-on exhibits exploring science, technology, engineering, art, and math. Designed for all ages with immersive experiences that make learning feel like play.",price:"$24",time:"2–3 hrs",lat:41.2565,lng:-95.923,tags:["Science","Family"],icon:"🔬",url:"https://kiewitluminarium.org",address:"1111 S 2nd St, Omaha, NE 68108",highlights:["100+ hands-on interactive exhibits","Immersive STEAM learning experiences","Stunning riverfront architecture","Activities for all ages, toddler to adult"]},
+  {id:"d4",name:"Lauritzen Gardens",desc:"100-acre botanical garden featuring themed gardens, a Victorian conservatory, seasonal model train displays, and one of the finest collections of trees and flowers in the Great Plains. Beautiful in every season.",price:"$14",time:"1.5–2 hrs",lat:41.2384,lng:-95.9158,tags:["Gardens"],icon:"🌺",url:"https://www.lauritzengardens.org",address:"100 Bancroft St, Omaha, NE 68108",highlights:["Victorian-era conservatory","Seasonal model train garden displays","Rose garden with 1,000+ bushes","Japanese garden with koi pond","Children's garden and nature play area"]},
+  {id:"d5",name:"The Durham Museum",desc:"Housed in Omaha's stunning Art Deco Union Station, this museum brings the region's history to life. Walk through vintage Pullman train cars, sip a phosphate at the 1930s soda fountain, and explore exhibits spanning centuries of Plains history.",price:"$12",time:"1.5–2 hrs",lat:41.2553,lng:-95.931,tags:["History"],icon:"🚂",url:"https://durhammuseum.org",address:"801 S 10th St, Omaha, NE 68108",highlights:["Art Deco Union Station architecture","Vintage Pullman train car exhibits","Working 1930s soda fountain","Interactive regional history galleries","Rotating national traveling exhibitions"]},
 ];
 const SUNSETS=[
   {id:"s1",name:"Bob Kerrey Bridge",desc:"Best sunset panorama in Omaha. Missouri River catches golden light with both skylines.",lat:41.2575,lng:-95.9215,icon:IC.sunset},
@@ -716,27 +713,27 @@ const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
 
 /* ═══ VENUES ═══ */
 const VENUES=[
-  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"Premier arena for the biggest global tours and Creighton Basketball.",url:"https://www.chihealthcenteromaha.com",img:"/images/venues/chi-health-center.jpg",city:"omaha"},
-  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:"/images/venues/baxter-arena.jpg",city:"omaha"},
-  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue for large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:"/images/venues/steelhouse-omaha.jpg",city:"omaha"},
-  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) for world-class acts.",url:"https://www.theastrotheater.com",img:"/images/venues/the-astro.jpg",city:"omaha"},
-  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic 1927 theater hosting Broadway tours, comedians, and concerts.",url:"https://o-pa.org",img:"/images/venues/orpheum-theater.jpg",city:"omaha"},
-  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:"/images/venues/holland-center.jpg",city:"omaha"},
-  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records.",url:"https://theslowdown.com",img:"/images/venues/the-slowdown.jpg",city:"omaha"},
-  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"Legendary heart of Omaha's alt/indie scene. A must-play for touring bands.",url:"https://waitingroomlounge.com",img:"/images/venues/the-waiting-room.jpg",city:"omaha"},
+  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"Premier arena for the biggest global tours and Creighton Basketball.",url:"https://www.chihealthcenteromaha.com",img:"/images/venues/1.jpg",city:"omaha"},
+  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:"/images/venues/2.jpg",city:"omaha"},
+  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue for large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:"/images/venues/4.jpg",city:"omaha"},
+  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) for world-class acts.",url:"https://www.theastrotheater.com",img:"/images/venues/5.jpg",city:"omaha"},
+  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic 1927 theater hosting Broadway tours, comedians, and concerts.",url:"https://o-pa.org",img:"/images/venues/6.jpg",city:"omaha"},
+  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:"/images/venues/7.jpg",city:"omaha"},
+  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records.",url:"https://theslowdown.com",img:"/images/venues/8.jpg",city:"omaha"},
+  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"Legendary heart of Omaha's alt/indie scene. A must-play for touring bands.",url:"https://waitingroomlounge.com",img:"/images/venues/9.jpg",city:"omaha"},
   {id:10,name:"Reverb Lounge",area:"Benson",cap:"150",type:"Indie / Club",lat:41.2808,lng:-95.9545,desc:"Sleek, mid-century modern listening room with great sound.",url:"https://reverblounge.com",img:"/images/venues/10.jpg",city:"omaha"},
-  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic hall hosting punk, metal, hip-hop, EDM.",url:"https://www.admiralomaha.com",img:"/images/venues/the-admiral.jpg",city:"omaha"},
-  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge. Premium cocktails and vibes.",url:"https://barnato.bar",img:"/images/venues/barnato.jpg",city:"omaha"},
-  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",url:"https://www.stircove.com",img:"/images/venues/stir-concert-cove.jpg",city:"cb"},
-  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"World's best zoo. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:"/images/venues/henry-doorly-zoo.jpg",city:"omaha"},
-  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with massive 42,000 sq ft expansion. Free admission.",url:"https://joslyn.org",img:"/images/venues/joslyn-art-museum.jpg",city:"omaha"},
-  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films.",url:"https://filmstreams.org",img:"/images/venues/film-streams.jpg",city:"omaha"},
-  {id:25,name:"Liberty First CU Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:"/images/venues/liberty-first-credit-union-arena.jpg",city:"omaha"},
+  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic hall hosting punk, metal, hip-hop, EDM.",url:"https://www.admiralomaha.com",img:"/images/venues/11.jpg",city:"omaha"},
+  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge. Premium cocktails and vibes.",url:"https://barnato.bar",img:"/images/venues/12.jpg",city:"omaha"},
+  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",url:"https://www.stircove.com",img:"/images/venues/14.jpg",city:"cb"},
+  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"World's best zoo. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:"/images/venues/21.jpg",city:"omaha"},
+  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with massive 42,000 sq ft expansion. Free admission.",url:"https://joslyn.org",img:"/images/venues/22.jpg",city:"omaha"},
+  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films.",url:"https://filmstreams.org",img:"/images/venues/23.jpg",city:"omaha"},
+  {id:25,name:"Liberty First CU Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:"/images/venues/25.jpg",city:"omaha"},
   {id:30,name:"The Jewell",area:"Capitol District",cap:"Intimate",type:"Bar / Venue",lat:41.2577,lng:-95.9370,desc:"Omaha's premier jazz club. National and local jazz and blues.",url:"https://jewellomaha.com",img:"/images/venues/30.jpg",city:"omaha"},
-  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"Interactive science center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:"/images/venues/kiewit-luminarium.jpg",city:"omaha"},
-  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station with train cars and soda fountain.",url:"https://durhammuseum.org",img:"/images/venues/durham-museum.jpg",city:"omaha"},
+  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"Interactive science center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:"/images/venues/38.jpg",city:"omaha"},
+  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station with train cars and soda fountain.",url:"https://durhammuseum.org",img:"/images/venues/40.jpg",city:"omaha"},
   {id:43,name:"Fontenelle Forest",area:"Bellevue",cap:"Varies",type:"Museum / Attraction",lat:41.1570,lng:-95.9000,desc:"2,000 acres of forest, wetlands, and boardwalk trails.",url:"https://fontenelleforest.org",img:"/images/venues/43.jpg",city:"omaha"},
-  {id:50,name:"Funny Bone",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians.",url:"https://omaha.funnybone.com",img:"/images/venues/omaha-funny-bone.jpg",city:"omaha"},
+  {id:50,name:"Funny Bone",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians.",url:"https://omaha.funnybone.com",img:"/images/venues/50.jpg",city:"omaha"},
   {id:51,name:"Backline Comedy",area:"Downtown",cap:"150",type:"Comedy Club",lat:41.2555,lng:-95.9340,desc:"HQ for Omaha's local comedy. Improv, sketch, open mics, stand-up.",url:"https://backlinecomedy.com",img:"/images/venues/51.jpg",city:"omaha"},
   {id:60,name:"Pinewood Bowl Theater",area:"Pioneers Park",cap:"4,500",type:"Outdoor",lat:40.7885,lng:-96.7272,desc:"Lincoln's outdoor amphitheater in a wooded setting.",url:"https://pinewoodbowl.org",img:"/images/venues/60.jpg",city:"lincoln"},
   {id:61,name:"Bourbon Theatre",area:"Downtown Lincoln",cap:"800",type:"Indie / Club",lat:40.8136,lng:-96.7026,desc:"Lincoln's go-to live music venue for touring and local bands.",url:"https://bourbontheatre.com",img:"/images/venues/61.jpg",city:"lincoln"},
@@ -744,10 +741,8 @@ const VENUES=[
 ];
 const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
 
-function isDisplayablePrice(p){if(!p)return false;const s=p.trim().toLowerCase();if(s==="free")return true;return/^\$\d/.test(p.trim());}
-
 /* ═══ EVENT FILTER CONSTANTS ═══ */
-const ECATS=[{id:"all",label:"All"},{id:"concerts",label:"Concerts"},{id:"sports",label:"Sports"},{id:"comedy",label:"Comedy"},{id:"family",label:"Family"},{id:"arts",label:"Arts"},{id:"festivals",label:"Festivals"}];
+const ECATS=[{id:"all",label:"All",emoji:"📅"},{id:"concerts",label:"Concerts",emoji:"🎵"},{id:"sports",label:"Sports",emoji:"🏟️"},{id:"comedy",label:"Comedy",emoji:"😂"},{id:"family",label:"Family",emoji:"👨‍👩‍👧"},{id:"arts",label:"Arts",emoji:"🎭"},{id:"festivals",label:"Festivals",emoji:"🎪"}];
 const ESUBS={concerts:["Rock","Country","Hip-Hop","Jazz","Electronic","Pop","Metal","Folk","R&B","Indie","Classical","Tribute","Live Music"],sports:["Basketball","Football","Baseball","Volleyball","Hockey","Soccer","Wrestling"],comedy:["Stand-Up","Improv","Open Mic"],family:["Museum","Zoo","Science","Outdoor","Workshop"],arts:["Theater","Musical","Dance","Orchestra","Film","Gallery","Opera"],festivals:["Food","Music","Cultural","Holiday"]};
 const DATE_PRESETS=[{id:"all",label:"All Dates"},{id:"today",label:"Today"},{id:"week",label:"This Week"},{id:"month",label:"This Month"}];
 function matchDate(ev,range){if(range==="all")return true;const d=ev.date?.match(/^\d{4}-\d{2}-\d{2}$/)?new Date(ev.date+"T12:00:00"):null;if(!d)return range==="today";const now=new Date();now.setHours(0,0,0,0);if(range==="today")return d.toDateString()===now.toDateString();if(range==="week"){const end=new Date(now);end.setDate(end.getDate()+7);return d>=now&&d<=end;}if(range==="month"){const end=new Date(now);end.setMonth(end.getMonth()+1);return d>=now&&d<=end;}return true;}
@@ -846,7 +841,7 @@ export default function GOPrototype(){
      SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
      GO: title stays visible at reduced size. No celestial or weather elements. */
   const fullHero=tab==="today";
-  const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:");
+  const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:");
   const heroH=isTrailPage?"0px":fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
   const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
   const heroMax=isTrailPage?0:fullHero?560:135;
@@ -926,7 +921,7 @@ export default function GOPrototype(){
           <Head text="Trails & Rides" count={TRAILS.length} mt={4} color="#81C784"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {TRAILS.map(t=>(
-              <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;window.open(mapsDir(t.lat,t.lng),"_blank");}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+              <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
                   <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -949,25 +944,47 @@ export default function GOPrototype(){
             ))}
           </div>
 
-          <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
-          {WALKS.map((wk,i)=>(
-            <div key={wk.id} onClick={(e)=>{if(e.target.closest("a"))return;window.open(mapsDir(wk.lat,wk.lng),"_blank");}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
-              <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{wk.icon("#FFB74D",20)}</div>
-                <div style={{flex:1}}>
-                  <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
-                  <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
-                  <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{wk.desc}</p>
-                  <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{wk.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"3px 9px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
-                  <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
+          <Head text="Parks" count={6} color="#81C784"/>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+            {PARKS.filter(p=>["gene-leahy-mall","heartland-america","elmwood-park","memorial-park","zorinsky-lake","cunningham-lake"].includes(p.id)).map(p=>(
+              <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?260:isM?220:240,minWidth:isD?260:isM?220:240,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+                <div style={{position:"relative",height:isD?110:90,overflow:"hidden"}}>
+                  <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
+                  <div style={{position:"absolute",top:8,left:10}}><span style={{fontSize:16}}>{p.icon}</span></div>
+                  <div style={{position:"absolute",bottom:8,left:10}}><h3 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{p.name}</h3></div>
+                </div>
+                <div style={{padding:"8px 10px 10px"}}>
+                  <p style={{margin:0,fontSize:11,color:T.textBody,lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{p.tagline}</p>
+                  <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>{p.tags.slice(0,3).map(tag=><span key={tag} style={{fontSize:8,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+            {WALKS.map(wk=>(
+              <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+                <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
+                  {wk.icon("#FFB74D",36)}
+                  <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
+                    <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
+                    <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>
+                  </div>
+                </div>
+                <div style={{padding:"10px 12px 12px"}}>
+                  <h3 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
+                  <p style={{margin:"4px 0 0",fontSize:11,color:T.textBody,lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{wk.desc}</p>
+                  <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>{wk.tags.map(tag=><span key={tag} style={{fontSize:8,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
 
           <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
           {DAYTIME.map((a,i)=>(
-            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;window.open(a.url||mapsDir(a.lat,a.lng),"_blank");}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
+            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("venue:"+a.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
                 <div style={{flex:1}}>
@@ -1009,12 +1026,12 @@ export default function GOPrototype(){
             {EVENTS.filter(e=>e.feat&&(cityMatch(e))).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
               <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,width:isD?340:isM?265:290,minWidth:isD?340:isM?265:290,flexShrink:0,scrollSnapAlign:"start",padding:"16px 16px 18px",cursor:"pointer"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-                  <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center"}}><CatIcon cat={ev.cat}/></div>
+                  <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{ev.emoji}</div>
                   <div><div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:16,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div><p style={{margin:"1px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4,textTransform:"uppercase"}}>{ev.date} · {ev.time}</p></div>
                 </div>
                 <p style={{margin:"0 0 10px",fontSize:12,color:T.textBody,lineHeight:1.45}}>{ev.desc}</p>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                  {isDisplayablePrice(ev.price)&&<span style={{fontSize:18,fontWeight:300,color:T.textHi}}>{ev.price}</span>}
+                  <span style={{fontSize:18,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
                     <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"5px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,13,favs.includes(ev.id))}</button>
                     <span style={{fontSize:10,color:T.venue,letterSpacing:1,fontWeight:500}}>{ev.venue}</span>
@@ -1026,13 +1043,13 @@ export default function GOPrototype(){
           {EVENTS.filter(e=>!e.feat).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
             <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><CatIcon cat={ev.cat}/></div>
+                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
                 <div style={{flex:1}}>
                   <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
                   <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                   <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-                    {isDisplayablePrice(ev.price)&&<span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>}
+                    <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                     <span style={{fontSize:11,color:T.venue,letterSpacing:1.2,textTransform:"uppercase",fontWeight:500}}>{ev.venue}</span>
                   </div>
                 </div>
@@ -1056,7 +1073,7 @@ export default function GOPrototype(){
         </div>
         {/* Category pills */}
         <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><CatIcon cat={ec.id} size={14} color={evCat===ec.id?ac:T.textSec}/><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
+          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
         </div>
         {/* Subcategory pills */}
         {evCat!=="all"&&ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
@@ -1070,13 +1087,13 @@ export default function GOPrototype(){
         {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><CatIcon cat={ev.cat}/></div>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
               <div style={{flex:1}}>
                 <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                 <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-                  {isDisplayablePrice(ev.price)&&<span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>}
+                  <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
                     {ev.city&&<span style={{fontSize:9,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:600,letterSpacing:.5,textTransform:"uppercase"}}>{ev.city==="cb"?"Council Bluffs":ev.city==="lincoln"?"Lincoln":"Omaha"}</span>}
                     <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(255,255,255,.05)",border:"none",borderRadius:99,padding:"6px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:3,color:favs.includes(ev.id)?T.gold:T.textSec,minHeight:34}}>{IC.heart(favs.includes(ev.id)?T.gold:T.textSec,14,favs.includes(ev.id))}</button>
@@ -1121,7 +1138,7 @@ export default function GOPrototype(){
         <Head text="Trails & Rides" count={TRAILS.length} color="#81C784"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {TRAILS.map(t=>(
-            <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;window.open(mapsDir(t.lat,t.lng),"_blank");}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+            <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
                 <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -1141,19 +1158,24 @@ export default function GOPrototype(){
 
         {/* ── Walking Tours ── */}
         <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
-        {WALKS.map((wk,i)=>(
-          <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
-            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{wk.icon("#FFB74D",20)}</div>
-              <div style={{flex:1}}>
-                <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
-                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
-                <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{wk.desc}</p>
-                <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
+        <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+          {WALKS.map(wk=>(
+            <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+              <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
+                {wk.icon("#FFB74D",36)}
+                <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
+                  <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
+                  <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>
+                </div>
+              </div>
+              <div style={{padding:"10px 12px 12px"}}>
+                <h3 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
+                <p style={{margin:"4px 0 0",fontSize:11,color:T.textBody,lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{wk.desc}</p>
+                <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>{wk.tags.map(tag=><span key={tag} style={{fontSize:8,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         {/* ── Neighborhoods ── */}
         <Head text="Neighborhoods" count={HOODS.length} color="#CE93D8"/>
@@ -1362,10 +1384,10 @@ export default function GOPrototype(){
             {hoodEvents.length>0&&hoodEvents.map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
               <div key={ev.id} className="ecard" style={{background:gr,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:6}}>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <CatIcon cat={ev.cat} size={16}/>
+                  <span style={{fontSize:16}}>{ev.emoji}</span>
                   <div style={{flex:1}}>
                     <h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{ev.title}</h4>
-                    <p style={{margin:"1px 0 0",fontSize:10,fontWeight:600,color:ac,letterSpacing:1}}>{ev.date} \u00b7 {ev.time}{isDisplayablePrice(ev.price)&&<> \u00b7 {ev.price}</>}</p>
+                    <p style={{margin:"1px 0 0",fontSize:10,fontWeight:600,color:ac,letterSpacing:1}}>{ev.date} \u00b7 {ev.time} \u00b7 {ev.price}</p>
                   </div>
                 </div>
               </div>
@@ -1414,12 +1436,12 @@ export default function GOPrototype(){
         :EVENTS.filter(ev=>favs.includes(ev.id)).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><CatIcon cat={ev.cat}/></div>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
               <div style={{flex:1}}>
                 <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
-                  {isDisplayablePrice(ev.price)&&<span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>}
+                  <span style={{fontSize:17,fontWeight:300,color:T.textHi}}>{ev.price}</span>
                   <button onClick={(e)=>{e.stopPropagation();tog(ev.id);}} className="hbtn" style={{background:"rgba(212,173,101,.1)",border:"1px solid rgba(212,173,101,.2)",borderRadius:99,padding:"5px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:T.gold,fontSize:10,fontWeight:600}}>{IC.heart(T.gold,12,true)} Saved</button>
                 </div>
               </div>
@@ -1719,6 +1741,156 @@ export default function GOPrototype(){
         </div>;
       })()}
 
+      {/* ═══ TRAIL DETAIL PAGE ═══ */}
+      {tab.startsWith("trailDetail:")&&(()=>{
+        const trailId=tab.split(":")[1];
+        const trail=TRAILS.find(t=>t.id===trailId);
+        if(!trail)return null;
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            <img src={trail.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <div style={{display:"flex",gap:6,marginBottom:8}}>
+                <span style={{fontSize:9,padding:"3px 10px",borderRadius:99,background:"rgba(125,212,160,.2)",color:"#81C784",fontWeight:700}}>{trail.difficulty}</span>
+                <span style={{fontSize:9,padding:"3px 10px",borderRadius:99,background:"rgba(255,255,255,.12)",color:T.textBody,fontWeight:600}}>{trail.distance}</span>
+              </div>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{trail.name}</h1>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
+            {[{label:"Distance",value:trail.distance},{label:"Elevation",value:trail.elev},{label:"Surface",value:trail.surface},{label:"Difficulty",value:trail.difficulty}].map(s=>(
+              <div key={s.label} style={{background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+                <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>{s.label}</div>
+                <div style={{fontSize:13,fontWeight:600,color:T.textHi}}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+          {trail.bestFor&&<p style={{margin:"16px 0 0",fontSize:12,color:"#81C784",fontWeight:500}}>{trail.bestFor}</p>}
+          <p style={{margin:"12px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{trail.desc}</p>
+          {trail.highlights&&<div style={{marginTop:20}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Highlights</h3>
+            {trail.highlights.map((h,i)=>(
+              <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
+                <div style={{width:6,height:6,borderRadius:"50%",background:"#81C784",marginTop:6,flexShrink:0}}/>
+                <span style={{fontSize:13,color:T.textBody,lineHeight:1.5}}>{h}</span>
+              </div>
+            ))}
+          </div>}
+          {trail.parkingNote&&<div style={{marginTop:16,padding:"12px 16px",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,borderRadius:14}}>
+            <div style={{fontSize:10,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Parking</div>
+            <div style={{fontSize:12,color:T.textBody,lineHeight:1.5}}>{trail.parkingNote}</div>
+          </div>}
+          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{trail.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+          <div style={{display:"flex",gap:8,marginTop:20}}>
+            <a href={mapsDir(trail.lat,trail.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(125,212,160,.12)",border:"1px solid rgba(125,212,160,.25)",color:"#81C784",fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir("#81C784",14)} Directions</a>
+            {trail.url&&<a href={trail.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.link(T.textBody,13)} Info</a>}
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
+      {/* ═══ VENUE DETAIL PAGE ═══ */}
+      {tab.startsWith("venue:")&&(()=>{
+        const venueId=tab.split(":")[1];
+        const venue=DAYTIME.find(a=>a.id===venueId);
+        if(!venue)return null;
+        const venueEvents=EVENTS.filter(e=>e.venue&&venue.name&&(e.venue.toLowerCase().includes(venue.name.split(" ")[0].toLowerCase())||venue.name.toLowerCase().includes(e.venue.split(" ")[0].toLowerCase()))).slice(0,5);
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            {venue.img?<img src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <span style={{fontSize:36,marginBottom:8,display:"block"}}>{venue.icon}</span>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{venue.name}</h1>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
+            <div style={{background:`${T.accent}15`,border:`1px solid ${T.accent}30`,borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Admission</div>
+              <div style={{fontSize:13,fontWeight:600,color:T.accent}}>{venue.price}</div>
+            </div>
+            <div style={{background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Time</div>
+              <div style={{fontSize:13,fontWeight:600,color:T.textHi}}>{venue.time}</div>
+            </div>
+          </div>
+          <p style={{margin:"16px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{venue.desc}</p>
+          {venue.highlights&&<div style={{marginTop:24}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Highlights</h3>
+            <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8}}>
+              {venue.highlights.map((h,i)=>(
+                <div key={i} style={{padding:"12px 16px",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,borderRadius:14,display:"flex",gap:10,alignItems:"center"}}>
+                  <div style={{width:8,height:8,borderRadius:"50%",background:T.accent,flexShrink:0}}/>
+                  <span style={{fontSize:13,color:T.textBody}}>{h}</span>
+                </div>
+              ))}
+            </div>
+          </div>}
+          {venue.address&&<div style={{marginTop:16,padding:"12px 16px",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,borderRadius:14}}>
+            <div style={{fontSize:10,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Address</div>
+            <div style={{fontSize:12,color:T.textBody}}>{venue.address}</div>
+          </div>}
+          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{venue.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+          {venueEvents.length>0&&<div style={{marginTop:24}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Upcoming Events</h3>
+            {venueEvents.map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+              <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:14,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:8,cursor:"pointer"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontSize:18}}>{ev.emoji}</span>
+                  <div style={{flex:1}}>
+                    <h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{ev.title}</h4>
+                    <p style={{margin:"2px 0 0",fontSize:11,color:ac,fontWeight:500}}>{ev.date} · {ev.time}</p>
+                  </div>
+                  <span style={{fontSize:12,color:T.textDim}}>{ev.price}</span>
+                </div>
+              </div>
+            );})}
+          </div>}
+          <div style={{display:"flex",gap:8,marginTop:20}}>
+            <a href={mapsDir(venue.lat,venue.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir(T.textBody,14)} Directions</a>
+            {venue.url&&<a href={venue.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:`${T.accent}15`,border:`1px solid ${T.accent}30`,color:T.accent,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.link(T.accent,13)} Visit Website</a>}
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
+      {/* ═══ WALK DETAIL PAGE ═══ */}
+      {tab.startsWith("walk:")&&(()=>{
+        const walkId=tab.split(":")[1];
+        const walk=WALKS.find(w=>w.id===walkId);
+        if(!walk)return null;
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?280:220,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            <div style={{width:"100%",height:"100%",background:CG.hood}}/>
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{walk.icon("#FFB74D",64)}</div>
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{walk.name}</h1>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
+            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Distance</div>
+              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.distance}</div>
+            </div>
+            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Time</div>
+              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.time}</div>
+            </div>
+          </div>
+          <p style={{margin:"16px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{walk.desc}</p>
+          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{walk.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+          <div style={{display:"flex",gap:8,marginTop:24}}>
+            <a href={mapsDir(walk.lat,walk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",color:"#FFB74D",fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir("#FFB74D",14)} Get Directions</a>
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
       {/* ═══ TRAIL MAP (accessed from Park Detail) ═══ */}
       {tab.startsWith("trail:")&&(()=>{
         const parts=tab.split(":");
@@ -1735,7 +1907,7 @@ export default function GOPrototype(){
       })()}
 
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,display:"flex",flexDirection:"column",alignItems:"center"}}>
+      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,display:"flex",flexDirection:"column",background:"#000"}}>
         {tab==="today"&&<div style={{width:"100%",maxWidth:isD?560:isT?480:9999,padding:"8px 14px 4px",background:"rgba(32,34,38,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.1)`,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,maxWidth:440,margin:"0 auto"}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>
@@ -1756,12 +1928,13 @@ export default function GOPrototype(){
         </div>}
         <div style={{background:"rgba(38,40,46,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.12)`,display:"flex",justifyContent:"space-around",padding:`6px 4px ${Math.max(8,parseInt("env(safe-area-inset-bottom)")||8)}px`,paddingBottom:"max(8px, env(safe-area-inset-bottom))",width:"100%"}}>
           {tabsD.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.1)":"transparent",border:"none",cursor:"pointer",padding:isD?"10px 24px":"10px 16px",borderRadius:11,minWidth:isD?80:isT?68:60,minHeight:48,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",transition:"all .2s"}}>
-              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
-              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.1)":"transparent",border:"none",cursor:"pointer",padding:isD?"10px 24px":"10px 16px",borderRadius:11,minWidth:isD?80:isT?68:60,minHeight:48,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",transition:"all .2s"}}>
+              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
+              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>
           ))}
         </div>
+        <div style={{background:"#000",width:"100%",height:"env(safe-area-inset-bottom,0px)"}}/>
       </div>
 
       <style>{`

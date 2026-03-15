@@ -847,7 +847,7 @@ export default function GOPrototype(){
   const heroMax=isTrailPage?0:fullHero?560:135;
 
   return (
-    <div style={{minHeight:"100dvh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:160}}>
+    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:160}}>
       {!mounted?<div style={{height:"100vh",background:T.bg}}/>:<>
 
       {/* ═══ HERO ═══ */}
@@ -1870,7 +1870,7 @@ export default function GOPrototype(){
       })()}
 
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,display:"flex",flexDirection:"column",background:"#000",transform:"translateZ(0)",WebkitTransform:"translateZ(0)"}}>
+      <div className="bottom-nav-fixed" style={{display:"flex",flexDirection:"column",background:"#000"}}>
         {tab==="today"&&<div style={{width:"100%",maxWidth:isD?560:isT?480:9999,padding:"8px 14px 4px",background:"rgba(32,34,38,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.1)`,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,maxWidth:440,margin:"0 auto"}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>
@@ -1889,7 +1889,7 @@ export default function GOPrototype(){
             </button>
           </div>
         </div>}
-        <div style={{background:"rgba(38,40,46,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.12)`,display:"flex",justifyContent:"space-around",padding:`6px 4px ${Math.max(8,parseInt("env(safe-area-inset-bottom)")||8)}px`,paddingBottom:"max(8px, env(safe-area-inset-bottom))",width:"100%"}}>
+        <div style={{background:"rgba(38,40,46,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.12)`,display:"flex",justifyContent:"space-around",padding:"6px 4px 8px",paddingBottom:"max(8px, env(safe-area-inset-bottom, 8px))",width:"100%"}}>
           {tabsD.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.1)":"transparent",border:"none",cursor:"pointer",padding:isD?"10px 24px":"10px 16px",borderRadius:11,minWidth:isD?80:isT?68:60,minHeight:48,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",transition:"all .2s"}}>
               <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>

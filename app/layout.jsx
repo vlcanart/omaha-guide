@@ -90,6 +90,25 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+        {/* iOS viewport height fix — runs before React to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                function setH(){
+                  var h = window.innerHeight;
+                  document.documentElement.style.setProperty('--app-h', h + 'px');
+                }
+                setH();
+                window.addEventListener('resize', setH);
+                if(window.visualViewport){
+                  window.visualViewport.addEventListener('resize', setH);
+                  window.visualViewport.addEventListener('scroll', setH);
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>

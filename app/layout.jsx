@@ -90,21 +90,31 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
-        {/* iOS viewport height fix — runs before React to prevent flash */}
+        {/* iOS viewport height fix + prevent body scroll */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function(){
+                var last = 0;
                 function setH(){
                   var h = window.innerHeight;
-                  document.documentElement.style.setProperty('--app-h', h + 'px');
+                  if(h !== last){
+                    last = h;
+                    document.documentElement.style.setProperty('--app-h', h + 'px');
+                  }
+                  requestAnimationFrame(setH);
                 }
                 setH();
-                window.addEventListener('resize', setH);
-                if(window.visualViewport){
-                  window.visualViewport.addEventListener('resize', setH);
-                  window.visualViewport.addEventListener('scroll', setH);
-                }
+
+                document.addEventListener('touchmove', function(e){
+                  var t = e.target;
+                  while(t && t !== document.body){
+                    if(t.id === 'app-content') return;
+                    if(t.scrollHeight > t.clientHeight && getComputedStyle(t).overflowY !== 'hidden') return;
+                    t = t.parentElement;
+                  }
+                  e.preventDefault();
+                }, {passive: false});
               })();
             `,
           }}

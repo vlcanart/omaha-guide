@@ -13,6 +13,10 @@
   -ms-overflow-style: none;
 }
 
+html, body {
+  height: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -116,12 +120,7 @@ body {
   transform: scale(0.98);
 }
 
-/* PWA safe areas */
-@supports (padding: max(0px)) {
-  body {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
+/* PWA safe areas — handled by fixed nav bar */
 
 /* ═══ Leaflet Dark Theme Overrides ═══ */
 .leaflet-container {

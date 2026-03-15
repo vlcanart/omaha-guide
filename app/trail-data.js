@@ -756,4 +756,154 @@ export const TRAIL_MAP_DATA = {
     ],
   },
 
+  /* ─────────────────────────────────────────────────────
+     KEYSTONE TRAIL (Regional)
+     ───────────────────────────────────────────────────── */
+  "keystone-trail": {
+    mapCenter: [41.2400, -96.0500],
+    mapZoom: 12,
+    trails: [
+      {
+        id: "keystone-main", name: "Keystone Trail", type: "paved",
+        color: "#6BBF7A", colorFaded: "rgba(107,191,122,0.3)",
+        distance: "52 mi", distanceNum: 52, elevGain: "~400 ft",
+        surface: "Concrete (8ft wide)", difficulty: "Easy",
+        avgTime: "Varies", rating: 4.7, reviewCount: 1240,
+        status: "open", statusNote: "Fully open \u00b7 Well maintained year-round",
+        lastUpdated: "2 days ago",
+        allowedUses: ["walking","running","biking","wheelchair","stroller","ebiking","dog"],
+        highlights: [
+          "Longest paved trail in the Omaha metro at 52 miles",
+          "Connects 10+ parks including Zorinsky, Standing Bear, Cunningham",
+          "Flat terrain ideal for all fitness levels",
+          "Well-maintained with mile markers throughout",
+        ],
+        cautions: [
+          "Trail passes through busy road crossings \u2014 watch for traffic",
+          "Limited shade in open prairie sections",
+          "Some sections near 108th can flood after heavy rain",
+          "Busy on weekends \u2014 yield to pedestrians",
+        ],
+        bestFor: "Road cycling, long-distance running, e-biking",
+        seasonalNote: "Open year-round \u00b7 Plowed after major snowfall on key sections",
+        coords: [
+          [41.1850,-96.0200],[41.1880,-96.0220],[41.1920,-96.0250],[41.1960,-96.0280],
+          [41.2000,-96.0310],[41.2040,-96.0340],[41.2080,-96.0370],[41.2120,-96.0400],
+          [41.2160,-96.0430],[41.2200,-96.0460],[41.2240,-96.0490],[41.2280,-96.0520],
+          [41.2320,-96.0540],[41.2360,-96.0560],[41.2400,-96.0575],[41.2440,-96.0580],
+          [41.2480,-96.0570],[41.2520,-96.0555],[41.2560,-96.0540],[41.2600,-96.0530],
+          [41.2640,-96.0525],[41.2680,-96.0530],[41.2720,-96.0545],[41.2760,-96.0560],
+          [41.2800,-96.0575],[41.2840,-96.0590],[41.2880,-96.0600],[41.2920,-96.0608],
+          [41.2960,-96.0610],[41.3000,-96.0605],[41.3040,-96.0598],[41.3080,-96.0590],
+          [41.3120,-96.0585],[41.3160,-96.0582],[41.3200,-96.0580],[41.3240,-96.0578],
+          [41.3280,-96.0575],[41.3320,-96.0570],[41.3360,-96.0565],[41.3400,-96.0560],
+        ],
+        elevation: [
+          [0,1050],[5,1060],[10,1070],[15,1075],[20,1080],[25,1085],
+          [30,1090],[35,1095],[40,1098],[45,1095],[50,1088],[52,1085],
+        ],
+        mileMarkers: [
+          {mi:0,lat:41.1850,lng:-96.0200},{mi:5,lat:41.2040,lng:-96.0340},
+          {mi:10,lat:41.2240,lng:-96.0490},{mi:15,lat:41.2440,lng:-96.0580},
+          {mi:20,lat:41.2640,lng:-96.0525},{mi:25,lat:41.2840,lng:-96.0590},
+          {mi:30,lat:41.3040,lng:-96.0598},{mi:35,lat:41.3200,lng:-96.0580},
+          {mi:40,lat:41.3320,lng:-96.0570},{mi:45,lat:41.3400,lng:-96.0560},
+        ],
+      },
+    ],
+    pois: [
+      {id:"ks1",type:"parking",name:"Keystone Lake Trailhead",lat:41.1850,lng:-96.0200,desc:"Southern terminus \u00b7 Large lot"},
+      {id:"ks2",type:"parking",name:"108th & West Maple",lat:41.2720,lng:-96.0545,desc:"Popular midpoint access \u00b7 60 spaces"},
+      {id:"ks3",type:"parking",name:"Standing Bear Connector",lat:41.3040,lng:-96.0598,desc:"North access \u00b7 Near Standing Bear Lake"},
+      {id:"ks4",type:"trailhead",name:"Keystone Lake Start",lat:41.1852,lng:-96.0198,desc:"Mile 0 \u00b7 Southern start"},
+      {id:"ks5",type:"trailhead",name:"Zorinsky Connector",lat:41.2280,lng:-96.0520,desc:"Connects to Zorinsky Lake Loop"},
+      {id:"ks6",type:"water",name:"Water Station \u2014 Zorinsky",lat:41.2280,lng:-96.0518,desc:"Near Zorinsky junction"},
+      {id:"ks7",type:"water",name:"Water Station \u2014 108th",lat:41.2720,lng:-96.0542,desc:"At 108th & Maple trailhead"},
+      {id:"ks8",type:"restroom",name:"Keystone Lake Restrooms",lat:41.1855,lng:-96.0205,desc:"Full facilities"},
+      {id:"ks9",type:"restroom",name:"108th Trailhead Restrooms",lat:41.2718,lng:-96.0548,desc:"Portable \u00b7 Year-round"},
+      {id:"ks10",type:"photo",name:"Prairie View",lat:41.2400,lng:-96.0575,desc:"Wide open prairie panorama"},
+    ],
+    reviews: [
+      {id:1,trail:"keystone-main",user:"CyclistOmaha",rating:5,date:"Mar 1, 2026",text:"The backbone of Omaha's trail system. I ride this 3x a week. Smooth pavement, well-marked, connects to everything.",helpful:24},
+      {id:2,trail:"keystone-main",user:"RunnerMom",rating:5,date:"Feb 10, 2026",text:"Training for my marathon on this trail. Flat, long, and always maintained. Can't beat it for distance running.",helpful:18},
+      {id:3,trail:"keystone-main",user:"EBikeNewbie",rating:4,date:"Jan 18, 2026",text:"Perfect for e-biking! 52 miles of smooth pavement. Just watch for road crossings and yield to walkers.",helpful:12},
+      {id:4,trail:"keystone-main",user:"WeekendWalker",rating:4,date:"Dec 5, 2025",text:"Great trail but some sections feel isolated. Stick to the sections near parks if you want amenities nearby.",helpful:9},
+    ],
+    conditions: [
+      {date:"Mar 10, 2026",trail:"keystone-main",reporter:"Park Staff",condition:"excellent",note:"Full trail clear and dry. Spring maintenance completed on southern section."},
+      {date:"Feb 28, 2026",trail:"keystone-main",reporter:"User Report",condition:"good",note:"Minor debris near 108th crossing from recent winds. Otherwise great shape."},
+    ],
+  },
+
+  /* ─────────────────────────────────────────────────────
+     BOB KERREY BRIDGE
+     ───────────────────────────────────────────────────── */
+  "bob-kerrey-bridge": {
+    mapCenter: [41.2575, -95.9215],
+    mapZoom: 15,
+    trails: [
+      {
+        id: "bridge-loop", name: "Bob Kerrey Bridge Loop", type: "paved",
+        color: "#5CA8D4", colorFaded: "rgba(92,168,212,0.3)",
+        distance: "3.2 mi", distanceNum: 3.2, elevGain: "45 ft",
+        surface: "Concrete / Steel deck", difficulty: "Easy",
+        avgTime: "1h", rating: 4.9, reviewCount: 2150,
+        status: "open", statusNote: "Fully open \u00b7 Lit for evening walks",
+        lastUpdated: "1 day ago",
+        allowedUses: ["walking","running","biking","wheelchair","stroller","dog"],
+        highlights: [
+          "Walk across the Missouri River to Iowa and back",
+          "Stunning sunrise and sunset panoramas",
+          "3,000-foot pedestrian bridge with LED lighting",
+          "Connects to both Omaha & Council Bluffs trail systems",
+        ],
+        cautions: [
+          "Can be windy on the bridge \u2014 hold hats and loose items",
+          "Bridge deck can be icy in winter \u2014 use caution",
+          "Busy at sunrise/sunset \u2014 yield to photographers",
+          "No stopping on bridge during special events",
+        ],
+        bestFor: "Sunrise walks, casual strolls, photography, tourists",
+        seasonalNote: "Open year-round \u00b7 LED lights make evening walks magical",
+        coords: [
+          [41.2565,-95.9280],[41.2568,-95.9270],[41.2570,-95.9260],[41.2572,-95.9250],
+          [41.2574,-95.9240],[41.2575,-95.9230],[41.2576,-95.9220],[41.2577,-95.9210],
+          [41.2578,-95.9200],[41.2579,-95.9190],[41.2580,-95.9180],[41.2581,-95.9170],
+          [41.2582,-95.9160],[41.2583,-95.9150],[41.2584,-95.9140],[41.2585,-95.9130],
+          [41.2585,-95.9120],[41.2584,-95.9110],[41.2582,-95.9105],
+        ],
+        elevation: [
+          [0.0,985],[0.3,990],[0.6,998],[0.9,1005],[1.2,1008],[1.5,1010],
+          [1.8,1008],[2.1,1005],[2.4,998],[2.7,990],[3.0,986],[3.2,985],
+        ],
+        mileMarkers: [
+          {mi:0,lat:41.2565,lng:-95.9280},{mi:1,lat:41.2577,lng:-95.9210},
+          {mi:2,lat:41.2585,lng:-95.9130},{mi:3,lat:41.2568,lng:-95.9270},
+        ],
+      },
+    ],
+    pois: [
+      {id:"bk1",type:"parking",name:"Gene Leahy Mall Parking",lat:41.2565,lng:-95.9280,desc:"Free \u00b7 Closest to bridge \u00b7 200+ spaces"},
+      {id:"bk2",type:"parking",name:"Lewis & Clark Landing",lat:41.2570,lng:-95.9265,desc:"Near riverfront \u00b7 100 spaces"},
+      {id:"bk3",type:"parking",name:"Iowa Welcome Center",lat:41.2585,lng:-95.9110,desc:"Iowa side \u00b7 Free parking"},
+      {id:"bk4",type:"trailhead",name:"Nebraska Side Entry",lat:41.2566,lng:-95.9278,desc:"Main bridge access from Omaha"},
+      {id:"bk5",type:"trailhead",name:"Iowa Side Entry",lat:41.2584,lng:-95.9108,desc:"Council Bluffs access"},
+      {id:"bk6",type:"restroom",name:"Gene Leahy Mall Restrooms",lat:41.2562,lng:-95.9285,desc:"Full facilities \u00b7 Accessible"},
+      {id:"bk7",type:"restroom",name:"Iowa Welcome Center",lat:41.2586,lng:-95.9108,desc:"Full facilities"},
+      {id:"bk8",type:"photo",name:"Sunrise Point",lat:41.2578,lng:-95.9195,desc:"Mid-bridge \u2014 best sunrise view in Omaha"},
+      {id:"bk9",type:"photo",name:"Skyline View",lat:41.2572,lng:-95.9245,desc:"Omaha skyline panorama"},
+      {id:"bk10",type:"activity",name:"Gene Leahy Mall",lat:41.2560,lng:-95.9290,desc:"Playground, splash pad, green space"},
+    ],
+    reviews: [
+      {id:1,trail:"bridge-loop",user:"SunriseChaser",rating:5,date:"Mar 5, 2026",text:"Best sunrise in Omaha, period. The bridge lights up and the river reflects everything. Absolutely magical.",helpful:32},
+      {id:2,trail:"bridge-loop",user:"TouristJane",rating:5,date:"Feb 22, 2026",text:"Visited Omaha for the first time and this was the highlight. Walking to Iowa and back is such a cool experience!",helpful:21},
+      {id:3,trail:"bridge-loop",user:"LocalRunner",rating:5,date:"Jan 30, 2026",text:"My favorite evening run. The LED lights on the bridge make it feel special. Plus you get to say you ran across two states.",helpful:15},
+      {id:4,trail:"bridge-loop",user:"PhotoPro",rating:5,date:"Dec 15, 2025",text:"Photographed every bridge in the midwest and this one is top 3. The engineering is beautiful and the views are unmatched.",helpful:19},
+    ],
+    conditions: [
+      {date:"Mar 12, 2026",trail:"bridge-loop",reporter:"Park Staff",condition:"excellent",note:"Bridge fully clear. LED lights operational. Riverfront path in great shape."},
+      {date:"Mar 1, 2026",trail:"bridge-loop",reporter:"User Report",condition:"excellent",note:"Perfect conditions. No ice, clean deck, great visibility."},
+    ],
+  },
+
 };

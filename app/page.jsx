@@ -847,7 +847,7 @@ export default function GOPrototype(){
   const heroMax=isTrailPage?0:fullHero?560:135;
 
   return (
-    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:130}}>
+    <div style={{minHeight:"100dvh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:160}}>
       {!mounted?<div style={{height:"100vh",background:T.bg}}/>:<>
 
       {/* ═══ HERO ═══ */}
@@ -1744,51 +1744,14 @@ export default function GOPrototype(){
       {/* ═══ TRAIL DETAIL PAGE ═══ */}
       {tab.startsWith("trailDetail:")&&(()=>{
         const trailId=tab.split(":")[1];
-        const trail=TRAILS.find(t=>t.id===trailId);
-        if(!trail)return null;
-        return(<div style={{...sec,paddingTop:0}}>
-          <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
-            <img src={trail.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>
-            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
-            <button onClick={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
-              <div style={{display:"flex",gap:6,marginBottom:8}}>
-                <span style={{fontSize:9,padding:"3px 10px",borderRadius:99,background:"rgba(125,212,160,.2)",color:"#81C784",fontWeight:700}}>{trail.difficulty}</span>
-                <span style={{fontSize:9,padding:"3px 10px",borderRadius:99,background:"rgba(255,255,255,.12)",color:T.textBody,fontWeight:600}}>{trail.distance}</span>
-              </div>
-              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{trail.name}</h1>
-            </div>
-          </div>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
-            {[{label:"Distance",value:trail.distance},{label:"Elevation",value:trail.elev},{label:"Surface",value:trail.surface},{label:"Difficulty",value:trail.difficulty}].map(s=>(
-              <div key={s.label} style={{background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
-                <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>{s.label}</div>
-                <div style={{fontSize:13,fontWeight:600,color:T.textHi}}>{s.value}</div>
-              </div>
-            ))}
-          </div>
-          {trail.bestFor&&<p style={{margin:"16px 0 0",fontSize:12,color:"#81C784",fontWeight:500}}>{trail.bestFor}</p>}
-          <p style={{margin:"12px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{trail.desc}</p>
-          {trail.highlights&&<div style={{marginTop:20}}>
-            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Highlights</h3>
-            {trail.highlights.map((h,i)=>(
-              <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:10}}>
-                <div style={{width:6,height:6,borderRadius:"50%",background:"#81C784",marginTop:6,flexShrink:0}}/>
-                <span style={{fontSize:13,color:T.textBody,lineHeight:1.5}}>{h}</span>
-              </div>
-            ))}
-          </div>}
-          {trail.parkingNote&&<div style={{marginTop:16,padding:"12px 16px",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,borderRadius:14}}>
-            <div style={{fontSize:10,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Parking</div>
-            <div style={{fontSize:12,color:T.textBody,lineHeight:1.5}}>{trail.parkingNote}</div>
-          </div>}
-          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{trail.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
-          <div style={{display:"flex",gap:8,marginTop:20}}>
-            <a href={mapsDir(trail.lat,trail.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(125,212,160,.12)",border:"1px solid rgba(125,212,160,.25)",color:"#81C784",fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir("#81C784",14)} Directions</a>
-            {trail.url&&<a href={trail.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.link(T.textBody,13)} Info</a>}
-          </div>
-          <div style={{height:120}}/>
-        </div>);
+        const trailDataMap={t1:"keystone-trail",t2:"bob-kerrey-bridge",t3:"fontenelle-forest",t4:"chalco-hills",t5:"zorinsky-lake"};
+        const dataKey=trailDataMap[trailId];
+        const tData=dataKey?TRAIL_MAP_DATA[dataKey]:null;
+        if(!tData)return null;
+        return <TrailMap parkId={dataKey} parkName={TRAILS.find(t=>t.id===trailId)?.name||"Trail"}
+          parkColor={tData.trails[0]?.color||"#81C784"} initialTrailIndex={0}
+          trailMapData={tData}
+          onBack={()=>{setTab(prevTab||"today");window.scrollTo(0,0);}}/>;
       })()}
 
       {/* ═══ VENUE DETAIL PAGE ═══ */}
@@ -1907,7 +1870,7 @@ export default function GOPrototype(){
       })()}
 
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,display:"flex",flexDirection:"column",background:"#000"}}>
+      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,display:"flex",flexDirection:"column",background:"#000",transform:"translateZ(0)",WebkitTransform:"translateZ(0)"}}>
         {tab==="today"&&<div style={{width:"100%",maxWidth:isD?560:isT?480:9999,padding:"8px 14px 4px",background:"rgba(32,34,38,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.1)`,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,maxWidth:440,margin:"0 auto"}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>

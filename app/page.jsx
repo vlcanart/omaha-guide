@@ -787,6 +787,7 @@ export default function GOPrototype(){
   const[dateRange,setDateRange]=useState("all");
   useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
+  useEffect(()=>{const shell=document.getElementById("app-shell");if(!shell)return;const setVH=()=>{const vh=window.visualViewport?window.visualViewport.height:window.innerHeight;shell.style.height=vh+"px";};setVH();if(window.visualViewport){window.visualViewport.addEventListener("resize",setVH);return()=>window.visualViewport.removeEventListener("resize",setVH);}else{window.addEventListener("resize",setVH);return()=>window.removeEventListener("resize",setVH);}},[mounted]);
   useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
   useEffect(()=>{fetch("https://api.open-meteo.com/v1/forecast?latitude=41.26&longitude=-95.94&current=temperature_2m,weather_code&temperature_unit=fahrenheit").then(r=>r.json()).then(d=>{const t=Math.round(d.current.temperature_2m),wc=d.current.weather_code;const cond=wc<=1?"clear":wc<=48?"cloudy":wc<=67?"rainy":"snowy";setWeather({temp:t,cond,icon:WX_ICONS[cond]});}).catch(()=>{});},[]);
   const goLive=()=>{setIsLive(true);setTv(nowTv);};
@@ -1902,7 +1903,7 @@ export default function GOPrototype(){
             </button>
           ))}
         </div>
-        <div style={{background:"#000",width:"100%",height:"env(safe-area-inset-bottom,0px)"}}/>
+        <div style={{background:"#000",width:"100%",minHeight:"max(env(safe-area-inset-bottom, 0px), 8px)"}}/>
       </div>
 
       <style>{`

@@ -746,7 +746,12 @@ const ECATS=[{id:"concerts",label:"Concerts",emoji:"🎵"},{id:"sports",label:"S
 const ESUBS={concerts:["Rock","Country","Hip-Hop","Jazz","Electronic","Pop","Metal","Folk","R&B","Indie","Classical","Tribute","Live Music"],sports:["Basketball","Football","Baseball","Volleyball","Hockey","Soccer","Wrestling"],comedy:["Stand-Up","Improv","Open Mic"],family:["Museum","Zoo","Science","Outdoor","Workshop"],arts:["Theater","Musical","Dance","Orchestra","Film","Gallery","Opera"],festivals:["Food","Music","Cultural","Holiday"]};
 function getCalDates(n){const days=[];const now=new Date();for(let i=0;i<n;i++){const d=new Date(now);d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const wd=d.toLocaleDateString("en-US",{weekday:"short"});const dn=d.getDate();const mn=d.toLocaleDateString("en-US",{month:"short"});days.push({iso,wd:i===0?"Today":i===1?"Tmrw":wd,dn,mn});}return days;}
 const CAL_DATES=getCalDates(14);
-function matchDate(ev,range){if(range==="all")return true;const d=ev.date?.match(/^\d{4}-\d{2}-\d{2}$/)?new Date(ev.date+"T12:00:00"):null;if(!d)return range==="today"||range===new Date().toISOString().slice(0,10);const now=new Date();now.setHours(0,0,0,0);if(range==="today")return d.toDateString()===now.toDateString();if(range==="week"){const end=new Date(now);end.setDate(end.getDate()+7);return d>=now&&d<=end;}if(range==="month"){const end=new Date(now);end.setMonth(end.getMonth()+1);return d>=now&&d<=end;}if(range.match(/^\d{4}-\d{2}-\d{2}$/)){return ev.date===range;}return true;}
+function selectDateRange(clickedIso,current){const t=CAL_DATES[0].iso;if(clickedIso===t&&current.size<=1)return new Set([t]);const sorted=[...current].sort();if(sorted[sorted.length-1]===clickedIso&&current.size>1)return new Set([t]);const dates=new Set();for(const cd of CAL_DATES){dates.add(cd.iso);if(cd.iso===clickedIso)break;}return dates;}
+function getWeekDates(){const dates=new Set();const now=new Date();for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));if(d.getDay()===0&&i>0)break;}return dates;}
+function getWeekendDates(){const dates=new Set();const now=new Date();const dow=now.getDay();if(dow===0||dow===6){for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getDay()===6||d.getDay()===0)dates.add(d.toISOString().slice(0,10));else if(dates.size>0)break;}}else{const daysToSat=6-dow;for(let i=daysToSat;i<=daysToSat+1;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));}}return dates;}
+function getMonthDates(){const dates=new Set();const now=new Date();const mo=now.getMonth();for(let i=0;i<45;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getMonth()!==mo&&i>0)break;dates.add(d.toISOString().slice(0,10));}return dates;}
+function setsEqual(a,b){if(a.size!==b.size)return false;for(const v of a)if(!b.has(v))return false;return true;}
+function matchDate(ev,dates){if(!dates||dates.size===0)return true;return dates.has(ev.date);}
 function matchSub(ev,sub){if(sub==="all")return true;const haystack=[...(ev.tags||[]),ev.title||"",ev.desc||""].join(" ").toLowerCase();return haystack.includes(sub.toLowerCase());}
 
 /* ═══ REAL-TIME SUN POSITION ═══ */
@@ -785,7 +790,8 @@ export default function GOPrototype(){
   const[favs,setFavs]=useState([]);
   const[evCat,setEvCat]=useState("concerts");
   const[evSub,setEvSub]=useState("all");
-  const[dateRange,setDateRange]=useState("today");
+  const[selectedDates,setSelectedDates]=useState(new Set([CAL_DATES[0].iso]));
+  const[showSubs,setShowSubs]=useState(false);
   useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
   useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
@@ -801,9 +807,9 @@ export default function GOPrototype(){
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);scrollTop();};
   const[evShow,setEvShow]=useState(30);
-  useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setDateRange("today");setEvShow(30);}},[tab]);
-  useEffect(()=>{setEvShow(30);},[evCat,evSub,dateRange]);
-  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>e.cat===evCat).filter(e=>matchDate(e,dateRange)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,dateRange,cities]);
+  useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);setEvShow(30);}},[tab]);
+  useEffect(()=>{setEvShow(30);},[evCat,evSub,selectedDates]);
+  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>e.cat===evCat).filter(e=>matchDate(e,selectedDates)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,selectedDates,cities]);
   const nb=Math.max(0,Math.min(1,(tv-50)/20));
   const isDay=tv<60,isNite=tv>=60;
   const mLabel=isDay?"Today":"Tonight";
@@ -1068,28 +1074,36 @@ export default function GOPrototype(){
       {/* ═══ EVENTS TAB ═══ */}
       {tab==="events"&&<div style={sec}>
         {/* Calendar date scroller */}
-        <div style={{display:"flex",gap:6,overflowX:"auto",paddingTop:16,paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
-          {CAL_DATES.map(cd=>{const sel=dateRange===cd.iso||(dateRange==="today"&&cd===CAL_DATES[0]);return(
-            <button key={cd.iso} onClick={()=>setDateRange(cd.iso)} className="daybtn" style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:sel?T.accent:"rgba(255,255,255,.06)",border:`1px solid ${sel?T.accent:T.border}`,borderRadius:14,padding:"8px 10px",cursor:"pointer",flexShrink:0,minWidth:52,minHeight:62}}>
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingTop:16,paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
+          {CAL_DATES.map(cd=>{const sel=selectedDates.has(cd.iso);return(
+            <button key={cd.iso} onClick={()=>setSelectedDates(prev=>selectDateRange(cd.iso,prev))} className="daybtn" style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:sel?T.accent:"rgba(255,255,255,.06)",border:`1px solid ${sel?T.accent:T.border}`,borderRadius:14,padding:"8px 10px",cursor:"pointer",flexShrink:0,minWidth:52,minHeight:62}}>
               <span style={{fontSize:9,fontWeight:600,color:sel?"#000":T.textSec,letterSpacing:.8,textTransform:"uppercase"}}>{cd.wd}</span>
               <span style={{fontSize:20,fontWeight:700,color:sel?"#000":T.text,lineHeight:1.1}}>{cd.dn}</span>
               <span style={{fontSize:8,fontWeight:600,color:sel?"#000":T.textDim,letterSpacing:.5,textTransform:"uppercase"}}>{cd.mn}</span>
             </button>);
           })}
         </div>
+        {/* Quick date presets */}
+        {(()=>{const wk=getWeekDates(),we=getWeekendDates(),mo=getMonthDates();return(
+        <div style={{display:"flex",gap:8,paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+          {[{label:"This Week",dates:wk},{label:"Weekend",dates:we},{label:"This Month",dates:mo}].map(p=>{const active=setsEqual(selectedDates,p.dates);return(
+            <button key={p.label} onClick={()=>setSelectedDates(active?new Set([CAL_DATES[0].iso]):p.dates)} style={{background:active?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${active?T.accent+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}>
+              <span style={{fontSize:10,fontWeight:600,color:active?T.accent:T.textSec,letterSpacing:.6}}>{p.label}</span>
+            </button>);})}
+        </div>);})()}
         {/* Category pills */}
         <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
+          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");setShowSubs(true);}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
         </div>
-        {/* Subcategory pills */}
-        {ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+        {/* Subcategory pills — hidden until category tapped */}
+        {showSubs&&ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
           <button onClick={()=>setEvSub("all")} style={{background:evSub==="all"?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub==="all"?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub==="all"?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>All</span></button>
           {ESUBS[evCat].map(s=><button key={s} onClick={()=>setEvSub(s)} style={{background:evSub===s?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub===s?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub===s?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>{s}</span></button>)}
         </div>}
         {/* Events heading */}
         <Head text={ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
         {/* Event cards — paginated for performance */}
-        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvSub("all");setDateRange("today");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
+        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
         {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>

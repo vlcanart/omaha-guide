@@ -1,4 +1,5 @@
 import './globals.css';
+import { Providers } from './components/Providers';
 
 export const metadata = {
   title: 'GO: Guide to Omaha — Events, Concerts, Sports & Things To Do',
@@ -120,7 +121,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body>{children}</body>
+      <body><Providers>{children}</Providers></body>
     </html>
   );
 }

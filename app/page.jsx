@@ -89,13 +89,23 @@ import { TRAILS, WALKS, SUNSETS } from "./data/trails";
 import { DAYTIME, GALLERIES, GAL_FILTERS, GAL_HOODS } from "./data/galleries";
 import { PARKS } from "./data/parks";
 import { HOODS } from "./data/hoods";
-import { SEED_EVENTS, ECATS, ESUBS, DATE_PRESETS, matchDate, matchSub } from "./data/events";
+import { SEED_EVENTS, ECATS, ESUBS, DATE_PRESETS, matchDate as _matchDate, matchSub } from "./data/events";
 import { VENUES, VCATS } from "./data/venues";
 
 /* Icon resolver — data files store icon keys as strings, IC holds the render functions */
 const resolveIcon = (key) => typeof key === 'function' ? key : (typeof key === 'string' && IC[key]) ? IC[key] : null;
 
 const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
+
+/* ═══ DATE / CALENDAR HELPERS ═══ */
+function getCalDates(n){const days=[];const now=new Date();for(let i=0;i<n;i++){const d=new Date(now);d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const wd=d.toLocaleDateString("en-US",{weekday:"short"});const dn=d.getDate();const mn=d.toLocaleDateString("en-US",{month:"short"});days.push({iso,wd:i===0?"Today":i===1?"Tmrw":wd,dn,mn});}return days;}
+const CAL_DATES=getCalDates(14);
+function selectDateRange(clickedIso,current){const t=CAL_DATES[0].iso;if(clickedIso===t&&current.size<=1)return new Set([t]);const sorted=[...current].sort();if(sorted[sorted.length-1]===clickedIso&&current.size>1)return new Set([t]);const dates=new Set();for(const cd of CAL_DATES){dates.add(cd.iso);if(cd.iso===clickedIso)break;}return dates;}
+function getWeekDates(){const dates=new Set();const now=new Date();for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));if(d.getDay()===0&&i>0)break;}return dates;}
+function getWeekendDates(){const dates=new Set();const now=new Date();const dow=now.getDay();if(dow===0||dow===6){for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getDay()===6||d.getDay()===0)dates.add(d.toISOString().slice(0,10));else if(dates.size>0)break;}}else{const daysToSat=6-dow;for(let i=daysToSat;i<=daysToSat+1;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));}}return dates;}
+function getMonthDates(){const dates=new Set();const now=new Date();const mo=now.getMonth();for(let i=0;i<45;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getMonth()!==mo&&i>0)break;dates.add(d.toISOString().slice(0,10));}return dates;}
+function setsEqual(a,b){if(a.size!==b.size)return false;for(const v of a)if(!b.has(v))return false;return true;}
+function matchDate(ev,dates){if(!dates||dates.size===0)return true;return dates.has(ev.date);}
 
 /* ═══ APP ═══ */
 export default function GOPrototype(){
@@ -287,22 +297,6 @@ export default function GOPrototype(){
           </div>
 
           <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
-          {WALKS.map((wk,i)=>(
-            <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
-              <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{resolveIcon(wk.icon)?.("#FFB74D",20)}</div>
-                <div style={{flex:1}}>
-                  <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
-                  <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
-                  <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{wk.desc}</p>
-                  <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{wk.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"3px 9px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
-                  <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {WALKS.map(wk=>(
               <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
@@ -351,6 +345,34 @@ export default function GOPrototype(){
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><polyline points="9 18 15 12 9 6"/></svg>
             </div>
+          </div>
+
+          {/* Kids & Family Highlights */}
+          <Head text="Kids & Family" count={GALLERIES.filter(v=>v.type==="Kids").length} color="#FFB74D"/>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+            {GALLERIES.filter(v=>v.type==="Kids").map(v=>(
+              <Link key={v.id} href={"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
+                <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
+                  <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)"}}/>
+                  <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
+                    {v.badge&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"3px 8px",borderRadius:99,background:"rgba(212,173,101,.15)",color:T.gold,border:"1px solid rgba(212,173,101,.25)"}}>{v.badge}</span>}
+                    {!v.admissionFree&&<span style={{fontSize:8,fontWeight:600,padding:"3px 8px",borderRadius:99,background:"rgba(255,183,77,.12)",color:"#FFB74D"}}>{v.admission.split(",")[0]}</span>}
+                  </div>
+                  <div style={{position:"absolute",bottom:10,left:12,right:12}}>
+                    <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{v.name}</h3>
+                  </div>
+                </div>
+                <div style={{padding:"10px 12px 12px"}}>
+                  <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{v.blurb}</p>
+                  <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>
+                    <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(255,183,77,.08)",color:"#FFB74D",fontWeight:600}}>{v.neighborhood}</span>
+                    {v.highlights?.slice(0,2).map((h,i)=><span key={i} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{h.length>30?h.slice(0,28)+"…":h}</span>)}
+                  </div>
+                  <span style={{display:"inline-block",marginTop:8,fontSize:10,padding:"5px 12px",borderRadius:99,background:"rgba(255,183,77,.08)",border:"1px solid rgba(255,183,77,.15)",color:"#FFB74D",fontWeight:600}}>Details →</span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>}
 
@@ -519,22 +541,6 @@ export default function GOPrototype(){
           ))}
         </div>
 
-        {/* ── Walking Tours ── */}
-        <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
-        {WALKS.map((wk,i)=>(
-          <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
-            <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{resolveIcon(wk.icon)?.("#FFB74D",20)}</div>
-              <div style={{flex:1}}>
-                <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
-                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
-                <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{wk.desc}</p>
-                <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* ── Neighborhoods ── */}
         <Head text="Neighborhoods" count={HOODS.length} color="#CE93D8"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
@@ -647,7 +653,7 @@ export default function GOPrototype(){
 
         {/* Quick stats */}
         <div style={{display:"flex",gap:8,marginBottom:16,overflowX:"auto",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
-          {[{val:GALLERIES.filter(v=>v.admissionFree).length,label:"Free venues"},{val:GALLERIES.filter(v=>v.type==="Museum").length,label:"Museums"},{val:GALLERIES.filter(v=>v.type==="Gallery").length,label:"Galleries"},{val:GAL_HOODS.length-1,label:"Neighborhoods"}].map((s,i)=>(
+          {[{val:GALLERIES.filter(v=>v.admissionFree).length,label:"Free venues"},{val:GALLERIES.filter(v=>v.type==="Museum").length,label:"Museums"},{val:GALLERIES.filter(v=>v.type==="Gallery").length,label:"Galleries"},{val:GALLERIES.filter(v=>v.type==="Kids").length,label:"Kids & Family"}].map((s,i)=>(
             <div key={i} style={{flexShrink:0,padding:"10px 16px",borderRadius:14,textAlign:"center",background:CG._,border:`1px solid ${T.border}`,minWidth:80}}>
               <p style={{fontSize:20,fontWeight:700,color:"#B39DDB",margin:"0 0 2px"}}>{s.val}</p>
               <p style={{fontSize:9,color:T.textSec,fontWeight:600,letterSpacing:1,textTransform:"uppercase",margin:0}}>{s.label}</p>

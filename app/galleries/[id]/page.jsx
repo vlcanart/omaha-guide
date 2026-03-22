@@ -10,7 +10,9 @@ export function generateMetadata({ params }) {
   if (!gallery) return { title: "Gallery Not Found | GO: Guide to Omaha" };
 
   const isMuseum = gallery.type === "Museum";
-  const title = `${gallery.name} — ${isMuseum ? "Museum" : "Gallery"} in Omaha | GO: Guide to Omaha`;
+  const isKids = gallery.type === "Kids";
+  const typeLabel = isMuseum ? "Museum" : isKids ? "Family Attraction" : "Gallery";
+  const title = `${gallery.name} — ${typeLabel} in Omaha | GO: Guide to Omaha`;
   const description = (gallery.blurb || "").slice(0, 155);
 
   return {
@@ -34,9 +36,11 @@ export default function GalleryPage({ params }) {
   if (!gallery) return <div style={{ minHeight: "100vh", background: "#141618", color: "#F2EFE9", display: "flex", alignItems: "center", justifyContent: "center" }}><p>Gallery not found</p></div>;
 
   const isMuseum = gallery.type === "Museum";
+  const isKids = gallery.type === "Kids";
+  const schemaType = isMuseum ? "Museum" : isKids ? "TouristAttraction" : "ArtGallery";
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": isMuseum ? "Museum" : "ArtGallery",
+    "@type": schemaType,
     name: gallery.name,
     description: gallery.blurb || "",
     address: gallery.address || "",

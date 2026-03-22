@@ -78,693 +78,28 @@ import { INGESTED_EVENTS } from "./events-data";
 
    ═══════════════════════════════════════════════════════════ */
 
-const T = {
-  bg: "#141618", surface: "#1B1D21",
-  border: "rgba(255,255,255,0.08)", borderHi: "rgba(255,255,255,0.18)",
-  text: "#F2EFE9", textHi: "#FFFFFF", textBody: "rgba(242,239,233,0.82)",
-  textSec: "rgba(242,239,233,0.58)", textDim: "rgba(242,239,233,0.32)",
-  venue: "rgba(242,239,233,0.72)", accent: "#5EC4B6",
-  accentSoft: "rgba(94,196,182,0.10)", accentGlow: "rgba(94,196,182,0.30)",
-  gold: "#D4AD65", green: "#7DD4A0", red: "#E8364F",
-  sans: "'Inter',system-ui,-apple-system,sans-serif",
-};
-const CG = {
-  concerts: "linear-gradient(135deg,#1A2E32 0%,#213740 60%,#1C3035 100%)",
-  sports: "linear-gradient(135deg,#1A2430 0%,#21303E 60%,#1C2836 100%)",
-  comedy: "linear-gradient(135deg,#2D2518 0%,#3A2F1E 60%,#332A1C 100%)",
-  trail: "linear-gradient(135deg,#1A2B20 0%,#233D2A 60%,#1E3224 100%)",
-  hood: "linear-gradient(135deg,#22201A 0%,#2E2A20 60%,#282418 100%)",
-  sunset: "linear-gradient(135deg,#2A1E1A 0%,#3A2818 60%,#302216 100%)",
-  park: "linear-gradient(135deg,#1C2E20 0%,#213828 60%,#1D3022 100%)",
-  water: "linear-gradient(135deg,#1A2730 0%,#1E3038 60%,#1A2830 100%)",
-  _: "linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
-};
-const CA = { concerts:"#5EC4B6", sports:"#64B5F6", comedy:"#FFB74D", family:"#81C784", arts:"#CE93D8", festivals:"#FF8A65" };
+import { T, CG, CA } from "./lib/design-tokens";
+import { STOPS, interp, STARS, SUN_TABLE, getNowTv, WX_ICONS } from "./lib/sky";
+import { Skyline } from "./lib/skyline";
+import { IC } from "./lib/icons";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { mapsDir, u, slugify } from "./lib/helpers";
+import { TRAILS, WALKS, SUNSETS } from "./data/trails";
+import { DAYTIME, GALLERIES, GAL_FILTERS, GAL_HOODS } from "./data/galleries";
+import { PARKS } from "./data/parks";
+import { HOODS } from "./data/hoods";
+import { SEED_EVENTS, ECATS, ESUBS, DATE_PRESETS, matchDate, matchSub } from "./data/events";
+import { VENUES, VCATS } from "./data/venues";
 
-/* ═══ COLOR MATH ═══ */
-const h2r=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
-const r2h=([r,g,b])=>"#"+[r,g,b].map(c=>Math.round(Math.min(255,Math.max(0,c))).toString(16).padStart(2,"0")).join("");
-const mc=(a,b,t)=>{const[r1,g1,b1]=h2r(a),[r2,g2,b2]=h2r(b);return r2h([r1+(r2-r1)*t,g1+(g2-g1)*t,b1+(b2-b1)*t])};
-const mx=(a,b,t)=>a+(b-a)*t;
+/* Icon resolver — data files store icon keys as strings, IC holds the render functions */
+const resolveIcon = (key) => typeof key === 'function' ? key : (typeof key === 'string' && IC[key]) ? IC[key] : null;
 
-/* ═══ SKY STOPS ═══ */
-const STOPS=[
-  {t:0,  s1:"#4A7CB5",s2:"#D4956B",s3:"#F4C97E",bldg:"#000000",sunY:.74,sunC:"#FFD07A",sunSz:38,sunOp:1,  moonOp:0, starOp:0, winOp:0,  glow:"#FFD07A"},
-  {t:25, s1:"#5B9BD5",s2:"#87CEEB",s3:"#B8DCF0",bldg:"#000000",sunY:.18,sunC:"#FFFBE8",sunSz:28,sunOp:.9,moonOp:0, starOp:0, winOp:0,  glow:"#FFFBE8"},
-  {t:50, s1:"#C27840",s2:"#E6956B",s3:"#F0C27A",bldg:"#000000",sunY:.68,sunC:"#FF9944",sunSz:44,sunOp:1,  moonOp:0, starOp:0, winOp:0,  glow:"#FF9944"},
-  {t:75, s1:"#2A1B4E",s2:"#5C3470",s3:"#C26848",bldg:"#000000",sunY:.92,sunC:"#D84420",sunSz:50,sunOp:.5,moonOp:.3,starOp:.2,winOp:.5,glow:"#D84420"},
-  {t:90, s1:"#0C1628",s2:"#122240",s3:"#1A2A4A",bldg:"#000000",sunY:1.25,sunC:"#D84420",sunSz:50,sunOp:0,  moonOp:1, starOp:1, winOp:1,  glow:"#C8C0B0"},
-  {t:100,s1:"#0C1628",s2:"#122240",s3:"#1A2A4A",bldg:"#000000",sunY:1.25,sunC:"#D84420",sunSz:50,sunOp:0,  moonOp:1, starOp:1, winOp:1,  glow:"#C8C0B0"},
-];
-function interp(v){
-  let lo=STOPS[0],hi=STOPS[STOPS.length-1];
-  for(let i=0;i<STOPS.length-1;i++){if(v>=STOPS[i].t&&v<=STOPS[i+1].t){lo=STOPS[i];hi=STOPS[i+1];break;}}
-  const rng=hi.t-lo.t||1,t=(v-lo.t)/rng,r={};
-  for(const k of Object.keys(lo)){if(k==="t")continue;if(typeof lo[k]==="string"&&lo[k].startsWith("#"))r[k]=mc(lo[k],hi[k],t);else if(typeof lo[k]==="number")r[k]=mx(lo[k],hi[k],t);}
-  return r;
-}
-const STARS=Array.from({length:60},()=>({x:Math.random()*100,y:Math.random()*28,sz:Math.random()*2+.5,dl:Math.random()*3,dur:2+Math.random()*3}));
-
-/* ═══ OMAHA SKYLINE — native SVG from skyline-4.svg ═══ */
-function Skyline({color,winOp}){
-  return(
-    <svg viewBox="0 0 1625 540" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" style={{display:"block"}}>
-      <g transform="translate(0,540) scale(0.1,-0.1)" fill={color} stroke="none">
-        <path d="M7124 4759 c-12 -13 -14 -63 -14 -283 1 -187 -2 -272 -10 -281 -6 -8 -35 -15 -63 -17 l-52 -3 -3 -220 c-2 -219 -2 -219 -27 -245 l-25 -26 0 -872 0 -872 -68 0 c-90 0 -138 14 -146 43 -3 12 -6 131 -6 264 0 182 -3 244 -12 250 -7 4 -44 10 -83 13 l-70 5 -5 85 -5 85 -213 3 c-118 1 -229 -2 -247 -7 -33 -9 -34 -8 -42 27 -7 28 -15 37 -38 44 -36 9 -49 -2 -63 -54 -7 -24 -6 -40 0 -46 7 -7 7 -20 1 -39 -7 -19 -7 -33 0 -45 8 -13 5 -25 -17 -56 -24 -35 -26 -43 -15 -60 10 -16 10 -26 1 -47 -9 -20 -9 -30 0 -45 9 -15 9 -24 -1 -44 -12 -21 -12 -28 -1 -41 11 -13 11 -23 1 -51 -10 -27 -10 -38 -1 -49 10 -12 10 -22 0 -45 -10 -24 -10 -33 0 -45 10 -12 10 -21 0 -45 -10 -24 -10 -33 0 -45 10 -12 10 -24 1 -55 -9 -30 -9 -44 1 -59 9 -15 9 -28 0 -59 -10 -32 -10 -46 0 -67 9 -20 9 -36 0 -69 -8 -30 -8 -54 -2 -77 6 -19 10 -56 10 -84 l0 -50 -96 0 -96 0 7 55 c3 30 5 66 4 80 -1 14 -1 45 -1 70 0 25 0 56 0 70 -1 28 -1 85 0 115 1 11 1 36 0 55 0 19 0 44 1 55 0 11 -1 58 -3 105 -2 47 1 90 5 96 5 6 3 24 -3 42 -9 22 -9 37 -1 54 7 16 7 30 0 46 -7 15 -7 30 0 46 6 12 8 28 3 35 -4 7 -8 187 -9 399 -1 213 -5 390 -9 394 -4 4 -41 8 -82 10 l-75 3 -3 65 c-2 46 -7 69 -19 78 -21 15 -265 17 -294 2 -15 -9 -19 -22 -19 -69 0 -36 -5 -63 -13 -69 -7 -6 -44 -12 -82 -14 l-70 -3 -5 -250 c-3 -137 -7 -251 -8 -252 -1 -2 -76 -3 -166 -3 -121 0 -167 -3 -173 -12 -4 -7 -9 -47 -11 -88 -2 -41 -4 -76 -6 -77 -1 -1 -33 -5 -71 -9 -39 -4 -73 -12 -77 -18 -5 -6 -8 -249 -7 -541 l0 -530 -70 -3 -71 -3 0 51 c0 63 -10 82 -57 111 -21 13 -41 27 -44 32 -4 5 -218 10 -495 11 -269 2 -498 3 -509 4 -11 0 -119 0 -241 -1 -195 -2 -222 -4 -238 -19 -10 -10 -22 -18 -27 -18 -6 0 -28 -15 -49 -32 -32 -27 -37 -36 -28 -52 9 -16 8 -52 -3 -151 -1 -5 2 -28 5 -50 9 -55 -4 -73 -43 -59 -17 7 -33 8 -38 3 -16 -16 -77 33 -83 66 -3 18 -12 31 -24 33 -15 3 -17 -1 -12 -25 5 -23 1 -34 -18 -52 -13 -13 -34 -22 -48 -20 -12 1 -30 -1 -39 -5 -9 -4 -36 -6 -60 -4 l-44 3 -7 65 c-17 157 -30 904 -16 932 5 10 4 19 -2 23 -13 8 -13 52 -1 59 5 4 5 19 -2 36 -9 23 -9 35 1 50 7 12 8 21 2 25 -13 8 -13 52 -1 59 5 4 5 21 -2 41 -7 26 -7 39 0 46 8 8 8 18 1 35 -6 12 -7 31 -3 41 5 10 7 23 5 28 -1 6 -6 23 -9 39 -5 21 -14 32 -35 37 -40 11 -49 4 -67 -46 -14 -37 -14 -47 -3 -56 11 -9 11 -16 -2 -42 -15 -27 -15 -31 -1 -39 14 -7 14 -13 3 -40 -12 -27 -12 -34 0 -45 12 -12 11 -19 -2 -45 -14 -28 -15 -32 -1 -40 13 -7 14 -14 5 -38 -5 -17 -7 -38 -2 -48 4 -9 6 -21 4 -27 -1 -5 -4 -167 -6 -360 -2 -366 -7 -492 -26 -738 l-11 -147 -162 0 -162 0 -7 37 c-9 57 -7 148 4 177 6 18 5 37 -5 65 -10 29 -11 49 -3 78 6 24 6 58 1 89 -5 28 -5 68 0 93 8 38 6 45 -13 58 -16 12 -21 23 -18 45 3 16 1 31 -3 34 -5 3 -46 5 -91 6 -46 0 -89 5 -95 10 -18 14 -16 83 2 98 21 17 19 28 -7 35 -13 4 -37 13 -55 21 -29 13 -31 16 -22 47 12 43 12 47 -6 41 -8 -3 -124 -7 -257 -7 l-243 -2 -1 -36 c-1 -47 -10 -59 -39 -59 -32 0 -37 -11 -39 -89 l-1 -66 -92 1 c-93 1 -93 1 -93 -24 0 -14 -7 -33 -15 -41 -11 -13 -15 -69 -19 -279 -3 -145 -8 -267 -10 -271 -3 -4 0 -24 6 -44 9 -29 8 -42 -2 -62 -11 -21 -11 -29 0 -50 12 -22 12 -28 -3 -43 -14 -14 -21 -14 -37 -4 -14 8 -27 9 -45 2 -35 -13 -112 -13 -120 1 -4 6 -14 7 -24 3 -9 -5 -95 -11 -191 -14 l-175 -5 -3 -48 -3 -47 86 0 c136 0 125 27 125 -306 l0 -284 -30 -7 c-37 -7 -50 -28 -50 -82 l0 -41 -87 -1 c-49 -1 -94 -1 -100 0 -8 1 -13 -11 -13 -34 l0 -35 8111 0 8110 0 -3 33 -3 32 -105 1 c-103 1 -150 12 -150 36 0 6 -9 3 -20 -7 -20 -18 -20 -17 -20 33 0 39 4 52 15 52 8 0 31 11 51 25 20 14 47 25 59 25 26 0 39 13 66 67 20 40 26 93 9 93 -5 0 -16 12 -24 28 -39 70 -68 92 -138 104 -38 6 -68 14 -68 19 0 4 -15 25 -33 47 -19 22 -40 55 -47 73 -8 19 -39 68 -69 109 -222 303 -521 501 -869 575 -58 12 -108 28 -113 36 -5 8 -9 42 -9 75 0 47 -4 63 -16 68 -9 3 -91 6 -184 6 -125 0 -170 -3 -178 -13 -6 -7 -12 -44 -14 -82 l-3 -70 -65 -12 c-88 -16 -144 -30 -212 -54 -32 -11 -62 -17 -68 -14 -14 8 -14 1131 0 1140 20 12 10 45 -15 51 -14 4 -29 4 -32 1 -3 -4 -14 -2 -25 4 -16 9 -19 17 -14 47 4 21 7 46 9 57 2 20 -4 20 -793 20 l-795 0 3 -25 c2 -14 4 -41 5 -60 2 -34 1 -35 -40 -41 -54 -7 -58 -12 -44 -46 8 -20 11 -172 9 -538 l-3 -510 -77 -3 c-85 -3 -98 8 -58 48 24 24 25 49 6 75 -12 16 -29 20 -95 23 -90 5 -91 6 -91 82 0 19 -3 358 -6 753 l-6 717 -21 5 c-12 3 -69 6 -127 8 l-105 2 0 80 0 80 -52 3 c-28 2 -56 9 -62 16 -8 9 -11 91 -9 256 l3 242 44 15 c26 9 59 12 80 9 81 -14 76 -17 79 50 2 51 0 63 -18 79 -28 26 -120 27 -147 3 -11 -10 -32 -18 -46 -18 l-27 0 0 -315 c0 -357 6 -335 -86 -335 -45 0 -46 -1 -40 -27 11 -48 12 -117 3 -130 -7 -9 -44 -13 -123 -13 -90 0 -116 -3 -129 -16 -14 -14 -15 -104 -15 -916 1 -496 -2 -904 -7 -908 -4 -5 -39 -10 -78 -12 l-70 -3 -3 149 c-2 118 1 156 13 182 8 18 18 46 21 62 5 25 2 31 -15 37 -18 6 -21 14 -21 68 0 71 -4 78 -45 93 -26 9 -30 14 -27 43 1 20 -4 41 -14 52 -13 15 -15 41 -12 168 2 110 0 153 -10 163 -7 7 -12 41 -12 89 0 49 -5 87 -15 105 -8 16 -15 36 -15 44 -1 24 -22 54 -63 90 -35 30 -39 31 -60 17 -49 -33 -77 -67 -88 -111 -6 -26 -15 -49 -20 -52 -5 -3 -9 -41 -9 -85 0 -44 -5 -90 -12 -102 -8 -15 -11 -68 -9 -165 2 -104 -1 -147 -10 -158 -7 -8 -13 -31 -13 -51 -1 -32 -5 -37 -36 -48 l-35 -12 -3 -71 c-2 -61 -6 -72 -23 -77 -18 -6 -20 -12 -15 -41 4 -18 13 -45 21 -60 15 -30 10 -54 -12 -54 -9 0 -38 16 -64 35 -27 19 -58 35 -68 35 -24 0 -81 76 -81 107 0 18 -6 23 -25 23 -30 0 -105 69 -105 97 -1 10 -7 29 -15 43 -12 22 -11 27 2 42 20 22 13 52 -14 56 -25 4 -40 -28 -25 -54 14 -26 -12 -112 -45 -145 -15 -16 -43 -31 -60 -35 -26 -5 -33 -11 -33 -29 0 -13 -6 -30 -13 -37 -7 -7 -21 -25 -31 -40 -11 -16 -27 -28 -40 -28 -12 0 -33 -11 -47 -24 -15 -13 -42 -26 -60 -28 -39 -3 -39 0 -13 76 l17 48 -33 26 c-30 24 -32 28 -26 71 7 54 -1 69 -40 80 -26 7 -29 12 -26 43 1 22 -3 40 -13 48 -12 10 -15 41 -15 169 0 101 -4 161 -11 168 -6 6 -12 49 -14 96 -2 46 -8 93 -13 103 -6 10 -13 31 -16 45 -5 25 -29 54 -79 95 l-25 21 -46 -45 c-26 -25 -49 -56 -52 -71 -3 -14 -12 -40 -20 -58 -8 -17 -14 -63 -14 -105 0 -43 -5 -79 -12 -86 -8 -8 -11 -57 -9 -163 2 -122 -1 -154 -13 -167 -8 -10 -16 -35 -18 -57 -3 -34 -6 -40 -26 -40 -32 0 -42 -21 -42 -92 0 -53 -3 -63 -20 -68 -11 -3 -20 -15 -20 -25 0 -10 9 -39 20 -65 11 -26 20 -66 20 -90 l0 -43 -32 12 c-18 6 -44 17 -56 25 -13 7 -48 21 -77 31 l-53 18 -10 -31 c-7 -22 -10 189 -11 700 -1 486 2 734 9 738 17 11 0 25 -30 25 -57 0 -60 5 -60 97 0 46 4 92 10 102 8 17 -1 18 -127 24 -171 9 -540 9 -571 1 -17 -5 -21 -11 -15 -23 4 -9 9 -55 11 -103 l3 -87 -38 -6 c-62 -11 -65 -12 -53 -34 6 -13 10 -185 10 -496 0 -450 -1 -477 -17 -470 -28 10 -170 25 -245 25 l-68 0 0 850 0 850 -25 16 -25 16 -2 227 -3 226 -50 3 c-88 6 -86 -3 -85 305 1 148 -2 273 -7 278 -4 4 -100 9 -211 11 -177 3 -205 1 -218 -13z m-1054 -2144 c0 -6 -5 -16 -11 -22 -8 -8 -8 -17 0 -31 6 -11 11 -25 11 -31 0 -12 -29 -15 -31 -3 -4 34 -4 119 -1 126 6 10 32 -22 32 -39z m-5412 -1834 c7 -4 12 -12 11 -17 -1 -5 1 -22 6 -38 4 -16 3 -43 -3 -62 -7 -23 -7 -36 0 -40 6 -4 7 -24 4 -48 -3 -22 -5 -47 -5 -53 1 -34 1 -80 0 -98 0 -11 1 -60 3 -110 3 -62 -1 -101 -10 -124 -8 -18 -14 -53 -14 -78 l0 -44 -97 3 c-95 3 -98 4 -107 29 -6 19 -5 41 6 73 14 42 14 48 -3 75 -10 16 -28 35 -41 42 -13 7 -26 17 -30 23 -13 20 -9 451 4 464 14 14 255 17 276 3z m3830 -708 c-10 -2 -28 -2 -40 0 -13 2 -5 4 17 4 22 1 32 -1 23 -4z"/>
-        <path d="M9415 2670 c-3 -5 -1 -10 4 -10 6 0 11 5 11 10 0 6 -2 10 -4 10 -3 0 -8 -4 -11 -10z"/>
-        <path d="M0 224 c0 -79 2 -81 43 -46 9 8 17 26 17 39 0 24 -37 83 -52 83 -4 0 -8 -34 -8 -76z"/>
-      </g>
-
-      {/* Window lights — pixel-verified, varied by building */}
-      <g fill="#FFE4AA" opacity={winOp}>
-        {[[126,356],[82,394],[104,394],[1006,394],[126,432],[148,432],[1028,432],[1512,432],[126,470],[1006,470],[1556,470]].map(([x,y],i)=><rect key={`g0${i}`} x={x} y={y} width="2" height="3" rx=".5"/>)}
-        {[[940,318],[940,356],[280,394],[302,394],[324,394],[368,394],[236,432],[302,432],[324,432],[346,432],[368,432],[940,432],[962,432],[258,470],[280,470],[302,470],[324,470],[346,470],[368,470],[940,470],[962,470]].map(([x,y],i)=><rect key={`g1${i}`} x={x} y={y} width="2.5" height="3.5" rx=".5"/>)}
-        {[[522,242],[544,242],[522,280],[544,280],[478,318],[478,394],[544,394],[412,432],[434,432],[456,432],[500,432],[522,432],[412,470],[456,470],[478,470],[1204,470],[1226,470]].map(([x,y],i)=><rect key={`g2${i}`} x={x} y={y} width="3" height="4" rx=".5"/>)}
-        {[[1248,318],[1336,318],[1380,318],[1292,356],[1314,356],[1358,356],[1380,356],[1248,394],[1270,394],[1358,394],[1380,394],[1270,432],[1292,432],[1314,432],[1358,432],[1380,432],[1402,432],[1424,432],[1446,432],[1468,432],[1270,470],[1292,470],[1336,470],[1358,470],[1424,470],[1446,470],[1468,470]].map(([x,y],i)=><rect key={`g3${i}`} x={x} y={y} width="3" height="4.5" rx=".5"/>)}
-        {[[742,90],[720,128],[742,128],[742,204],[764,204],[720,242],[742,242],[764,242],[852,242],[874,242],[1182,242],[720,280],[742,280],[764,280],[1160,280],[720,318],[742,318],[764,318],[830,318],[852,318],[874,318],[1138,318],[1160,318],[1182,318],[654,356],[676,356],[698,356],[720,356],[742,356],[808,356],[852,356],[1072,356],[1138,356],[1182,356],[610,394],[654,394],[676,394],[698,394],[764,394],[786,394],[808,394],[874,394],[1072,394],[1160,394],[1182,394],[588,432],[610,432],[632,432],[654,432],[676,432],[720,432],[742,432],[764,432],[808,432],[874,432],[896,432],[1094,432],[1116,432],[1138,432],[1160,432],[1182,432],[588,470],[610,470],[676,470],[720,470],[764,470],[808,470],[852,470],[874,470],[1072,470],[1116,470],[1160,470]].map(([x,y],i)=><rect key={`g4${i}`} x={x} y={y} width="3.5" height="5" rx=".5"/>)}
-      </g>
-      {/* Antennas */}
-      <g opacity={winOp*.8}>
-        {[[725,63,2.5,2],[540,204,2,2.3],[1163,148,2,1.8],[845,221,2,2.6],[222,265,1.5,2.1]].map(([cx,cy,r,d],i)=><circle key={`a${i}`} cx={cx} cy={cy} r={r} fill="#FF3333"><animate attributeName="opacity" values="1;0.2;1" dur={`${d}s`} repeatCount="indefinite"/></circle>)}
-      </g>
-    </svg>
-  );
-}
-
-/* ═══ ICONS ═══ */
-const IC={
-  trail:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19l4-12 4 8 4-4 4 8"/><circle cx="8" cy="7" r="1.5" fill={c} opacity=".3"/></svg>,
-  walk:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="13" cy="4" r="2"/><path d="M10 10l2-1 2 1v5l-1 5"/><path d="M10 10l-2 8 3-1"/><path d="M14 15l2 5"/></svg>,
-  sunset:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 18a5 5 0 00-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><polyline points="8 6 12 2 16 6"/></svg>,
-  music:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>,
-  bike:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 100-2 1 1 0 000 2z" fill={c}/><path d="M12 17.5V14l-3-3 4-3 2 3h3"/></svg>,
-  camera:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>,
-  food:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>,
-  heart:(c,s=16,f=false)=><svg width={s} height={s} viewBox="0 0 24 24" fill={f?c:"none"} stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
-  chev:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
-  dir:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12"/></svg>,
-  link:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>,
-  tree:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V8"/><path d="M5 12l7-10 7 10"/><path d="M7 16l5-6 5 6"/></svg>,
-  today:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg>,
-  calendar:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="2"/></svg>,
-  events:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="2"/></svg>,
-  explore:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill={c} opacity=".5"/></svg>,
-  venues:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
-  saved:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>,
-  fish:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 12c3-6 10-6 14-2-4 4-11 4-14-2z"/><path d="M6.5 12c-3-1-4.5-3-4.5-3s1.5-2 4.5-3"/><circle cx="16" cy="10" r="0.7" fill={c}/></svg>,
-  kayak:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="14" rx="9" ry="3"/><path d="M12 3v8"/><path d="M8 5l4 3 4-3"/></svg>,
-  tent:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M12 3l9 18H3L12 3z"/><path d="M12 21v-6"/></svg>,
-  disc:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2a15 15 0 014 10"/><path d="M12 2a15 15 0 00-4 10"/></svg>,
-  archery:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-  horse:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 3c-1 0-2 .5-2.5 1.5l-1 2-.5 1-4 1-3 3 1 2 3-1 1 4v4h2v-5l3-2 1 3v4h2v-5l1-4c.8-1.5.5-3-.5-4l1.5-1.5z"/><circle cx="17" cy="5" r="1" fill={c}/></svg>,
-  boat:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20c2-1 4-1 6 0s4 1 6 0 4-1 6 0"/><path d="M4 16l8-12 8 12"/><path d="M12 4v12"/></svg>,
-  bird:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 008-8V7a4 4 0 00-8 0v1H9l-5.6 10z"/></svg>,
-  info:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
-  phone:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
-  globe:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>,
-  clock:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  pin:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
-  share:(c,s=18)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>,
-  check:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-  x:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  splash:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6"/><path d="M8 4l4 4 4-4"/><path d="M2 16c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 20c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>,
-  flower:(c,s=16)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 7.5a4.5 4.5 0 11-4.5 4.5"/><path d="M12 7.5a4.5 4.5 0 104.5 4.5"/><circle cx="12" cy="12" r="3" fill={c} opacity=".3"/><path d="M12 2v5"/><path d="M12 22v-5"/></svg>,
-};
-const mapsDir=(lat,lng)=>`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-const u=id=>`https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
-
-/* ═══ CONTENT DATA ═══ */
-const TRAILS=[
-  {id:"t1",name:"Keystone Trail",desc:"Omaha's backbone — 50+ miles of paved multi-use trail through the metro.",distance:"52 mi",difficulty:"Easy",surface:"Paved",lat:41.24,lng:-96.02,tags:["Cycling","Running"],img:u("photo-1552674605-db6ffd4facb5"),elev:"Flat",icon:IC.bike},
-  {id:"t2",name:"Bob Kerrey Bridge Loop",desc:"Cross the Missouri River to Iowa and back. Best sunrise views in the city.",distance:"3.2 mi",difficulty:"Easy",surface:"Paved",lat:41.2575,lng:-95.9215,tags:["Walking","River"],img:u("photo-1506157786151-b8491531f063"),elev:"Flat",icon:IC.walk},
-  {id:"t3",name:"Fontenelle Forest",desc:"2,000 acres of old-growth forest. Boardwalk canopy trail. Watch for bald eagles.",distance:"17 mi trails",difficulty:"Moderate",surface:"Dirt / Boardwalk",lat:41.157,lng:-95.9,tags:["Forest","Birding"],img:u("photo-1448375240586-882707db888b"),elev:"+350 ft",url:"https://fontenelleforest.org",icon:IC.tree},
-  {id:"t4",name:"Wehrspann Lake Loop",desc:"8-mile loop at Chalco Hills. Packed gravel, gentle rolling hills, shaded sections.",distance:"8.1 mi",difficulty:"Easy–Mod",surface:"Gravel",lat:41.18,lng:-96.13,tags:["Lake","Loop"],img:u("photo-1500534314263-0869cef27f7d"),elev:"+180 ft",icon:IC.trail},
-  {id:"t5",name:"Zorinsky Lake Trail",desc:"Popular West Omaha loop with prairie views, fishing pier, and waterbird habitat.",distance:"4.8 mi",difficulty:"Easy",surface:"Paved",lat:41.23,lng:-96.075,tags:["Lake","Family"],img:u("photo-1441974231531-c6227db76b6e"),elev:"Flat",icon:IC.walk},
-];
-const WALKS=[
-  {id:"w1",name:"Old Market Historic Walk",desc:"Cobblestone streets, 19th-century warehouses, galleries. Start at 10th & Howard.",time:"45 min",distance:"1.2 mi",lat:41.2555,lng:-95.932,tags:["History","Architecture"],icon:IC.camera},
-  {id:"w2",name:"Benson Mainstreet",desc:"Omaha's most eclectic neighborhood. Vintage shops, murals, record stores, dive bars.",time:"1 hr",distance:"1.5 mi",lat:41.281,lng:-95.954,tags:["Music","Vintage"],icon:IC.walk},
-  {id:"w3",name:"Blackstone to Dundee",desc:"Cocktail district to tree-lined neighborhood restaurants. Hit Crescent Moon and Pitch.",time:"1.5 hr",distance:"2.1 mi",lat:41.259,lng:-95.965,tags:["Dining","Cocktails"],icon:IC.food},
-  {id:"w4",name:"North Omaha Murals",desc:"Street art celebrating Black history, jazz legends, and community resilience.",time:"1 hr",distance:"1.8 mi",lat:41.28,lng:-95.94,tags:["Art","Culture"],icon:IC.camera},
-  {id:"w5",name:"RiverFront Trail",desc:"Gene Leahy Mall → Heartland of America Park → Lewis & Clark Landing.",time:"40 min",distance:"1.4 mi",lat:41.258,lng:-95.928,tags:["Riverfront","Family"],icon:IC.walk},
-];
-const DAYTIME=[
-  {id:"d1",name:"Henry Doorly Zoo",desc:"Consistently ranked #1 zoo in the world. Desert Dome, Lied Jungle, and Scott Aquarium.",price:"$26.95",time:"3–5 hrs",lat:41.226,lng:-95.9287,tags:["Zoo","Family"],icon:"🦁",url:"https://www.omahazoo.com"},
-  {id:"d2",name:"Joslyn Art Museum",desc:"World-class collection with massive Snøhetta expansion. Free admission.",price:"Free",time:"1.5–2 hrs",lat:41.2635,lng:-95.9394,tags:["Art","Free"],icon:"🎨",url:"https://joslyn.org"},
-  {id:"d3",name:"Kiewit Luminarium",desc:"Interactive science center on the riverfront. 100+ hands-on exhibits.",price:"$24",time:"2–3 hrs",lat:41.2565,lng:-95.923,tags:["Science","Family"],icon:"🔬",url:"https://kiewitluminarium.org"},
-  {id:"d4",name:"Lauritzen Gardens",desc:"100-acre botanical garden with seasonal model trains and conservatory.",price:"$14",time:"1.5–2 hrs",lat:41.2384,lng:-95.9158,tags:["Gardens"],icon:"🌺",url:"https://www.lauritzengardens.org"},
-  {id:"d5",name:"The Durham Museum",desc:"Art Deco Union Station turned museum. Vintage train cars and 1930s soda fountain.",price:"$12",time:"1.5–2 hrs",lat:41.2553,lng:-95.931,tags:["History"],icon:"🚂",url:"https://durhammuseum.org"},
-];
-const SUNSETS=[
-  {id:"s1",name:"Bob Kerrey Bridge",desc:"Best sunset panorama in Omaha. Missouri River catches golden light with both skylines.",lat:41.2575,lng:-95.9215,icon:IC.sunset},
-  {id:"s2",name:"Gene Leahy Mall",desc:"Free outdoor movies and performances against a downtown backdrop.",lat:41.258,lng:-95.93,icon:IC.sunset},
-  {id:"s3",name:"Stir Concert Cove",desc:"Lakeside at Harrah's. Summer concerts as the sun drops behind the stage.",lat:41.233,lng:-95.854,icon:IC.music},
-  {id:"s4",name:"Turner Park",desc:"Jazz on the Green in summer. Bring wine and a picnic. Arrive by 6 PM.",lat:41.255,lng:-95.96,icon:IC.music},
-];
-const PARKS=[
-  {id:"cunningham-lake",name:"Cunningham Lake",nickname:"The C",tagline:"Omaha's Urban Oasis",
-    desc:"A 390-acre lake surrounded by a 1,050-acre park in north central Omaha. Constructed by the U.S. Army Corps of Engineers for flood control and recreation, it opened in 1977. After a major renovation beginning in 2017, the park reopened in 2021 with upgraded trails, a renovated campground, new marina, disc golf course, and improved access.",
-    address:"8965 State St, Omaha, NE 68122",lat:41.327,lng:-96.04,phone:"531-201-5754",website:"https://explorethec.com",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1050,color:"#5CA8D4",
-    tags:["Lake","Trails","Fishing","Camping"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🎣",
-    lake:{acres:390,maxDepth:"23 ft",
-      species:[{name:"Channel Catfish",note:"Regularly stocked, up to 13 lbs"},{name:"Largemouth Bass",note:"Developing fishery, good populations"},{name:"Bluegill",note:"Great for beginners & kids"},{name:"White Bass",note:"Stocked since 2020"},{name:"Crappie",note:"Popular panfish target"},{name:"Saugeye",note:"Stocked seasonally"}],
-      license:"Required for ages 16+ — Nebraska sport fishing license",licenseUrl:"https://outdoornebraska.gov",
-      spots:["Multiple fishing piers around lake","Shoreline access at various points","Entrance #4 (north side) popular for fishing"],
-      rules:["No fishing near marina boat docks","Standard Nebraska regulations apply","Ice fishing at your own risk","No permanent ice shelters"]},
-    trails:[
-      {name:"The C Loop",distance:"6.2 mi",surface:"Concrete (8ft wide)",difficulty:"Easy",desc:"The main lake loop — flat, accessible, perfect for walking, running, or biking. Connects all park amenities.",features:["ADA Accessible","Water Stations","Year-Round"]},
-      {name:"Nature Trails",distance:"~20 mi",surface:"Natural / Dirt",difficulty:"Moderate",desc:"Extensive multipurpose trail network north of Highway 36. Open for hiking, mountain biking, and horseback riding.",features:["Horseback Riding","Wildlife Viewing","Year-Round"]},
-      {name:"Equestrian Trail",distance:"Varies",surface:"Natural",difficulty:"Moderate",desc:"Designated equestrian trails within the northern nature trail system. Riders must bring their own horses.",features:["Bring Your Own Horse","North Side Only"]}],
-    activities:[
-      {name:"Disc Golf",icon:"disc",desc:'18-hole "Lighthouse" course. Intermediate level, hilly. Free — bring your own discs.',season:"Year-round"},
-      {name:"Kayak & SUP",icon:"kayak",desc:"Rentals available through Neighborhood Offshore. Accessible launch at Entrance #3.",season:"Apr–Oct"},
-      {name:"Camping",icon:"tent",desc:"83 RV sites (42 full hookup, 41 electric). 7 tent sites. Showers, restrooms, snack bar.",season:"Spring–Nov"},
-      {name:"Boating",icon:"boat",desc:"No-wake lake (5 mph max). Public boat ramp open during park hours. Marina available.",season:"Apr–Oct"},
-      {name:"Archery",icon:"archery",desc:"9 stationary targets + 11-lane 3D range. Open year-round. Archery use only within range.",season:"Year-round"},
-      {name:"Birding",icon:"bird",desc:"450+ acres of wildlife area north of HWY 36. Excellent habitat for migratory and resident species.",season:"Year-round"}],
-    entrances:[{num:1,name:"State St (Main)",note:"Marina, main parking, trail access"},{num:2,name:"North Side",note:"Campground access (seasonal)"},{num:3,name:"South Side",note:"Kayak launch, shelters, scenic views"},{num:4,name:"North Lake",note:"Trails, fishing, lake overlook"}],
-    amenities:["Picnic Shelters","Restrooms & Showers","Water Stations","Snack Bar","Playground","Marina","3 Parking Areas"],
-    rules_allowed:["Pets on leash (6ft max)","Photography","Grills in designated areas","Geocaching (with permit)"],
-    rules_prohibited:["Swimming (people & pets)","Fireworks","Firearms","Bounce houses","Sledding on dam","Camping outside campground"]},
-
-  {id:"gene-leahy-mall",name:"Gene Leahy Mall",nickname:"The RiverFront",tagline:"Downtown's Living Room",
-    desc:"Omaha's flagship urban park, transformed in a $290M renovation completed in 2022. The 72-acre RiverFront spans three connected parks with a performance pavilion, interactive playground, splash pad, slides, and sweeping green lawns against the downtown skyline.",
-    address:"1001 Farnam St, Omaha, NE 68102",lat:41.258,lng:-95.93,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
-    hours:"6 AM – 11 PM Daily",admission:"Free",acreage:72,color:"#5EC4B6",
-    tags:["Riverfront","Family","Free","Downtown"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🏞️",
-    trails:[
-      {name:"RiverFront Promenade",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved path connecting Gene Leahy Mall, Heartland of America Park, and Lewis & Clark Landing along the river.",features:["ADA Accessible","Lit Path","River Views"]}],
-    activities:[
-      {name:"Splash Pad",icon:"splash",desc:"Interactive water jets and wading area for kids. Zero-depth entry.",season:"Memorial Day–Labor Day"},
-      {name:"Playground",icon:"slide",desc:"Massive adventure playground with climbing structures, slides, and rope bridges.",season:"Year-round"},
-      {name:"Performance Pavilion",icon:"music",desc:"Free outdoor concerts, movies, and cultural events throughout summer.",season:"May–Sep"},
-      {name:"Kayaking",icon:"kayak",desc:"Kayak and paddleboard launch near Lewis & Clark Landing.",season:"May–Oct"}],
-    amenities:["Restrooms","Food Trucks","Free Wi-Fi","ADA Accessible","Event Lawn","Dog-Friendly Areas"],
-    rules_allowed:["Leashed dogs in designated areas","Picnics on the lawn","Photography","Biking on paths"],
-    rules_prohibited:["Swimming in river","Glass containers","Amplified music without permit","Drone flying"]},
-
-  {id:"zorinsky-lake",name:"Zorinsky Lake",nickname:"Zorinsky",tagline:"West Omaha's Favorite Loop",
-    desc:"A 255-acre park centered around a 98-acre lake in West Omaha. The 4.8-mile paved loop is one of the most popular trails in the city, winding through prairie, past fishing piers, and alongside waterbird habitat.",
-    address:"3808 S 156th St, Omaha, NE 68130",lat:41.23,lng:-96.075,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:255,color:"#7DD4A0",
-    tags:["Lake","Trails","Family","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🚶",
-    lake:{acres:98,maxDepth:"18 ft",
-      species:[{name:"Largemouth Bass",note:"Catch and release encouraged"},{name:"Bluegill",note:"Abundant, great for families"},{name:"Channel Catfish",note:"Best in evening hours"},{name:"Crappie",note:"Spring spawning runs"}],
-      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
-      spots:["Fishing pier on south shore","Multiple shoreline access points","North shore rocky bank"],
-      rules:["No boats or flotation devices","Standard Nebraska regulations","No fishing near dam spillway"]},
-    trails:[
-      {name:"Lake Loop",distance:"4.8 mi",surface:"Paved (8ft wide)",difficulty:"Easy",desc:"The signature loop circling the entire lake. Flat, wide, and popular with walkers, runners, and cyclists.",features:["ADA Accessible","Water Stations","Restroom Access","Year-Round"]},
-      {name:"Prairie Trail",distance:"1.2 mi",surface:"Natural",difficulty:"Easy",desc:"Short nature trail through restored prairie on the park's south side. Wildflowers in summer.",features:["Wildflowers","Bird Habitat"]}],
-    activities:[
-      {name:"Running & Walking",icon:"trail",desc:"One of the most popular running loops in Omaha. Wide paved path with distance markers.",season:"Year-round"},
-      {name:"Birding",icon:"bird",desc:"Resident and migratory waterbirds including herons, pelicans, and bald eagles in winter.",season:"Year-round"},
-      {name:"Disc Golf",icon:"disc",desc:"9-hole disc golf course on the park's west side. Free, bring your own discs.",season:"Year-round"}],
-    amenities:["Restrooms","Parking (3 lots)","Fishing Piers","Picnic Shelters","Playground","Drinking Fountains"],
-    rules_allowed:["Leashed dogs","Cycling on paved path","Fishing with license","Photography"],
-    rules_prohibited:["Swimming","Boats or inflatables","Motorized vehicles on trail","Camping"]},
-
-  {id:"standing-bear-lake",name:"Standing Bear Lake",nickname:"Standing Bear",tagline:"Northwest Omaha's Hidden Gem",
-    desc:"A 135-acre lake surrounded by trails, a nature center, and one of the best kayak launches in the metro. Located in northwest Omaha, Standing Bear offers fishing, paddle sports, and a quieter alternative to the larger lakes.",
-    address:"6404 N 132nd St, Omaha, NE 68164",lat:41.306,lng:-96.065,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:220,color:"#4A90A4",
-    tags:["Lake","Kayaking","Nature","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🏞️",
-    lake:{acres:135,maxDepth:"20 ft",
-      species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Plentiful along shore"},{name:"Walleye",note:"Occasional catches"}],
-      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
-      spots:["Fishing pier near main parking","Shoreline access north side","Bank fishing near dam"],
-      rules:["Electric motors only","No swimming","Standard Nebraska regulations"]},
-    trails:[
-      {name:"Lake Trail",distance:"3.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved loop around the lake with gentle hills and tree-lined sections.",features:["ADA Accessible","Shaded Sections","Year-Round"]},
-      {name:"Nature Center Trail",distance:"0.8 mi",surface:"Woodchip",difficulty:"Easy",desc:"Short interpretive loop near the Fontenelle Nature Center with native plantings.",features:["Educational Signs","Family-Friendly"]}],
-    activities:[
-      {name:"Kayak & SUP",icon:"kayak",desc:"Popular kayak and paddleboard spot. Public launch near main parking area.",season:"Apr–Oct"},
-      {name:"Fishing",icon:"fish",desc:"Multiple access points around the lake. Pier and shoreline fishing.",season:"Year-round"},
-      {name:"Birding",icon:"bird",desc:"Wooded shoreline attracts warblers, woodpeckers, and waterbirds.",season:"Year-round"}],
-    amenities:["Restrooms","Kayak Launch","Fishing Pier","Playground","Nature Center","Parking"],
-    rules_allowed:["Kayaks and canoes","Leashed dogs","Fishing with license","Electric boat motors"],
-    rules_prohibited:["Gas-powered boats","Swimming","Jet skis","Camping"]},
-
-  {id:"heartland-america",name:"Heartland of America Park",nickname:"Heartland Park",tagline:"Downtown's Waterfront Jewel",
-    desc:"A downtown park featuring a scenic lake with a dramatic fountain, walking paths, and stunning skyline views. Part of the RiverFront revitalization, it connects to Gene Leahy Mall and Lewis & Clark Landing.",
-    address:"800 S 10th St, Omaha, NE 68108",lat:41.254,lng:-95.922,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
-    hours:"6 AM – 11 PM Daily",admission:"Free",acreage:31,color:"#64B5F6",
-    tags:["Downtown","Lake","Skyline","Free"],img:u("photo-1506157786151-b8491531f063"),icon:"⛲",
-    trails:[
-      {name:"Lakeside Path",distance:"0.6 mi",surface:"Paved",difficulty:"Easy",desc:"Walking path around the lake with fountain views and downtown skyline backdrop.",features:["ADA Accessible","Lit at Night","Photo Spots"]}],
-    activities:[
-      {name:"Fountain Show",icon:"splash",desc:"The park's signature fountain shoots water up to 300 feet. Lit at night with colored lights.",season:"Apr–Oct"},
-      {name:"Walking",icon:"trail",desc:"Peaceful lakeside stroll with some of the best skyline views in the city.",season:"Year-round"}],
-    amenities:["Restrooms","Benches","Lighting","ADA Paths","Public Art","Parking"],
-    rules_allowed:["Photography","Leashed dogs","Cycling on paths"],
-    rules_prohibited:["Swimming","Fishing","Motorized vehicles","Camping"]},
-
-  {id:"fontenelle-forest",name:"Fontenelle Forest",nickname:"The Forest",tagline:"2,000 Acres of Old-Growth Wonder",
-    desc:"A 2,000-acre nature preserve in Bellevue featuring old-growth forest, boardwalk canopy trails, and diverse wildlife. Home to TreeRush Adventures (aerial obstacle course) and a raptor rehabilitation center with live birds of prey.",
-    address:"1111 Bellevue Blvd N, Bellevue, NE 68005",lat:41.157,lng:-95.9,phone:"402-731-3140",website:"https://fontenelleforest.org",
-    hours:"8 AM – 5 PM Daily",admission:"$12 adults / $8 kids",acreage:2000,color:"#6BBF7A",
-    tags:["Forest","Nature","Family","Adventure"],img:u("photo-1448375240586-882707db888b"),icon:"🌲",
-    trails:[
-      {name:"Boardwalk Trail",distance:"1.0 mi",surface:"Boardwalk",difficulty:"Easy",desc:"Elevated boardwalk through the forest canopy. Fully accessible with stunning tree-top views.",features:["ADA Accessible","Canopy Views","All Ages"]},
-      {name:"Riverview Trail",distance:"2.5 mi",surface:"Natural",difficulty:"Moderate",desc:"Descends to the Missouri River floodplain through oak-hickory forest. Watch for deer and wild turkeys.",features:["River Views","Wildlife","Elevation Change"]},
-      {name:"Stream Trail",distance:"1.8 mi",surface:"Natural",difficulty:"Moderate",desc:"Follows a wooded creek through ravines. Best for birding, especially in spring migration.",features:["Creek Crossings","Birding","Spring Wildflowers"]}],
-    activities:[
-      {name:"TreeRush Adventures",icon:"tree",desc:"Aerial obstacle course with zip lines and rope bridges through the forest canopy. Reservations recommended.",season:"Mar–Nov"},
-      {name:"Raptor Woodland",icon:"bird",desc:"Live birds of prey including bald eagles, owls, and hawks in naturalistic enclosures. Included with admission.",season:"Year-round"},
-      {name:"Nature Programs",icon:"info",desc:"Guided hikes, birding walks, and seasonal nature programs for all ages.",season:"Year-round"}],
-    amenities:["Visitor Center","Gift Shop","Restrooms","Picnic Area","Nature Exhibits","Parking"],
-    rules_allowed:["Hiking on marked trails","Photography","Binoculars and birding gear"],
-    rules_prohibited:["Pets (no dogs)","Bikes on trails","Collecting plants or animals","Off-trail hiking"]},
-
-  {id:"lauritzen-gardens",name:"Lauritzen Gardens",nickname:"The Gardens",tagline:"Omaha's Botanical Treasure",
-    desc:"A 100-acre botanical garden and arboretum featuring themed garden rooms, a conservatory with tropical plants, seasonal model train displays, and the Marjorie K. Daugherty Conservatory. Beautiful in every season.",
-    address:"100 Bancroft St, Omaha, NE 68108",lat:41.2384,lng:-95.9158,phone:"402-346-4002",website:"https://www.lauritzengardens.org",
-    hours:"9 AM – 5 PM Daily",admission:"$14 adults / $7 kids",acreage:100,color:"#E88BD4",
-    tags:["Gardens","Seasonal","Family"],img:u("photo-1585320806297-9794b3e4eeae"),icon:"🌺",
-    trails:[
-      {name:"Garden Walk",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Winding paths through themed gardens including the Rose Garden, Victorian Garden, and Japanese Garden.",features:["ADA Accessible","Year-Round Beauty","Benches Throughout"]}],
-    activities:[
-      {name:"Seasonal Exhibits",icon:"flower",desc:"Spring tulips, summer roses, fall chrysanthemums, and holiday poinsettia shows. Model train display Nov–Jan.",season:"Year-round"},
-      {name:"Conservatory",icon:"tree",desc:"The Marjorie K. Daugherty Conservatory houses tropical and desert plants year-round, even in winter.",season:"Year-round"},
-      {name:"Photography",icon:"camera",desc:"Popular venue for wedding and portrait photography. Permit required for professional shoots.",season:"Year-round"}],
-    amenities:["Visitor Center","Gift Shop","Restrooms","Café","Event Spaces","Wheelchair Access"],
-    rules_allowed:["Amateur photography","Strollers","Wheelchairs","Sketching and painting"],
-    rules_prohibited:["Pets","Picking flowers or plants","Drones","Running","Outside food"]},
-
-  {id:"elmwood-park",name:"Elmwood Park",nickname:"Elmwood",tagline:"Dundee's Historic Heart",
-    desc:"A 204-acre historic park in the heart of the Dundee neighborhood. Features a public golf course, tennis courts, disc golf, rose garden, and shaded trails through mature elm and oak trees. A beloved community gathering spot since 1890.",
-    address:"802 S 60th St, Omaha, NE 68106",lat:41.252,lng:-95.971,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:204,color:"#A8D5BA",
-    tags:["Historic","Trails","Golf","Free"],img:u("photo-1448375240586-882707db888b"),icon:"🌳",
-    trails:[
-      {name:"Park Loop",distance:"2.0 mi",surface:"Paved / Gravel",difficulty:"Easy",desc:"Shaded loop through the park passing the rose garden, golf course, and picnic areas.",features:["Shaded","Historic Trees","Family-Friendly"]}],
-    activities:[
-      {name:"Golf",icon:"disc",desc:"Elmwood Park Golf Course — 18-hole public course. Tee times available online.",season:"Mar–Nov"},
-      {name:"Disc Golf",icon:"disc",desc:"Free 9-hole disc golf course winding through the park's wooded areas.",season:"Year-round"},
-      {name:"Tennis",icon:"disc",desc:"Multiple public tennis courts available first-come, first-served.",season:"Year-round"}],
-    amenities:["Restrooms","Picnic Shelters","Rose Garden","Playground","Golf Course","Tennis Courts","Parking"],
-    rules_allowed:["Leashed dogs","Cycling on paths","Picnics","Photography"],
-    rules_prohibited:["Motorized vehicles","Camping","Swimming in creek","Amplified music"]},
-
-  {id:"memorial-park",name:"Memorial Park",nickname:"Memorial",tagline:"Omaha's Concert Lawn",
-    desc:"A sprawling 83-acre park in Central Omaha known for summer concerts, community events, and open green space. Home to large-scale events and a popular running loop. The park honors veterans with memorial installations.",
-    address:"6005 Underwood Ave, Omaha, NE 68132",lat:41.262,lng:-95.975,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:83,color:"#FFB74D",
-    tags:["Concerts","Events","Free"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎶",
-    trails:[
-      {name:"Memorial Loop",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved loop around the park perimeter. Popular morning running route.",features:["Flat","Lit at Night","Year-Round"]}],
-    activities:[
-      {name:"Summer Concerts",icon:"music",desc:"Major concert events and festivals on the Great Lawn throughout summer.",season:"Jun–Sep"},
-      {name:"Running",icon:"trail",desc:"One of Omaha's most popular running loops with a flat, paved 1.5-mile path.",season:"Year-round"},
-      {name:"Open Space",icon:"sun",desc:"83 acres of open lawn perfect for frisbee, kite flying, picnics, and casual sports.",season:"Year-round"}],
-    amenities:["Restrooms","Event Stage","Large Parking","Open Lawn","Veterans Memorials","Playground"],
-    rules_allowed:["Leashed dogs","Picnics","Photography","Kites and sports"],
-    rules_prohibited:["Glass containers during events","Motorized vehicles","Camping","Fireworks"]},
-
-  {id:"chalco-hills",name:"Chalco Hills",nickname:"Chalco",tagline:"Prairie Trails & Nature Center",
-    desc:"A 1,186-acre recreation area in southwest Omaha featuring Wehrspann Lake, restored prairie, and an excellent nature center. The 8-mile trail loop around the lake offers rolling hills and diverse habitats.",
-    address:"8901 S 154th St, Omaha, NE 68138",lat:41.18,lng:-96.13,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1186,color:"#C49A6C",
-    tags:["Prairie","Trails","Nature Center","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🦅",
-    lake:{acres:255,maxDepth:"15 ft",
-      species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Excellent for families"},{name:"Wipers",note:"White bass hybrid — stocked"}],
-      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
-      spots:["Fishing pier on east shore","Shoreline access around loop","Dam area (south)"],
-      rules:["Electric and non-motorized boats only","Standard Nebraska regulations","No swimming"]},
-    trails:[
-      {name:"Wehrspann Lake Loop",distance:"8.1 mi",surface:"Gravel / Paved",difficulty:"Easy–Moderate",desc:"Full lake loop with gently rolling hills, prairie sections, and tree-lined stretches. Mixed surface.",features:["Water Stations","Rolling Hills","Mixed Surface","Year-Round"]},
-      {name:"Prairie Trail",distance:"2.5 mi",surface:"Natural",difficulty:"Easy",desc:"Interpretive nature trail through restored tallgrass prairie with wildflowers in season.",features:["Educational Signs","Wildflowers","Birding"]}],
-    activities:[
-      {name:"Nature Center",icon:"info",desc:"Chalco Hills Nature Center with interactive exhibits, live animals, and nature programs.",season:"Year-round"},
-      {name:"Birding",icon:"bird",desc:"Prairie and wetland habitats attract diverse species including hawks, herons, and migratory songbirds.",season:"Year-round"},
-      {name:"Trail Running",icon:"trail",desc:"Popular with trail runners for the varied terrain and rolling hills around the lake.",season:"Year-round"}],
-    amenities:["Nature Center","Restrooms","Parking","Picnic Shelters","Fishing Pier","Boat Ramp"],
-    rules_allowed:["Leashed dogs","Non-motorized boats","Fishing with license","Cross-country skiing in winter"],
-    rules_prohibited:["Gas-powered boats","Swimming","Motorized vehicles on trails","Camping"]},
-
-  {id:"walnut-creek",name:"Walnut Creek Lake",nickname:"Walnut Creek",tagline:"Papillion's Lakeside Retreat",
-    desc:"A 450-acre recreation area featuring a 105-acre lake, modern playground, and paved trails in Papillion. Great for fishing, kayaking, and family outings with newer facilities and easy highway access.",
-    address:"14725 Hwy 370, Papillion, NE 68046",lat:41.168,lng:-96.02,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
-    hours:"5 AM – 11 PM Daily",admission:"Free",acreage:450,color:"#5DADE2",
-    tags:["Lake","Family","Kayaking","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"🛶",
-    lake:{acres:105,maxDepth:"16 ft",
-      species:[{name:"Largemouth Bass",note:"Good numbers"},{name:"Channel Catfish",note:"Stocked annually"},{name:"Bluegill",note:"Abundant"},{name:"Crappie",note:"Spring runs"}],
-      license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
-      spots:["Fishing pier near parking","Multiple shoreline access points"],
-      rules:["Electric motors only","No swimming","Standard Nebraska regulations"]},
-    trails:[
-      {name:"Lake Loop",distance:"3.7 mi",surface:"Paved",difficulty:"Easy",desc:"Flat paved loop around the lake with benches and lake views throughout.",features:["ADA Accessible","Family-Friendly","Flat","Year-Round"]}],
-    activities:[
-      {name:"Kayak & SUP",icon:"kayak",desc:"Public kayak launch with easy lake access. Calm waters ideal for beginners.",season:"Apr–Oct"},
-      {name:"Playground",icon:"splash",desc:"Modern all-abilities playground near the main parking area.",season:"Year-round"},
-      {name:"Fishing",icon:"fish",desc:"Well-stocked lake with pier and shoreline access. Popular family fishing spot.",season:"Year-round"}],
-    amenities:["Restrooms","Modern Playground","Kayak Launch","Fishing Pier","Picnic Shelters","Parking"],
-    rules_allowed:["Kayaks and canoes","Leashed dogs","Fishing with license","Electric motors"],
-    rules_prohibited:["Gas-powered boats","Swimming","Jet skis","Camping"]},
-
-  {id:"turner-park",name:"Turner Park",nickname:"Turner",tagline:"Midtown's Cultural Green",
-    desc:"A beloved 10-acre urban park at Midtown Crossing, home to Jazz on the Green (free summer concert series), the Omaha Farmers Market winter location, and seasonal ice rink. Surrounded by restaurants and shops.",
-    address:"3110 Farnam St, Omaha, NE 68131",lat:41.255,lng:-95.96,phone:"402-444-5900",website:"https://midtowncrossing.com",
-    hours:"6 AM – 11 PM Daily",admission:"Free",acreage:10,color:"#D4AD65",
-    tags:["Jazz","Events","Free","Dining"],img:u("photo-1441974231531-c6227db76b6e"),icon:"🎵",
-    activities:[
-      {name:"Jazz on the Green",icon:"music",desc:"Free Thursday evening jazz concerts all summer. Bring wine, picnic blankets, and friends.",season:"Jun–Aug"},
-      {name:"Ice Rink",icon:"splash",desc:"Outdoor ice skating rink at Midtown Crossing during winter months.",season:"Nov–Feb"},
-      {name:"Farmers Market",icon:"food",desc:"Winter Omaha Farmers Market held at Midtown Crossing on Saturdays.",season:"Nov–Apr"}],
-    amenities:["Restrooms (in Midtown Crossing)","Restaurants Nearby","Parking Garage","Event Lawn","Seating"],
-    rules_allowed:["Wine and beer at events","Leashed dogs","Picnics on lawn","Photography"],
-    rules_prohibited:["Glass containers during events","Amplified music without permit","Camping","Grills"]},
-];
-const HOODS=[
-  {id:"old-market",name:"Old Market",sub:"Downtown",desc:"Cobblestone streets, galleries, chef-driven restaurants, and Omaha's best nightlife. The cultural heart of the city since the 1800s.",lat:41.2555,lng:-95.932,color:"#5EC4B6",
-    imgs:[u("photo-1519999482648-25049ddd37b1"),u("photo-1555939594-58d7cb561ad1"),u("photo-1503095396549-807759245b35")],
-    history:"The Old Market began as a wholesale fruit and vegetable market in the late 1800s. The brick warehouses along Howard and Jones streets housed produce dealers until the 1960s, when artists and entrepreneurs began converting the abandoned spaces into galleries and studios. A pivotal restoration movement in the 1970s preserved the cobblestone streets and iron facades that define the district today. The Passageway, M's Pub (before the 2015 fire), and the Artists Cooperative Gallery were early anchors that proved mixed-use urban revitalization could work.",
-    walk:{name:"Old Market Loop",distance:"1.2 mi",time:"45 min",steps:["Start at 10th & Howard by the flower murals","Walk south on 10th — peek into Jackson Street galleries","Cut through The Passageway to Jones Street","West on Jones past Upstream Brewing and M's Pub site","South on 13th to the Bemis Center for Contemporary Arts","Circle back via Howard Street for restaurants and shops"]},
-    spots:[
-      /* ── Restaurants ── */
-      {name:"Le Bouillon",type:"Restaurant",cat:"eat",desc:"Modern French farm-to-table. Attached wine shop & basement wine bar Mon Càve.",addr:"1017 Howard",price:"$$$",icon:"🇫🇷",known:"French onion soup, duck confit"},
-      {name:"M's Pub",type:"Restaurant",cat:"eat",desc:"Old Market institution since 1973. Continental cuisine, legendary lavosh.",addr:"422 S 11th",price:"$$$",icon:"🍽️",url:"https://www.mspubomaha.com",known:"Lavosh, shrimp scampi"},
-      {name:"Plank Seafood",type:"Restaurant",cat:"eat",desc:"Oyster bar and grilled seafood with a raw bar.",addr:"1111 Howard",price:"$$$",icon:"🦪",known:"Oysters, seafood platters"},
-      {name:"Kitchen Table",type:"Restaurant",cat:"eat",desc:"Farm-to-table with an on-site hydroponic farm.",addr:"1415 Farnam",price:"$$$",icon:"🌿",known:"Seasonal menu, hydroponic farm"},
-      {name:"Upstream Brewing",type:"Brewpub",cat:"eat",desc:"Award-winning craft beers and upscale pub fare since 1996.",addr:"514 S 11th",price:"$$",icon:"🍺",known:"House beers, thin-crust pizza"},
-      {name:"Twisted Fork",type:"Restaurant",cat:"eat",desc:"Cowboy-inspired comfort food. Hearty portions.",addr:"1101 Jackson",price:"$$",icon:"🤠",known:"Chicken fried steak, smoked wings"},
-      {name:"Jackson Street Tavern",type:"Restaurant",cat:"eat",desc:"American tapas and international small plates.",addr:"1125 Jackson",price:"$$",icon:"🍻",known:"Tapas, happy hour, patio"},
-      {name:"Nicola's Italian",type:"Restaurant",cat:"eat",desc:"Intimate Italian with the best patio in the Market.",addr:"521 S 13th",price:"$$$",icon:"🍝",known:"Handmade pasta, patio"},
-      {name:"Gather",type:"Restaurant",cat:"eat",desc:"Modern American with elegant open dining room.",addr:"1108 Howard",price:"$$$",icon:"🍷",known:"Prix fixe, cocktails, brunch"},
-      {name:"Dolci",type:"Bakery",cat:"eat",desc:"European pastry shop — croissants, tarts, macarons.",addr:"1110 Howard",price:"$",icon:"🥐",known:"Croissants, French macarons"},
-      /* ── Bars ── */
-      {name:"Mr. Toad's Pub",type:"Bar",cat:"drink",desc:"Prime people-watching patio with string lights. An Old Market classic.",addr:"1022 Howard",price:"$$",icon:"🍺",known:"Outdoor patio, craft beer"},
-      {name:"The Dubliner",type:"Irish Pub",cat:"drink",desc:"Feels like St. Patrick's Day every night. Live music weekends.",addr:"1205 Harney",price:"$$",icon:"🍀",known:"Irish whiskey, live music"},
-      {name:"Brickway Brewery",type:"Brewery & Distillery",cat:"drink",desc:"Craft brewery and distillery. Tour the operation, taste the results.",addr:"1116 Jackson",price:"$$",icon:"🥃",known:"Craft beer, brewery tours"},
-      {name:"Laka Lono Rum Club",type:"Tiki Bar",cat:"drink",desc:"Tropical tiki bar with flaming cocktails and Polynesian vibes.",addr:"1111 Howard",price:"$$",icon:"🌺",known:"Flaming drinks, rum cocktails"},
-      /* ── Coffee & Sweets ── */
-      {name:"Ted & Wally's",type:"Ice Cream",cat:"sweet",desc:"Scratch-made premium ice cream since 1984. Old Market original.",addr:"1120 Jackson",price:"$",icon:"🍦",known:"Handmade, seasonal flavors"},
-      {name:"Old Market Candy Shop",type:"Candy",cat:"sweet",desc:"Handmade truffles, fudge, and the famous Mud Balls.",addr:"1019 Howard",price:"$",icon:"🍫",known:"Mud Balls, truffles"},
-      {name:"Hollywood Candy",type:"Candy & Vintage",cat:"sweet",desc:"Massive retro candy warehouse with old-fashioned soda fountain.",addr:"1209 Jackson",price:"$",icon:"🍭",known:"Retro candy, soda fountain"},
-      {name:"Table Coffee",type:"Coffee",cat:"sweet",desc:"Full-menu coffee shop with sandwiches and baked goods.",addr:"Old Market",price:"$",icon:"☕",known:"Espresso, pastries, lunch"},
-      /* ── Shopping ── */
-      {name:"Raygun",type:"Gift Shop",cat:"shop",desc:"Midwest pride in t-shirt form. Witty, irreverent, locally loved.",addr:"1108 Jackson",price:"$$",icon:"👕",known:"Omaha/Midwest shirts, stickers"},
-      {name:"Goldsmith Silversmith",type:"Jewelry",cat:"shop",desc:"Custom handcrafted jewelry in the Old Market Passageway.",addr:"1026 Howard",price:"$$$",icon:"💎",known:"Custom rings, local artisans"},
-      {name:"Made in Omaha",type:"Gift Shop",cat:"shop",desc:"All Omaha creators — apparel, art, food, and gifts.",addr:"Old Market",price:"$$",icon:"🎁",known:"Local makers, Omaha souvenirs"},
-      {name:"Homer's Music",type:"Record Shop",cat:"shop",desc:"Vinyl paradise. New and used records since 1974.",addr:"1114 Howard",price:"$$",icon:"🎵",known:"Vinyl, CDs, local music"},
-      {name:"Artists' Co-op Gallery",type:"Gallery",cat:"shop",desc:"Member-owned gallery showcasing local artists.",addr:"405 S 11th",price:"Free",icon:"🎨",known:"Local art, First Friday"},
-      /* ── Entertainment ── */
-      {name:"KANEKO",type:"Art & Culture",cat:"play",desc:"Unique creativity space — art, performances, installations.",addr:"1111 Jones",price:"Free",icon:"🏛️",known:"Interactive exhibits, events"},
-      {name:"Bemis Center",type:"Contemporary Art",cat:"play",desc:"International contemporary art with rotating exhibitions.",addr:"724 S 12th",price:"Free",icon:"🎭",known:"Artist residencies, exhibitions"},
-      {name:"Gene Leahy Mall",type:"Park",cat:"play",desc:"Downtown oasis — slides, splash pad, hammocks, performance lawn.",addr:"Riverfront",price:"Free",icon:"🌳",known:"Playground, events, river views"},
-      {name:"Bob Kerrey Bridge",type:"Landmark",cat:"play",desc:"Pedestrian bridge to Iowa. Stand in two states at once.",addr:"Riverfront Dr",price:"Free",icon:"🌉",known:"Sunset walks, two-state photo"}
-    ],
-    events:[{name:"Omaha Farmers Market",when:"Saturdays, May–Oct",desc:"Local produce, baked goods, and crafts."},{name:"Holiday Lights Festival",when:"Nov–Jan",desc:"200,000+ lights along the streets and buildings."},{name:"Old Market Stroll",when:"First Fridays",desc:"Gallery openings, specials, and live music."}],
-    tags:["Dining","Nightlife","Shopping","Galleries","History","Cobblestone"],
-    vibe:"Historic & Walkable",bestFor:"First-time visitors, date nights, weekend strolls"},
-  {id:"benson",name:"Benson",sub:"Maple Street",desc:"Omaha's most eclectic neighborhood. Dive bars, vinyl shops, murals, and the undisputed indie music capital of the city.",lat:41.281,lng:-95.954,color:"#CE93D8",
-    imgs:[u("photo-1459749411175-04bf5292ceea"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1508854710579-5cecc3a9ff17")],
-    history:"Originally an independent city founded in 1887 by Erastus Benson, a railroad executive. It was annexed into Omaha in 1917 but never lost its fiercely independent spirit. The main drag, Maple Street, went through cycles of boom and decline before a creative renaissance in the 2000s. The Waiting Room opened in 2007, anchoring what became a nationally recognized indie music corridor. Today Benson has more live music per block than anywhere in Nebraska.",
-    walk:{name:"Benson Main Drag",distance:"1.5 mi",time:"1 hr",steps:["Start at The Waiting Room (6212 Maple)","Walk west past vinyl shops and vintage stores","Detour south on 60th for murals and street art","Continue west to Reverb Lounge and Beercade","Hit Benson Brewery and Jake's Cigars","End at The Sydney for cocktails or O'Leaver's for punk rock"]},
-    spots:[
-      /* ── Restaurants ── */
-      {name:"Au Courant",type:"Restaurant",cat:"eat",desc:"European-inspired regional kitchen. Chef's tasting menu is a splurge.",addr:"6064 Maple",price:"$$$",icon:"🍽️",known:"Tasting menu, seasonal plates"},
-      {name:"Yoshitomo",type:"Restaurant",cat:"eat",desc:"Creative sushi with a devoted following. Omakase available.",addr:"6009 Maple",price:"$$$",icon:"🍣",known:"Omakase, creative rolls"},
-      {name:"Little Riot",type:"Pizzeria",cat:"eat",desc:"Wood-fired pizza with global mashups. Rooftop bar.",addr:"Maple St",price:"$$",icon:"🍕",known:"Creative pizzas, rooftop patio"},
-      {name:"Benson Brewery",type:"Brewpub",cat:"eat",desc:"Microbrewery with gastropub fare. Great patio.",addr:"6059 Maple",price:"$$",icon:"🍺",url:"https://www.bensonbrewery.com",known:"House beers, pub food, patio"},
-      {name:"Taco Co.",type:"Taqueria",cat:"eat",desc:"Puffy shell tacos that inspire devotion.",addr:"6108 Maple",price:"$",icon:"🌮",known:"Puffy shell tacos, frozen margs"},
-      {name:"Ika Ramen",type:"Restaurant",cat:"eat",desc:"Cozy ramen spot with rich broths.",addr:"6109 Maple",price:"$$",icon:"🍜",known:"Tonkotsu ramen, gyoza"},
-      {name:"Bärchen Beer Garden",type:"Beer Garden",cat:"eat",desc:"Outdoor German-style beer garden.",addr:"6014 Maple",price:"$$",icon:"🥨",known:"Bärchen burger, German bier"},
-      {name:"Edge of the Universe",type:"Restaurant",cat:"eat",desc:"Eclectic fare with a cosmic theme.",addr:"Maple St",price:"$$",icon:"🌌",known:"Creative dishes, unique vibes"},
-      {name:"Jojo's Diner",type:"Diner",cat:"eat",desc:"New-school diner with great breakfast.",addr:"6118 Military",price:"$",icon:"🥞",known:"Breakfast, diner classics"},
-      {name:"Star Deli",type:"Deli",cat:"eat",desc:"Crave-worthy sandwiches just off the main strip.",addr:"6114 Military",price:"$",icon:"🥪",known:"Signature sandwiches"},
-      /* ── Bars ── */
-      {name:"Krug Park",type:"Bar",cat:"drink",desc:"Restored 1908 building. Superb cocktails and perfect music.",addr:"6205 Maple",price:"$$",icon:"🍸",known:"Craft cocktails, 1908 building"},
-      {name:"The Sydney",type:"Bar",cat:"drink",desc:"Dark, stylish cocktail lounge. Great for dates.",addr:"6067 Maple",price:"$$",icon:"🍹",known:"Cocktails, intimate setting"},
-      {name:"Beercade",type:"Arcade Bar",cat:"drink",desc:"Classic arcade games + pinball + huge beer selection.",addr:"6104 Maple",price:"$",icon:"🕹️",known:"Pac-Man, pinball, craft beer"},
-      {name:"Infusion Brewing",type:"Brewery",cat:"drink",desc:"Local craft brewery with rotating taps.",addr:"6115 Maple",price:"$$",icon:"🍺",known:"Rotating taps, taproom"},
-      {name:"Jake's Cigars & Spirits",type:"Bar",cat:"drink",desc:"Cigar lounge meets whiskey bar.",addr:"6206 Maple",price:"$$",icon:"🚬",known:"Cigars, bourbon selection"},
-      /* ── Coffee & Sweets ── */
-      {name:"Ted & Wally's Benson",type:"Ice Cream",cat:"sweet",desc:"Second location of Omaha's beloved scratch-made ice cream.",addr:"6023 Maple",price:"$",icon:"🍦",known:"Handmade, seasonal flavors"},
-      {name:"Legend Comics & Coffee",type:"Coffee",cat:"sweet",desc:"Coffee shop meets comic book store.",addr:"5207 Leavenworth",price:"$",icon:"📚",known:"Comics, espresso"},
-      /* ── Shopping ── */
-      {name:"Homer's Music",type:"Record Shop",cat:"shop",desc:"Vinyl heaven. Crate-digging is a Benson ritual.",addr:"Maple St",price:"$$",icon:"🎵",known:"Vinyl, used records"},
-      {name:"Five Nine",type:"Stationery",cat:"shop",desc:"Curated paper goods and gifts.",addr:"Maple St",price:"$$",icon:"✉️",known:"Cards, stationery"},
-      {name:"Found Vintage Market",type:"Vintage",cat:"shop",desc:"Restored furniture and home décor.",addr:"Maple St",price:"$$",icon:"🪑",known:"Vintage furniture"},
-      /* ── Entertainment ── */
-      {name:"The Waiting Room",type:"Music Venue",cat:"play",desc:"Omaha's premier indie venue since 2007. National and local acts.",addr:"6212 Maple",price:"$15-40",icon:"🎤",known:"Indie concerts, intimate stage"},
-      {name:"Reverb Lounge",type:"Music Venue",cat:"play",desc:"Intimate shows next to Waiting Room.",addr:"6121 Military",price:"$10-25",icon:"🎵",known:"Emerging artists, DJ nights"},
-      {name:"Benson Theatre",type:"Historic Theater",cat:"play",desc:"1920s theater — live events and screenings.",addr:"6054 Maple",price:"Varies",icon:"🎬",known:"Historic venue, events"}
-    ],
-    events:[{name:"Benson First Friday",when:"First Fridays",desc:"Monthly art walk, gallery openings, food & drink specials."},{name:"Benson Beer Fest",when:"Summer",desc:"Street party with 50+ craft beers and live music."}],
-    tags:["Music","Bars","Vintage","Murals","Indie","Record Shops"],
-    vibe:"Eclectic & Creative",bestFor:"Music lovers, night owls, creatives"},
-  {id:"dundee",name:"Dundee",sub:"Memorial Park Area",desc:"Tree-lined streets, walkable restaurants on Underwood Ave, and Elmwood Park trails. Classic Omaha at its most charming.",lat:41.262,lng:-95.975,color:"#81C784",
-    imgs:[u("photo-1448375240586-882707db888b"),u("photo-1414235077428-338989a2e8c0"),u("photo-1552674605-db6ffd4facb5")],
-    history:"Dundee was platted in 1880 and developed as one of Omaha's first streetcar suburbs. The name comes from Dundee, Scotland. Warren Buffett has lived in the same Dundee house since 1958, purchased for $31,500. Happy Hollow Country Club (1907) and the historic Dundee Theater (1925, now a Film Streams location) anchor the neighborhood's century-old identity. Underwood Avenue's restaurant boom in the 2010s transformed a quiet residential strip into one of Omaha's top dining destinations.",
-    walk:{name:"Dundee to Elmwood",distance:"2.1 mi",time:"1 hr",steps:["Start at 50th & Underwood — the restaurant corridor","Walk west past Dario's, Dante, and Pitch Pizzeria","Turn south on 52nd toward Elmwood Park","Loop through Elmwood's shaded trails and bridge","Return via Happy Hollow Blvd past historic homes","End at Dundee Dell for a beer"]},
-    spots:[
-      /* ── Restaurants ── */
-      {name:"Avoli Osteria",type:"Restaurant",cat:"eat",desc:"Northern Italian. Handmade pasta, wood-fired dishes, great wine list.",addr:"5013 Underwood",price:"$$$",icon:"🍝",url:"http://www.avoliosteria.com",known:"Porchetta, seasonal risotto"},
-      {name:"Pitch Pizzeria",type:"Restaurant",cat:"eat",desc:"Coal-fired Neapolitan pizza, craft cocktails. Always packed for good reason.",addr:"5021 Underwood",price:"$$",icon:"🍕",url:"https://pitchpizzeria.com",known:"Margherita pizza, grilled artichoke"},
-      {name:"Ooh De Lally",type:"Restaurant",cat:"eat",desc:"Nonprofit restaurant in the old Marks Bistro space. The legendary mac & cheese lives on.",addr:"4916 Underwood",price:"$$",icon:"🍽️",url:"https://www.oohdelally.org",known:"Marks signature mac & cheese, brunch"},
-      {name:"Acadian Grille",type:"Restaurant",cat:"eat",desc:"Cajun and Southern comfort. Gumbo, po'boys, blackened catfish.",addr:"4814 Underwood",price:"$$",icon:"🦐",url:"https://www.opentable.com/r/acadian-grille-dundee-omaha",known:"Po'boy, crawfish etouffee"},
-      {name:"Jaipur",type:"Restaurant",cat:"eat",desc:"Indian cuisine on Underwood. Tikka masala, biryani, fresh naan.",addr:"5018 Underwood",price:"$$",icon:"🍛",known:"Chicken tikka masala, garlic naan"},
-      {name:"Goldbergs",type:"Restaurant",cat:"eat",desc:"Burgers, beers, and legendary Bloody Marys. Patio scene in summer.",addr:"5008 Dodge",price:"$$",icon:"🍔",url:"http://www.goldbergsindundee.com",known:"Goldberg Burger, Bloody Mary bar"},
-      {name:"Amsterdam Falafel & Kabob",type:"Restaurant",cat:"eat",desc:"European-style street food. Build-your-own falafel with 20+ toppings.",addr:"620 N 50th",price:"$",icon:"🥙",url:"http://www.eatafk.com",known:"Spicy falafel bowl, curry fries"},
-      {name:"Good Lookin'",type:"Restaurant",cat:"eat",desc:"All-day brunch and breakfast. Colorful, inventive, always a line.",addr:"4919 Underwood",price:"$$",icon:"🥞",url:"https://www.reallygoodlookin.com",known:"Biscuits & gravy, breakfast sandwich"},
-      {name:"Ahmad's Persian Cuisine",type:"Restaurant",cat:"eat",desc:"Authentic Persian dishes — kabobs, stews, saffron rice.",addr:"4646 Dodge",price:"$$",icon:"🫓",known:"Lamb kabob, ghormeh sabzi"},
-      {name:"The Hollows",type:"Restaurant",cat:"eat",desc:"Upscale New American with a chef's counter and seasonal tasting menus.",addr:"5019 Underwood",price:"$$$",icon:"🌿",url:"https://thehollowsdundee.com",known:"Tasting menu, foraged ingredients"},
-      {name:"Lola's",type:"Restaurant",cat:"eat",desc:"Cafe and wine bar inside Film Streams. Mediterranean small plates evenings.",addr:"4952 Dodge",price:"$$",icon:"🍷",url:"https://lolasomaha.com",known:"Charcuterie boards, natural wine"},
-      {name:"Great Harvest Bread",type:"Bakery",cat:"eat",desc:"Fresh-baked artisan breads and sandwiches. The honey wheat is iconic.",addr:"4910 Underwood",price:"$",icon:"🍞",url:"http://www.greatharvestbreadomaha.com",known:"Honey wheat bread, turkey pesto sandwich"},
-      {name:"Le Quartier",type:"Bakery",cat:"eat",desc:"Fine French bakery — croissants, pain au chocolat, artisan cakes.",addr:"5026 Underwood",price:"$$",icon:"🥐",url:"http://lequartierbakingco.com",known:"Croissants, fruit tarts, petit fours"},
-      {name:"Cupcake Omaha",type:"Bakery",cat:"eat",desc:"Gourmet cupcakes with rotating seasonal flavors.",addr:"107 N 50th",price:"$",icon:"🧁",url:"http://cupcakeomaha.net",known:"Red velvet, salted caramel"},
-      /* ── Bars & Drinks ── */
-      {name:"Dundee Dell",type:"Bar & Restaurant",cat:"drink",desc:"Omaha's oldest restaurant (est. 1915). Legendary fish & chips, 700+ scotch whiskies, The Pine Room.",addr:"5007 Underwood",price:"$$",icon:"🥃",url:"https://dundeedell.com",known:"Fish & chips, scotch collection, Pine Room"},
-      {name:"Pageturners Lounge",type:"Bar",cat:"drink",desc:"Neighborhood cocktail bar with book-club energy. Trivia, live music, events.",addr:"5004 Dodge",price:"$$",icon:"📖",url:"https://www.pageturnersomaha.com",known:"Craft cocktails, trivia nights"},
-      {name:"Underwood Bar",type:"Bar",cat:"drink",desc:"Low-key neighborhood hangout. Good beer selection, no pretension.",addr:"4918 Underwood",price:"$",icon:"🍺",known:"Local drafts, casual vibes"},
-      {name:"Fox Den at Ooh De Lally",type:"Bar",cat:"drink",desc:"Intimate cocktail den upstairs at Ooh De Lally. Dark, moody, great drinks.",addr:"4916 Underwood",price:"$$",icon:"🍸",url:"https://www.oohdelally.org/fox-den",known:"Seasonal cocktails, intimate setting"},
-      {name:"Dundee Cork & Bottle",type:"Wine Shop",cat:"drink",desc:"Curated wine shop with tastings and knowledgeable staff.",addr:"614 N 50th",price:"$$",icon:"🍷",known:"Wine tastings, local picks"},
-      /* ── Coffee & Sweets ── */
-      {name:"eCreamery",type:"Ice Cream",cat:"sweet",desc:"Gourmet ice cream. Oprah's favorite. Rumor has it Buffett & McCartney have been spotted here.",addr:"5001 Underwood",price:"$",icon:"🍦",url:"http://www.ecreamery.com",known:"Custom flavors, Shark Tank alum"},
-      {name:"Blue Line Coffee",type:"Coffee",cat:"sweet",desc:"Specialty coffee roasted on-site. Clean, modern, plant-filled.",addr:"4924 Underwood",price:"$",icon:"☕",url:"http://www.bluelinecoffee.com",known:"Pour-over, cold brew, oat lattes"},
-      {name:"Dundee Double Shot",type:"Coffee",cat:"sweet",desc:"Cozy indie coffee house. Espresso, pastries, neighborhood regulars.",addr:"118 N 50th",price:"$",icon:"☕",known:"Espresso, morning pastries"},
-      {name:"Felius Cat Cafe",type:"Cafe & Cat Rescue",cat:"sweet",desc:"Nebraska's only cat cafe. Coffee, snacks, and adoptable cats roaming free. Saturday cat yoga.",addr:"5015 Dodge",price:"$",icon:"🐱",url:"https://felius.org",known:"Cat playroom ($10/30min), adoptions"},
-      /* ── Shopping ── */
-      {name:"Albany and Avers",type:"Vintage & Apparel",cat:"shop",desc:"Curated vintage, pre-owned, and new women's apparel. Hosts vinyl listening parties.",addr:"Underwood Ave",price:"$$",icon:"👗",known:"Vintage markets, Taylor Swift parties"},
-      {name:"Exist Green",type:"Zero-Waste Boutique",cat:"shop",desc:"Omaha's only zero-waste store. Sustainable goods, refills, eco gifts.",addr:"Underwood Ave",price:"$$",icon:"♻️",known:"Refill station, eco lifestyle goods"},
-      {name:"Dundee Candle Co.",type:"Candles & Gifts",cat:"shop",desc:"Pour your own custom candle. Unique scents and gift sets.",addr:"Underwood Ave",price:"$$",icon:"🕯️",known:"Custom candle pouring, gift sets"},
-      {name:"Duck Duck Bottle Shop",type:"Bottle Shop",cat:"shop",desc:"Coming soon — curated natural wine and craft beer bottle shop.",addr:"4917 Underwood",price:"$$",icon:"🍾",known:"Natural wine, craft beer"},
-      /* ── Entertainment ── */
-      {name:"Film Streams Dundee",type:"Arthouse Cinema",cat:"play",desc:"Omaha's longest-running cinema (1925). Two screens: 300-seat Peggy Payne + 25-seat Microcinema. Katie's Video bookstore.",addr:"4952 Dodge",price:"$12",icon:"🎬",url:"https://filmstreams.org/dundee-theater",known:"Indie films, Dundee Hundee series"},
-      {name:"Elmwood Park",type:"Park",cat:"play",desc:"Historic park with trails, disc golf, playground, and shaded picnic areas.",addr:"Dodge & 60th",price:"Free",icon:"🌳",known:"Trails, disc golf, playground"},
-      {name:"Memorial Park",type:"Park",cat:"play",desc:"Omaha's premier green space. Running trails, concerts, July 4th fireworks.",addr:"63rd & Underwood",price:"Free",icon:"🏞️",known:"July 4th fireworks, running loop"},
-    ],
-    events:[{name:"Dundee Day",when:"September",desc:"Annual street festival with live music, food trucks, and family activities."},{name:"Memorial Park Fireworks",when:"July 4th",desc:"Omaha's biggest Independence Day celebration."}],
-    tags:["Dining","Parks","Walking","Family","Film","Historic Homes"],
-    vibe:"Charming & Walkable",bestFor:"Foodies, families, park lovers"},
-  {id:"blackstone",name:"Blackstone",sub:"Farnam Street",desc:"Omaha's cocktail and culinary hub. Speakeasies, breweries, and chef-driven spots packed into a few electric blocks.",lat:41.259,lng:-95.965,color:"#FFB74D",
-    imgs:[u("photo-1470229722913-7c0e2dbbafd3"),u("photo-1415201364774-f6f0bb35f28f"),u("photo-1511671782779-c97d3d27a1d4")],
-    history:"Named for the Blackstone Hotel (1916), this stretch of Farnam once housed Omaha's grandest lodging. The hotel hosted JFK, Nixon, and celebrities during its heyday. After decades of decline, a massive revitalization beginning around 2015 transformed the district into Omaha's premier cocktail and dining destination. The Blackstone Social, Scriptown Brewing, and a wave of chef-driven restaurants catalyzed the comeback. The historic hotel itself reopened as a Marriott Autograph Collection property.",
-    walk:{name:"Blackstone Bar Hop",distance:"0.8 mi",time:"1.5 hrs",steps:["Start at Scriptown Brewing (38th & Farnam)","Walk east to Berry & Rye speakeasy","Cross to Nite Owl for craft cocktails","Hit Stirnella for dinner (or Yoshitomo for sushi)","End at Crescent Moon for Belgian ales"]},
-    spots:[
-      /* ── Restaurants ── */
-      {name:"Crescent Moon",type:"Alehouse",cat:"eat",desc:"Home of Omaha's best Reuben — born here in the 1920s. Top beer bar nationally.",addr:"3578 Farnam",price:"$$",icon:"🥪",known:"Reuben, 600+ beers"},
-      {name:"Early Bird",type:"Brunch",cat:"eat",desc:"Cereal pancakes, chicken & donuts. Omaha's most creative brunch.",addr:"3914 Farnam",price:"$$",icon:"🥞",known:"Fruity Pebble pancakes"},
-      {name:"Noli's Pizzeria",type:"Pizzeria",cat:"eat",desc:"NY-style slices with specially-filtered water dough. Always a line.",addr:"4001 Farnam",price:"$",icon:"🍕",known:"Pizza by the slice"},
-      {name:"Mula Mexican Kitchen",type:"Restaurant",cat:"eat",desc:"Trendy Mexican with a certified tequileria. Always packed.",addr:"3831 Farnam",price:"$$",icon:"🌮",known:"Tacos, tequila flights"},
-      {name:"Koen Japanese BBQ",type:"Restaurant",cat:"eat",desc:"Tableside Japanese BBQ and izakaya.",addr:"Farnam St",price:"$$$",icon:"🔥",known:"Wagyu BBQ, izakaya plates"},
-      {name:"HomeGrown",type:"Restaurant",cat:"eat",desc:"Locally sourced comfort food, seasonal menus.",addr:"3916 Farnam",price:"$$",icon:"🌿",known:"Farm-to-table bowls"},
-      {name:"The Committee Chophouse",type:"Steakhouse",cat:"eat",desc:"Upscale chophouse with great steaks.",addr:"Farnam St",price:"$$$$",icon:"🥩",known:"Steaks, special occasions"},
-      {name:"Cunningham's Pub",type:"Pub",cat:"eat",desc:"Classic pub food, solid beer list.",addr:"3903 Farnam",price:"$$",icon:"🍔",known:"Pub food, trivia nights"},
-      /* ── Bars ── */
-      {name:"Scriptown Brewing",type:"Brewery",cat:"drink",desc:"Craft beer brewed on-site in Blackstone.",addr:"3922 Farnam",price:"$$",icon:"🍺",known:"IPAs, seasonal brews"},
-      {name:"Nite Owl",type:"Late Night Bar",cat:"drink",desc:"Retro-themed late-night spot. Creative bar food, movies on projectors.",addr:"3823 Farnam",price:"$$",icon:"🦉",known:"Tot-chos, late night"},
-      {name:"Huber Haus",type:"Bier Hall",cat:"drink",desc:"German bier hall in the basement. Long tables, Das Boot.",addr:"3578 Farnam",price:"$$",icon:"🍻",known:"German beer, brats"},
-      {name:"Little Ricky's",type:"Rooftop Bar",cat:"drink",desc:"One of Omaha's few rooftop bars.",addr:"Farnam St",price:"$$",icon:"🌇",known:"Rooftop patio, cocktails"},
-      {name:"Corkscrew Wine",type:"Wine Bar",cat:"drink",desc:"Curated wine bar with cheese boards.",addr:"Farnam St",price:"$$",icon:"🍷",known:"Wine flights, cheese"},
-      {name:"Red Lion Lounge",type:"Bar",cat:"drink",desc:"Laid-back. Cheap drinks, good conversation.",addr:"Farnam St",price:"$",icon:"🍺",known:"Dive vibes, chill"},
-      {name:"Reno's Karaoke",type:"Karaoke",cat:"drink",desc:"Private karaoke rooms and full bar.",addr:"Farnam St",price:"$$",icon:"🎤",known:"Private rooms"},
-      /* ── Coffee & Sweets ── */
-      {name:"Coneflower Creamery",type:"Ice Cream",cat:"sweet",desc:"All made in-house, down to the sprinkles. Omaha's artisan ice cream.",addr:"4432 Leavenworth",price:"$",icon:"🍦",known:"Halva, honeycomb, cookie sandwiches"},
-      {name:"Archetype Coffee",type:"Coffee",cat:"sweet",desc:"No-fuss specialty roaster. Simple, excellent.",addr:"3926 Farnam",price:"$",icon:"☕",known:"Single origin, espresso"},
-      /* ── Entertainment ── */
-      {name:"First Round",type:"Sports Bar",cat:"play",desc:"90s-themed, 30+ TVs, tons of GF options.",addr:"Farnam St",price:"$$",icon:"🏈",known:"Sports, retro, GF menu"},
-      {name:"Cottonwood Hotel",type:"Boutique Hotel",cat:"play",desc:"Historic Blackstone Hotel (1916) reimagined. Beautiful lobby, Orleans Room.",addr:"302 S 36th",price:"$$$$",icon:"🏨",known:"Historic landmark, cocktails"}
-    ],
-    events:[{name:"Blackstone Block Party",when:"Summer",desc:"Street closures, live music, food vendors, and craft beer."}],
-    tags:["Cocktails","Dining","Nightlife","Craft Beer","Speakeasy"],
-    vibe:"Trendy & Buzzy",bestFor:"Date nights, cocktail enthusiasts, foodies"},
-  {id:"north-downtown",name:"North Downtown",sub:"NoDo",desc:"The Slowdown, Film Streams, Steelhouse Omaha, and a growing creative corridor between downtown and the riverfront.",lat:41.2691,lng:-95.9251,color:"#64B5F6",
-    imgs:[u("photo-1501386761578-eac5c94b800a"),u("photo-1459749411175-04bf5292ceea"),u("photo-1540039155733-5bb30b53aa14")],
-    history:"Once warehouse district and rail yards, NoDo's transformation began with Saddle Creek Records relocating The Slowdown here in 2007. Film Streams' Ruth Sokolof Theater followed. The opening of Steelhouse Omaha (2024) and continued development around 14th and Webster have made this the live entertainment spine of the city. The area connects the Old Market to the north via a creative corridor that grows each year.",
-    walk:{name:"NoDo Music Walk",distance:"1 mi",time:"40 min",steps:["Start at The Slowdown (14th & Mike Fahey)","Walk to Film Streams / Ruth Sokolof Theater","Continue south past Steelhouse Omaha","Detour east to the riverfront pedestrian bridge","Return via Capitol Avenue"]},
-    spots:[
-      {name:"Dolomiti Pizzeria",type:"Pizzeria",cat:"eat",desc:"Wood-fired sourdough pizza in Millwork Commons.",addr:"1125 N 13th",price:"$$",icon:"🍕",known:"Sourdough pizza, Italian wine"},
-      {name:"Heirloom Fine Foods",type:"Market & Cafe",cat:"eat",desc:"Gourmet market, cafe, and prepared foods.",addr:"1210 Nicholas",price:"$$",icon:"🥗",known:"Prepared foods, gourmet market"},
-      {name:"Trap Room",type:"Bar & Grill",cat:"eat",desc:"Neighborhood hangout near Slowdown.",addr:"N 14th St",price:"$$",icon:"🍔",known:"Burgers, cocktails"},
-      {name:"Rally Coffee",type:"Coffee",cat:"sweet",desc:"Craft coffee in the Capitol District.",addr:"Capitol District",price:"$",icon:"☕",known:"Espresso, cold brew"},
-      {name:"Coneflower Millwork",type:"Ice Cream",cat:"sweet",desc:"Second Coneflower with the cone window.",addr:"Millwork Commons",price:"$",icon:"🍦",known:"Artisan ice cream"},
-      {name:"The Slowdown",type:"Music Venue",cat:"play",desc:"Omaha's flagship indie venue. Home of Saddle Creek Records.",addr:"729 N 14th",price:"$15-50",icon:"🎤",known:"Indie concerts, Saddle Creek"},
-      {name:"Steelhouse Omaha",type:"Music Venue",cat:"play",desc:"Dynamic mid-size concert venue. Opened 2024.",addr:"NoDo",price:"$20-75",icon:"🎵",known:"National touring acts"},
-      {name:"Film Streams Ruth Sokolof",type:"Cinema",cat:"play",desc:"Nonprofit arthouse cinema. Supported by Alexander Payne.",addr:"1340 Mike Fahey",price:"$12",icon:"🎬",known:"Art films, retrospectives"},
-      {name:"Hot Shops Art Center",type:"Art Studios",cat:"play",desc:"Working artist studios — glassblowing, metalwork, galleries.",addr:"1301 Nicholas",price:"Free",icon:"🔥",known:"Open houses, demos"},
-      {name:"CHI Health Center",type:"Arena",cat:"play",desc:"Major arena for concerts, sports, conventions.",addr:"455 N 10th",price:"Varies",icon:"🏟️",known:"Concerts, events"},
-      {name:"Charles Schwab Field",type:"Ballpark",cat:"play",desc:"Home of NCAA College World Series.",addr:"1160 Mike Fahey",price:"Varies",icon:"⚾",known:"CWS, Creighton baseball"},
-      {name:"The Fat Putter",type:"Mini Golf",cat:"play",desc:"Over-the-top themed mini golf.",addr:"NoDo",price:"$$",icon:"⛳",known:"Themed holes, family fun"}
-    ],
-    events:[{name:"Maha Music Festival",when:"August",desc:"Annual outdoor festival at Stinson Park featuring national acts."}],
-    tags:["Music","Film","Arts","Venues","Live Shows"],
-    vibe:"Creative & Up-and-Coming",bestFor:"Concertgoers, film buffs, night out"},
-  {id:"little-italy",name:"Little Italy",sub:"South 10th Street",desc:"Historic neighborhood home to BLUEBARN Theatre, The Admiral, and authentic Italian spots. Gritty charm meets cultural depth.",lat:41.2543,lng:-95.9365,color:"#E8364F",
-    imgs:[u("photo-1503095396549-807759245b35"),u("photo-1574391884720-bbc3740c59d1"),u("photo-1459749411175-04bf5292ceea")],
-    history:"Italian immigrants began settling along South 10th Street in the 1890s, establishing bakeries, grocers, and social clubs. The Santa Lucia Festival (started 1925) is still celebrated annually. The former Sokol Auditorium, built by Czech immigrants, was reborn as The Admiral — now one of Omaha's best mid-size concert venues. BLUEBARN Theatre relocated here in 2016, adding contemporary theater to the neighborhood's cultural mix.",
-    walk:{name:"Little Italy Heritage Walk",distance:"0.9 mi",time:"30 min",steps:["Start at Orsi's Italian Bakery (621 Pacific)","Walk south on 10th past historic storefronts","Visit the Sons of Italy Lodge marker","Continue to The Admiral / Sokol Auditorium","End at BLUEBARN Theatre"]},
-    spots:[
-      {name:"Orsi's Italian Bakery",type:"Bakery & Deli",cat:"eat",desc:"Family-run since 1919. Italian breads, sausages, groceries.",addr:"621 Pacific",price:"$",icon:"🍞",known:"Italian bread, sausage, cannoli"},
-      {name:"La Casa",type:"Pizzeria",cat:"eat",desc:"Thin biscuity crust with Romano cheese. You either love it or you're wrong.",addr:"4432 Leavenworth",price:"$",icon:"🍕",known:"Thin-crust pizza, fried ravioli"},
-      {name:"Salerno's II",type:"Restaurant",cat:"eat",desc:"Classic Italian-American. Red sauce, big portions.",addr:"S 10th St",price:"$$",icon:"🍝",known:"Pasta, family-style Italian"},
-      {name:"The Underground Kitchen",type:"Supper Club",cat:"eat",desc:"Reservations-only. Intimate multi-course dinners.",addr:"S 13th St",price:"$$$$",icon:"🕯️",known:"Prix fixe, reservations only"},
-      {name:"BLUEBARN Theatre",type:"Theater",cat:"play",desc:"Bold, intimate professional theater. Adventurous productions.",addr:"1106 S 10th",price:"$20-40",icon:"🎭",url:"https://bluebarn.org",known:"New plays, 100-seat space"},
-      {name:"Sokol Auditorium",type:"Venue",cat:"play",desc:"Historic hall hosting punk, metal, indie, and community events.",addr:"S 13th St",price:"$10-30",icon:"🎸",known:"All-ages shows, punk/indie"},
-      {name:"El Museo Latino",type:"Museum",cat:"play",desc:"Latino art and history museum.",addr:"4701 S 25th",price:"$5",icon:"🏛️",known:"Latino art, cultural exhibits"},
-      {name:"St. Cecilia's Cathedral",type:"Landmark",cat:"play",desc:"Stunning Spanish Colonial Revival cathedral.",addr:"701 N 40th",price:"Free",icon:"⛪",known:"Architecture, stained glass"}
-    ],
-    events:[{name:"Santa Lucia Festival",when:"June",desc:"Annual celebration of Italian heritage with procession, food, and music since 1925."}],
-    tags:["Theater","Music","Italian","Heritage","Bakeries"],
-    vibe:"Historic & Authentic",bestFor:"Theater fans, history buffs, Italian food lovers"},
-  {id:"aksarben",name:"Aksarben Village",sub:"67th & Center",desc:"Modern mixed-use with Stinson Park, restaurants, Baxter Arena, and year-round community events.",lat:41.244,lng:-95.96,color:"#B39DDB",
-    imgs:[u("photo-1441974231531-c6227db76b6e"),u("photo-1547347298-4074fc3086f0"),u("photo-1470229722913-7c0e2dbbafd3")],
-    history:"The name is 'Nebraska' spelled backward. The original Ak-Sar-Ben racetrack and coliseum (1919–1995) hosted horse racing, rodeos, and the famous Ak-Sar-Ben Ball. The 250-acre site was redeveloped starting in 2007 into a mixed-use village anchored by Stinson Park and Baxter Arena (home of UNO Mavericks). The development is considered one of the most successful urban revitalization projects in the Midwest.",
-    spots:[
-      {name:"Flagship Commons",type:"Food Hall",cat:"eat",desc:"Multi-vendor food hall. Something for everyone.",addr:"Aksarben Village",price:"$$",icon:"🍱",known:"Multiple vendors, communal tables"},
-      {name:"Voodoo Taco",type:"Taqueria",cat:"eat",desc:"Creative tacos with wild toppings.",addr:"Aksarben Village",price:"$",icon:"🌮",url:"https://www.voodootaco.com",known:"Creative tacos, cocktails"},
-      {name:"Spirit World",type:"Restaurant",cat:"eat",desc:"Global street food and encyclopedic cocktail program.",addr:"Aksarben Village",price:"$$",icon:"🌍",known:"Global bites, 300+ spirits"},
-      {name:"Jones Bros. Cupcakes",type:"Bakery",cat:"sweet",desc:"Gourmet cupcakes in seasonal flavors.",addr:"Aksarben Village",price:"$",icon:"🧁",known:"Cupcakes, seasonal flavors"},
-      {name:"Betty Rae's",type:"Ice Cream",cat:"sweet",desc:"KC-based artisan ice cream. First Nebraska location.",addr:"Near Aksarben",price:"$",icon:"🍦",known:"Artisan flavors"},
-      {name:"DJ's Dugout",type:"Sports Bar",cat:"drink",desc:"Go-to sports bar with tons of TVs.",addr:"Aksarben Village",price:"$",icon:"🏈",known:"Game day, wings"},
-      {name:"Stinson Park",type:"Park",cat:"play",desc:"Green heart of Aksarben. MAHA Festival, farmer's market.",addr:"Aksarben Village",price:"Free",icon:"🌳",known:"MAHA, farmer's market"},
-      {name:"Baxter Arena",type:"Arena",cat:"play",desc:"UNO Mavericks home court. Concerts and events.",addr:"67th & Center",price:"Varies",icon:"🏟️",known:"UNO sports, concerts"},
-      {name:"Farmer's Market",type:"Market",cat:"play",desc:"Saturday mornings May-Oct. Local produce, baked goods.",addr:"Aksarben Village",price:"Free",icon:"🥬",known:"Local produce, Saturdays"}
-    ],
-    events:[{name:"Aksarben Stock Show",when:"September",desc:"Agriculture expo, rodeo, and carnival."},{name:"Food Truck Fridays",when:"Summer Fridays",desc:"Rotating trucks at Stinson Park."}],
-    tags:["Parks","Events","Dining","Family","Arena"],
-    vibe:"Modern & Community",bestFor:"Families, UNO fans, festival-goers"},
-  {id:"west-omaha",name:"West Omaha",sub:"144th to Elkhorn",desc:"Suburban dining, Barnato lounge, Zorinsky Lake, and family-friendly activities. Where Omaha spreads out.",lat:41.258,lng:-96.07,color:"#4DD0E1",
-    imgs:[u("photo-1500534314263-0869cef27f7d"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1470229722913-7c0e2dbbafd3")],
-    history:"West Omaha's rapid expansion began in the 1990s as families moved to newly developed subdivisions. Village Pointe shopping center, the Funny Bone comedy club, and Barnato (an art-deco music lounge attached to a Bentley dealership) represent the eclectic mix of suburban convenience and unexpected cultural offerings.",
-    spots:[
-      {name:"Barnato",type:"Lounge",cat:"eat",desc:"Art-deco cocktail lounge attached to the Bentley dealership. And it's great.",addr:"West Dodge",price:"$$$",icon:"🍸",known:"Craft cocktails, art-deco"},
-      {name:"Mahogany Prime",type:"Steakhouse",cat:"eat",desc:"West Omaha's premier steakhouse.",addr:"West Dodge Rd",price:"$$$$",icon:"🥩",known:"Prime steaks, wine cellar"},
-      {name:"Shucks Fish House",type:"Seafood",cat:"eat",desc:"Casual seafood with great oysters.",addr:"West Omaha",price:"$$",icon:"🦐",known:"Oysters, fish tacos"},
-      {name:"Funny Bone",type:"Comedy Club",cat:"play",desc:"National touring comedians and local acts.",addr:"17305 Dayton Cir",price:"$20-50",icon:"😂",known:"Stand-up comedy, dinner shows"},
-      {name:"Zorinsky Lake",type:"Park",cat:"play",desc:"360-acre lake with 6-mile trail loop.",addr:"156th & F St",price:"Free",icon:"🏞️",known:"Running/biking, fishing"},
-      {name:"Village Pointe",type:"Shopping",cat:"shop",desc:"Open-air lifestyle center.",addr:"168th & Dodge",price:"Varies",icon:"🛍️",known:"Shopping, dining, events"},
-      {name:"TopGolf",type:"Entertainment",cat:"play",desc:"High-tech driving range with food and drinks.",addr:"West Omaha",price:"$$",icon:"⛳",known:"Golf bays, food & drinks"}
-    ],
-    events:[{name:"Elkhorn Days",when:"August",desc:"Small-town festival with parade, carnival, and fireworks."}],
-    tags:["Family","Dining","Parks","Comedy","Shopping"],
-    vibe:"Suburban & Varied",bestFor:"Families, comedy fans, lake lovers"},
-  {id:"south-omaha",name:"South Omaha",sub:"24th & L Street",desc:"Authentic taquerias, the Zoo, Lauritzen Gardens, and deep cultural roots. Omaha's most flavorful neighborhood.",lat:41.23,lng:-95.94,color:"#FF8A65",
-    imgs:[u("photo-1534567153574-2b12153a87f0"),u("photo-1585320806297-9794b3e4eeae"),u("photo-1555939594-58d7cb561ad1")],
-    history:"South Omaha was an independent city from 1886–1915, built around the Union Stockyards — once the world's largest livestock market. Waves of immigrants (Czech, Polish, Irish, Lithuanian, Mexican) came to work the yards. The stockyards closed in 1999, but the neighborhood's multicultural DNA endures. South 24th Street is now the heart of Omaha's vibrant Latino community, with some of the most authentic Mexican food between Chicago and Denver.",
-    walk:{name:"South O Taco Trail",distance:"1.8 mi",time:"1 hr",steps:["Start at 24th & L Street","Walk south on 24th past taco trucks and taquerias","Stop at El Dorado for birria tacos","Continue to Jacobo's grocery for pan dulce","Detour east to the Golden Spike monument","End at Lauritzen Gardens or the Zoo"]},
-    spots:[
-      {name:"El Dorado",type:"Restaurant",cat:"eat",desc:"S. 24th Street icon. Parrilladas, ceviche, live mariachi weekends.",addr:"5025 S 24th",price:"$$",icon:"🇲🇽",known:"Seafood parrillada, mariachi"},
-      {name:"Jacobo's Grocery",type:"Grocery & Taqueria",cat:"eat",desc:"Mexican grocery with incredible hot deli. Tamales, carnitas, tortas.",addr:"4621 S 24th",price:"$",icon:"🫔",known:"Tamales, carnitas, tortillas"},
-      {name:"Johnny's Cafe",type:"Steakhouse",cat:"eat",desc:"Century-old steakhouse in the Stockyards. Family-run since 1922.",addr:"4702 S 27th",price:"$$$",icon:"🥩",known:"Prime rib, Stockyards history"},
-      {name:"Taqueria Tijuana",type:"Taqueria",cat:"eat",desc:"Authentic street tacos — al pastor, lengua, cabeza.",addr:"S 24th St",price:"$",icon:"🌮",known:"Street tacos, al pastor"},
-      {name:"La Herradura",type:"Restaurant",cat:"eat",desc:"Upscale Mexican seafood. Mariscos done right.",addr:"S 24th St",price:"$$",icon:"🦐",known:"Mariscos, aguachile"},
-      {name:"Henry Doorly Zoo",type:"Zoo",cat:"play",desc:"World-class zoo. Indoor rainforest, desert dome, aquarium.",addr:"3701 S 10th",price:"$27",icon:"🦁",known:"Indoor jungle, desert dome"},
-      {name:"Lauritzen Gardens",type:"Botanical Garden",cat:"play",desc:"100-acre garden with stunning conservatory.",addr:"100 Bancroft",price:"$14",icon:"🌺",known:"Rose garden, holiday displays"},
-      {name:"El Museo Latino",type:"Museum",cat:"play",desc:"Latino art, history, and culture.",addr:"4701 S 25th",price:"$5",icon:"🏛️",known:"Heritage, art exhibits"},
-      {name:"Mural Trail",type:"Public Art",cat:"play",desc:"Walking trail of murals celebrating immigrant heritage.",addr:"S 24th corridor",price:"Free",icon:"🎨",known:"Murals, heritage art"},
-      {name:"Livestock Exchange",type:"Landmark",cat:"play",desc:"1926 Art Deco landmark. Once the world's largest stockyard nerve center.",addr:"4920 S 30th",price:"Free",icon:"🏛️",known:"Art Deco, Stockyards history"}
-    ],
-    events:[{name:"Cinco de Mayo",when:"May 5th",desc:"Mariachi, street food, folklorico dancing on 24th Street."},{name:"Dia de los Muertos",when:"November",desc:"Community altars, face painting, and celebration of life."}],
-    tags:["Food","Culture","Zoo","Gardens","Latino","Tacos"],
-    vibe:"Flavorful & Cultural",bestFor:"Foodies, culture seekers, families"},
-  {id:"midtown",name:"Midtown Crossing",sub:"Turner Blvd",desc:"Turner Park, Mutual of Omaha campus, restaurants, and the summer home of Jazz on the Green.",lat:41.255,lng:-95.96,color:"#AED581",
-    imgs:[u("photo-1465847899084-d164df4dedc6"),u("photo-1441974231531-c6227db76b6e"),u("photo-1470229722913-7c0e2dbbafd3")],
-    history:"The Mutual of Omaha headquarters campus has anchored this area since 1957. Midtown Crossing, a mixed-use development opening in phases from 2009, brought residential towers, restaurants, and retail around Turner Park. Jazz on the Green (free outdoor concerts on Thursday evenings in summer) has been a beloved Omaha tradition since 1993.",
-    spots:[
-      {name:"Blue Sushi Sake Grill",type:"Restaurant",cat:"eat",desc:"Creative sushi and strong sake program.",addr:"Midtown Crossing",price:"$$",icon:"🍣",known:"Creative rolls, sake flights"},
-      {name:"Taxi's Grille & Bar",type:"Restaurant",cat:"eat",desc:"Casual American dining with solid cocktails.",addr:"Midtown Crossing",price:"$$",icon:"🍗",known:"American classics, happy hour"},
-      {name:"Pickleman's",type:"Cafe",cat:"eat",desc:"Gourmet sandwiches and salads. Quick lunch.",addr:"Midtown Crossing",price:"$",icon:"🥪",known:"Sandwiches, delivery"},
-      {name:"The Jewell",type:"Jazz Club",cat:"drink",desc:"Intimate jazz lounge. Live performances Thu-Sat.",addr:"Midtown Crossing",price:"$$",icon:"🎷",known:"Live jazz, cocktails"},
-      {name:"Kona Grill",type:"Bar & Restaurant",cat:"drink",desc:"Full bar, happy hour, global-inspired fare.",addr:"Midtown Crossing",price:"$$",icon:"🍹",known:"Happy hour, sushi"},
-      {name:"Turner Park",type:"Park",cat:"play",desc:"Green heart of Midtown. Jazz on the Green free Thursdays all summer.",addr:"Midtown Crossing",price:"Free",icon:"🌳",known:"Jazz on the Green, events"},
-      {name:"Mutual of Omaha HQ",type:"Landmark",cat:"play",desc:"Iconic mid-century tower (1957). The Indian Head logo building.",addr:"Dodge & 33rd",price:"Free",icon:"🏢",known:"Mid-century architecture"}
-    ],
-    events:[{name:"Jazz on the Green",when:"Thursdays, Jun–Aug",desc:"Free outdoor jazz concerts. Omaha's favorite summer tradition."}],
-    tags:["Jazz","Dining","Events","Parks","Free"],
-    vibe:"Relaxed & Musical",bestFor:"Jazz lovers, summer evenings, casual dining"},
-];
-const SEED_EVENTS=[
-  {id:1,title:"Black Jacket Symphony",cat:"concerts",venue:"Steelhouse Omaha",city:"omaha",date:"Sat",time:"8 PM",price:"$35–65",emoji:"🎸",desc:"Pink Floyd's The Wall note-for-note with full visual production. Every song, every note — performed live with a full band, vocalists, and stunning visual effects that bring the album to life.",feat:true,doors:"6:30 PM",address:"1212 Douglas St, Omaha, NE 68102",venueType:"Performing Arts",capacity:"3,000",ageRestriction:"All Ages",url:"https://www.ticketmaster.com",tags:["Classic Rock","Live Music","Tribute","Arena Show"],lineup:[{name:"Black Jacket Symphony",role:"Headliner",time:"8:00 PM",img:"https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=200&h=200&fit=crop"},{name:"Local Opening Act",role:"Support",time:"7:00 PM",img:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=200&h=200&fit=crop"}],pricing:[{tier:"General Admission",price:"$35",note:"Standing room"},{tier:"Reserved Seating",price:"$55",note:"Balcony sections"},{tier:"VIP Experience",price:"$65",note:"Early entry + meet & greet"}]},
-  {id:2,title:"Tig Notaro",cat:"comedy",venue:"Holland PAC",date:"Sat",time:"7:30 PM",price:"$45–85",emoji:"🎙️",desc:"Grammy-nominated deadpan comedy. Star of 'One Mississippi'.",feat:true},
-  {id:3,title:"Creighton vs. DePaul",cat:"sports",venue:"CHI Health Center",city:"omaha",date:"Tue",time:"7 PM",price:"$25–90",emoji:"🏀",desc:"Big East basketball. Bluejays host DePaul at the CHI.",feat:true,broadcast:"FOX Sports",address:"455 N 10th St, Omaha, NE 68102",venueType:"Arena",capacity:"18,300",url:"https://www.ticketmaster.com",matchup:{home:{name:"Creighton",abbr:"CU",record:"22-5",rank:"#12",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},away:{name:"DePaul",abbr:"DPU",record:"11-16",color:"#005EB8",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/305.png"}},tags:["College Basketball","Big East","Rivalry"]},
-  {id:4,title:"Nate Jackson Live",cat:"comedy",venue:"Steelhouse Omaha",city:"omaha",date:"Fri",time:"8 PM",price:"$40–80",emoji:"😂",desc:"Instagram-famous comedian with electric crowd work.",feat:true},
-  {id:5,title:"Ethel Cain",cat:"concerts",venue:"The Astro",date:"Wed",time:"8 PM",price:"$40–75",emoji:"🕯️",desc:"Southern gothic sensation. 'Preacher's Daughter' live.",feat:true},
-  {id:6,title:"LOVB Nebraska",cat:"sports",venue:"Baxter Arena",date:"Sat",time:"7 PM",price:"$20–50",emoji:"🏐",desc:"Pro volleyball. League One Volleyball's Nebraska franchise."},
-  {id:7,title:"All Them Witches",cat:"concerts",venue:"The Slowdown",date:"Mon",time:"8 PM",price:"$25–35",emoji:"🎸",desc:"Heavy psychedelic rock double-header with King Buffalo."},
-  {id:8,title:"Backline Improv",cat:"comedy",venue:"Backline Comedy",date:"Sat",time:"8 PM",price:"$10–15",emoji:"😂",desc:"House improv team takes audience suggestions and runs."},
-  {id:9,title:"Storm Chasers Opener",cat:"sports",venue:"Werner Park",date:"Fri",time:"6:35 PM",price:"$12–45",emoji:"⚾",desc:"2026 MiLB season kickoff with postgame fireworks. The Omaha Storm Chasers, Triple-A affiliate of the Kansas City Royals, open the season with a Friday night fireworks spectacular.",feat:true,address:"12356 Ballpark Way, Papillion, NE 68046",venueType:"Ballpark",capacity:"9,023",url:"https://www.milb.com/omaha",tags:["Minor League Baseball","Fireworks","Family Night"],matchup:{home:{name:"Storm Chasers",abbr:"OMA",record:"",color:"#003DA5",logo:"https://www.milb.com/assets/images/logos/omaha.svg"},away:{name:"Iowa Cubs",abbr:"IOW",record:"",color:"#CC3433",logo:"https://www.milb.com/assets/images/logos/iowa.svg"}}},
-  {id:10,title:"Pinewood Bowl Concert",cat:"concerts",venue:"Pinewood Bowl Theater",city:"lincoln",date:"Sat",time:"7 PM",price:"$25-55",emoji:"🎶",desc:"Outdoor amphitheater in Pioneers Park. Live music under the stars.",feat:false},
-  {id:11,title:"Husker Volleyball",cat:"sports",venue:"Devaney Center",city:"lincoln",date:"Fri",time:"7 PM",price:"$15-40",emoji:"🏐",desc:"Nebraska volleyball at home. Electric atmosphere, sell-out crowd. The Huskers bring Big Ten volleyball action to Lincoln with one of the most passionate fanbases in all of college sports.",feat:true,broadcast:"Big Ten Network",address:"500 Stadium Dr, Lincoln, NE 68588",venueType:"Arena",capacity:"7,907",url:"https://huskers.com/tickets",tags:["College Volleyball","Big Ten","Nebraska"],matchup:{home:{name:"Nebraska",abbr:"NEB",record:"28-2",rank:"#2",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},away:{name:"Wisconsin",abbr:"WIS",record:"24-6",rank:"#7",color:"#C5050C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/275.png"}}}
-];
 const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
-
-/* ═══ VENUES ═══ */
-const VENUES=[
-  {id:1,name:"CHI Health Center",area:"North Downtown",cap:"18,300",type:"Arena",lat:41.2628,lng:-95.9257,desc:"Premier arena for the biggest global tours and Creighton Basketball.",url:"https://www.chihealthcenteromaha.com",img:u("photo-1540039155733-5bb30b53aa14"),city:"omaha"},
-  {id:2,name:"Baxter Arena",area:"Aksarben",cap:"7,898",type:"Arena",lat:41.2382,lng:-96.0115,desc:"UNO's multi-purpose venue hosting college sports, concerts, and community events.",url:"https://baxterarena.com",img:u("photo-1547347298-4074fc3086f0"),city:"omaha"},
-  {id:4,name:"Steelhouse Omaha",area:"North Downtown",cap:"3,000",type:"Performing Arts",lat:41.258,lng:-95.937,desc:"Modern, standing-room-heavy venue for large mid-tier touring bands.",url:"https://steelhouseomaha.com",img:u("photo-1501386761578-eac5c94b800a"),city:"omaha"},
-  {id:5,name:"The Astro",area:"La Vista",cap:"2,500 / 5,500",type:"Arena",lat:41.2105,lng:-96.0475,desc:"Brand new dual-venue (indoor + amphitheater) for world-class acts.",url:"https://www.theastrotheater.com",img:u("photo-1470229722913-7c0e2dbbafd3"),city:"omaha"},
-  {id:6,name:"Orpheum Theater",area:"Downtown",cap:"2,600",type:"Performing Arts",lat:41.2582,lng:-95.9352,desc:"Historic 1927 theater hosting Broadway tours, comedians, and concerts.",url:"https://o-pa.org",img:u("photo-1503095396549-807759245b35"),city:"omaha"},
-  {id:7,name:"Holland PAC",area:"Downtown",cap:"2,000",type:"Performing Arts",lat:41.2606,lng:-95.9313,desc:"Acoustic marvel hosting the Omaha Symphony, jazz, and contemporary acts.",url:"https://o-pa.org",img:u("photo-1465847899084-d164df4dedc6"),city:"omaha"},
-  {id:8,name:"The Slowdown",area:"North Downtown",cap:"500",type:"Indie / Club",lat:41.2691,lng:-95.9251,desc:"Iconic indie rock venue created by Saddle Creek Records.",url:"https://theslowdown.com",img:u("photo-1459749411175-04bf5292ceea"),city:"omaha"},
-  {id:9,name:"The Waiting Room",area:"Benson",cap:"400",type:"Indie / Club",lat:41.281,lng:-95.954,desc:"Legendary heart of Omaha's alt/indie scene. A must-play for touring bands.",url:"https://waitingroomlounge.com",img:u("photo-1511671782779-c97d3d27a1d4"),city:"omaha"},
-  {id:10,name:"Reverb Lounge",area:"Benson",cap:"150",type:"Indie / Club",lat:41.2808,lng:-95.9545,desc:"Sleek, mid-century modern listening room with great sound.",url:"https://reverblounge.com",img:u("photo-1508854710579-5cecc3a9ff17"),city:"omaha"},
-  {id:11,name:"The Admiral",area:"Little Bohemia",cap:"1,500",type:"Indie / Club",lat:41.2525,lng:-95.9355,desc:"Formerly Sokol Auditorium — historic hall hosting punk, metal, hip-hop, EDM.",url:"https://www.admiralomaha.com",img:u("photo-1574391884720-bbc3740c59d1"),city:"omaha"},
-  {id:12,name:"Barnato",area:"West Omaha",cap:"600",type:"Indie / Club",lat:41.262,lng:-96.073,desc:"Upscale art-deco music lounge. Premium cocktails and vibes.",url:"https://barnato.bar",img:u("photo-1511671782779-c97d3d27a1d4"),city:"omaha"},
-  {id:14,name:"Stir Concert Cove",area:"Council Bluffs",cap:"4,000",type:"Outdoor",lat:41.233,lng:-95.854,desc:"Lakeside outdoor amphitheater at Harrah's for summer concerts.",url:"https://www.stircove.com",img:u("photo-1506157786151-b8491531f063"),city:"cb"},
-  {id:21,name:"Henry Doorly Zoo",area:"South Omaha",cap:"25,000+",type:"Museum / Attraction",lat:41.226,lng:-95.9287,desc:"World's best zoo. Desert Dome, Lied Jungle, and deep-sea aquarium.",url:"https://www.omahazoo.com",img:u("photo-1534567153574-2b12153a87f0"),city:"omaha"},
-  {id:22,name:"Joslyn Art Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2635,lng:-95.9394,desc:"World-class art museum with massive 42,000 sq ft expansion. Free admission.",url:"https://joslyn.org",img:u("photo-1531243269054-5ebf6f34081e"),city:"omaha"},
-  {id:23,name:"Film Streams",area:"North Downtown",cap:"285",type:"Performing Arts",lat:41.269,lng:-95.9255,desc:"Two-screen arthouse cinema. Curated indie and classic films.",url:"https://filmstreams.org",img:u("photo-1489599849927-2ee91cede3ba"),city:"omaha"},
-  {id:25,name:"Liberty First CU Arena",area:"Ralston",cap:"4,600",type:"Arena",lat:41.2033,lng:-96.0395,desc:"Large arena for country, rock, sports, and rodeos.",url:"https://www.libertyfirstcreditunionarena.com",img:u("photo-1540039155733-5bb30b53aa14"),city:"omaha"},
-  {id:30,name:"The Jewell",area:"Capitol District",cap:"Intimate",type:"Bar / Venue",lat:41.2577,lng:-95.9370,desc:"Omaha's premier jazz club. National and local jazz and blues.",url:"https://jewellomaha.com",img:u("photo-1415201364774-f6f0bb35f28f"),city:"omaha"},
-  {id:38,name:"Kiewit Luminarium",area:"The RiverFront",cap:"Varies",type:"Museum / Attraction",lat:41.2565,lng:-95.9230,desc:"Interactive science center with 100+ hands-on exhibits.",url:"https://kiewitluminarium.org",img:u("photo-1531243269054-5ebf6f34081e"),city:"omaha"},
-  {id:40,name:"The Durham Museum",area:"Downtown",cap:"Varies",type:"Museum / Attraction",lat:41.2553,lng:-95.9310,desc:"Stunning 1931 art deco Union Station with train cars and soda fountain.",url:"https://durhammuseum.org",img:u("photo-1503095396549-807759245b35"),city:"omaha"},
-  {id:43,name:"Fontenelle Forest",area:"Bellevue",cap:"Varies",type:"Museum / Attraction",lat:41.1570,lng:-95.9000,desc:"2,000 acres of forest, wetlands, and boardwalk trails.",url:"https://fontenelleforest.org",img:u("photo-1552674605-db6ffd4facb5"),city:"omaha"},
-  {id:50,name:"Funny Bone",area:"West Omaha",cap:"350",type:"Comedy Club",lat:41.2580,lng:-96.0700,desc:"Omaha's premier stand-up club for nationally touring comedians.",url:"https://omaha.funnybone.com",img:u("photo-1585699324551-f6c309eedeca"),city:"omaha"},
-  {id:51,name:"Backline Comedy",area:"Downtown",cap:"150",type:"Comedy Club",lat:41.2555,lng:-95.9340,desc:"HQ for Omaha's local comedy. Improv, sketch, open mics, stand-up.",url:"https://backlinecomedy.com",img:u("photo-1585699324551-f6c309eedeca"),city:"omaha"},
-  {id:60,name:"Pinewood Bowl Theater",area:"Pioneers Park",cap:"4,500",type:"Outdoor",lat:40.7885,lng:-96.7272,desc:"Lincoln's outdoor amphitheater in a wooded setting.",url:"https://pinewoodbowl.org",img:u("photo-1506157786151-b8491531f063"),city:"lincoln"},
-  {id:61,name:"Bourbon Theatre",area:"Downtown Lincoln",cap:"800",type:"Indie / Club",lat:40.8136,lng:-96.7026,desc:"Lincoln's go-to live music venue for touring and local bands.",url:"https://bourbontheatre.com",img:u("photo-1459749411175-04bf5292ceea"),city:"lincoln"},
-  {id:62,name:"Lied Center",area:"UNL Campus",cap:"2,200",type:"Performing Arts",lat:40.8206,lng:-96.7014,desc:"UNL's performing arts center. Broadway, dance, orchestra, comedy.",url:"https://liedcenter.org",img:u("photo-1503095396549-807759245b35"),city:"lincoln"},
-];
-const VCATS=[{id:"all",label:"All"},{id:"Arena",label:"Arenas"},{id:"Performing Arts",label:"Performing Arts"},{id:"Indie / Club",label:"Indie / Club"},{id:"Comedy Club",label:"Comedy"},{id:"Bar / Venue",label:"Bars"},{id:"Museum / Attraction",label:"Museums"},{id:"Outdoor",label:"Outdoor"}];
-
-/* ═══ EVENT FILTER CONSTANTS ═══ */
-const ECATS=[{id:"all",label:"All",emoji:"📅"},{id:"concerts",label:"Concerts",emoji:"🎵"},{id:"sports",label:"Sports",emoji:"🏟️"},{id:"comedy",label:"Comedy",emoji:"😂"},{id:"family",label:"Family",emoji:"👨‍👩‍👧"},{id:"arts",label:"Arts",emoji:"🎭"},{id:"festivals",label:"Festivals",emoji:"🎪"}];
-const ESUBS={concerts:["Rock","Country","Hip-Hop","Jazz","Electronic","Pop","Metal","Folk","R&B","Indie","Classical","Tribute","Live Music"],sports:["Basketball","Football","Baseball","Volleyball","Hockey","Soccer","Wrestling"],comedy:["Stand-Up","Improv","Open Mic"],family:["Museum","Zoo","Science","Outdoor","Workshop"],arts:["Theater","Musical","Dance","Orchestra","Film","Gallery","Opera"],festivals:["Food","Music","Cultural","Holiday"]};
-const DATE_PRESETS=[{id:"all",label:"All Dates"},{id:"today",label:"Today"},{id:"week",label:"This Week"},{id:"month",label:"This Month"}];
-function matchDate(ev,range){if(range==="all")return true;const d=ev.date?.match(/^\d{4}-\d{2}-\d{2}$/)?new Date(ev.date+"T12:00:00"):null;if(!d)return range==="today";const now=new Date();now.setHours(0,0,0,0);if(range==="today")return d.toDateString()===now.toDateString();if(range==="week"){const end=new Date(now);end.setDate(end.getDate()+7);return d>=now&&d<=end;}if(range==="month"){const end=new Date(now);end.setMonth(end.getMonth()+1);return d>=now&&d<=end;}return true;}
-function matchSub(ev,sub){if(sub==="all")return true;const haystack=[...(ev.tags||[]),ev.title||"",ev.desc||""].join(" ").toLowerCase();return haystack.includes(sub.toLowerCase());}
-
-/* ═══ REAL-TIME SUN POSITION ═══ */
-const SUN_TABLE=[
-  {sr:7.5,ss:17.2},{sr:7.1,ss:17.8},{sr:7.3,ss:19.3},{sr:6.5,ss:20},{sr:6,ss:20.5},
-  {sr:5.8,ss:20.8},{sr:6,ss:20.7},{sr:6.4,ss:20.1},{sr:7,ss:19.3},{sr:7.4,ss:18.4},
-  {sr:7,ss:17},{sr:7.4,ss:16.8}
-];
-function getNowTv(){
-  const now=new Date(),mo=now.getMonth(),hr=now.getHours()+now.getMinutes()/60;
-  const{sr,ss}=SUN_TABLE[mo];
-  if(hr<=sr-1)return 95;if(hr<=sr)return 85+(sr-hr)*10;
-  if(hr>=ss+1)return 95;if(hr>=ss)return 85+(hr-ss)*10;
-  return 5+((hr-sr)/(ss-sr))*80;
-}
-const WX_ICONS={clear:"☀️",cloudy:"☁️",rainy:"🌧️",snowy:"❄️"};
 
 /* ═══ APP ═══ */
 export default function GOPrototype(){
+  const router=useRouter();
   const[mounted,setMounted]=useState(false);
   const[nowTv,setNowTv]=useState(50);
   const[tv,setTv]=useState(50);
@@ -775,6 +110,9 @@ export default function GOPrototype(){
   const[cities,setCities]=useState(new Set(["omaha"]));
   const[venCat,setVenCat]=useState("all");
   const[spotCat,setSpotCat]=useState("all");
+  const[galFilter,setGalFilter]=useState("All");
+  const[galHood,setGalHood]=useState("All");
+  const[galExpanded,setGalExpanded]=useState(null);
   const[parkTab,setParkTab]=useState("overview");
   const[w,setW]=useState(375);
   const[tab,setTab]=useState("today");
@@ -796,7 +134,7 @@ export default function GOPrototype(){
   const sec={maxWidth:mxW,margin:"0 auto",padding:`0 ${px}px`};
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
-  const navigateToEvent=(id)=>{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);};
+  const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+slugify(ev.title,ev.id)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
   const[evShow,setEvShow]=useState(30);
   useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");setEvShow(30);}},[tab]);
   useEffect(()=>{setEvShow(30);},[evCat,evSub,dateRange]);
@@ -948,7 +286,7 @@ export default function GOPrototype(){
           {WALKS.map((wk,i)=>(
             <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{wk.icon("#FFB74D",20)}</div>
+                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{resolveIcon(wk.icon)?.("#FFB74D",20)}</div>
                 <div style={{flex:1}}>
                   <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
                   <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
@@ -977,6 +315,19 @@ export default function GOPrototype(){
               </div>
             </div>
           ))}
+
+          {/* Museums & Galleries CTA */}
+          <div onClick={()=>{setPrevTab("today");setTab("museums");}} className="ecard" style={{background:"linear-gradient(135deg,#271F30 0%,#30263A 60%,#292134 100%)",borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,cursor:"pointer",animation:"cardIn .3s .2s both"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(179,157,219,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>🖼️</div>
+              <div style={{flex:1}}>
+                <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>Museums & Galleries</h3>
+                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#B39DDB"}}>{GALLERIES.length} venues · Mostly Free</p>
+                <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>Joslyn Art Museum, Bemis Center, Hot Shops & more. Explore Omaha's art scene.</p>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
         </div>}
 
         {false&&<div style={{marginTop:16}}>
@@ -985,7 +336,7 @@ export default function GOPrototype(){
             {SUNSETS.map((s,i)=>(
               <div key={s.id} className="ecard" style={{background:CG.sunset,borderRadius:18,border:`1px solid ${T.border}`,padding:"14px 16px",animation:`cardIn .3s ${i*.05}s both`}}>
                 <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                  <div style={{width:40,height:40,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{s.icon("#FFB74D",20)}</div>
+                  <div style={{width:40,height:40,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{resolveIcon(s.icon)?.("#FFB74D",20)}</div>
                   <div style={{flex:1}}>
                     <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{s.name}</h3>
                     <p style={{margin:"4px 0 0",fontSize:12,color:T.textBody,lineHeight:1.45}}>{s.desc}</p>
@@ -1093,7 +444,7 @@ export default function GOPrototype(){
         <Head text="Parks & Gardens" count={PARKS.length} mt={16} color="#81C784"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {PARKS.map(p=>(
-            <div key={p.id} onClick={()=>{setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+            <Link key={p.id} href={"/parks/"+p.id+"/"} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
               <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
                 <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -1105,10 +456,10 @@ export default function GOPrototype(){
                 <div style={{display:"flex",gap:5,marginTop:7,flexWrap:"wrap"}}>{p.tags.map(tag=><span key={tag} style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
                 <div style={{display:"flex",gap:6,marginTop:10}}>
                   <a href={mapsDir(p.lat,p.lng)} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:`${p.color||"#81C784"}18`,border:`1px solid ${p.color||"#81C784"}33`,color:p.color||"#81C784",fontSize:10,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.dir(p.color||"#81C784",11)} Directions</a>
-                  <button onClick={e=>{e.stopPropagation();setParkTab("overview");setTab("park:"+p.id);window.scrollTo(0,0);}} className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.chev(T.textBody,11)} Details</button>
+                  <span className="hbtn" style={{flex:1,padding:"7px 0",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textAlign:"center",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>{IC.chev(T.textBody,11)} Details</span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
@@ -1139,7 +490,7 @@ export default function GOPrototype(){
         {WALKS.map((wk,i)=>(
           <div key={wk.id} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{wk.icon("#FFB74D",20)}</div>
+              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,183,77,.1)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{resolveIcon(wk.icon)?.("#FFB74D",20)}</div>
               <div style={{flex:1}}>
                 <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:"#FFB74D"}}>{wk.distance} · {wk.time}</p>
@@ -1154,9 +505,9 @@ export default function GOPrototype(){
         <Head text="Neighborhoods" count={HOODS.length} color="#CE93D8"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {HOODS.map(h=>(
-            <div key={h.id} onClick={()=>{setSpotCat("all");setTab("hood:"+h.id);}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?220:isM?180:200,minWidth:isD?220:isM?180:200,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+            <Link key={h.id} href={"/neighborhoods/"+h.id+"/"} onClick={()=>setSpotCat("all")} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?220:isM?180:200,minWidth:isD?220:isM?180:200,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
               <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
-                <img src={h.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
+                <img src={(h.imgs||[])[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)`}}/>
                 <div style={{position:"absolute",top:10,left:10}}>
                   <div style={{width:8,height:8,borderRadius:"50%",background:h.color,boxShadow:`0 0 8px ${h.color}66`}}/>
@@ -1170,7 +521,7 @@ export default function GOPrototype(){
                 <p style={{margin:0,fontSize:11,color:T.textBody,lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{h.desc}</p>
                 <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>{h.tags.slice(0,3).map(tag=><span key={tag} style={{fontSize:8,padding:"2px 6px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textDim,fontWeight:500}}>{tag}</span>)}</div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
@@ -1196,6 +547,18 @@ export default function GOPrototype(){
             <div>
               <h3 style={{margin:0,fontSize:16,fontWeight:700,color:T.textHi}}>Venues</h3>
               <p style={{margin:"2px 0 0",fontSize:11,color:T.textSec,letterSpacing:.5}}>{VENUES.length} venues · Arenas, clubs, theaters & more</p>
+            </div>
+          </div>
+          <div style={{transform:"rotate(0)",flexShrink:0}}>{IC.chev(T.textSec,20)}</div>
+        </div>
+
+        {/* ── Museums & Galleries (compact link) ── */}
+        <div onClick={()=>{setPrevTab("explore");setTab("museums");}} className="ecard" style={{background:"linear-gradient(135deg,#271F30 0%,#30263A 60%,#292134 100%)",borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"16px":"20px 24px",marginTop:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:14}}>
+            <div style={{width:48,height:48,borderRadius:14,background:"rgba(179,157,219,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>🖼️</div>
+            <div>
+              <h3 style={{margin:0,fontSize:16,fontWeight:700,color:T.textHi}}>Museums & Galleries</h3>
+              <p style={{margin:"2px 0 0",fontSize:11,color:T.textSec,letterSpacing:.5}}>{GALLERIES.length} venues · Joslyn, Bemis, Hot Shops & more</p>
             </div>
           </div>
           <div style={{transform:"rotate(0)",flexShrink:0}}>{IC.chev(T.textSec,20)}</div>
@@ -1237,6 +600,163 @@ export default function GOPrototype(){
             </div>
           </a>
         ))}
+        <div style={{height:90}}/>
+      </div>}
+
+      {/* ═══ MUSEUMS & GALLERIES (accessed from Explore / Today) ═══ */}
+      {tab==="museums"&&<div style={sec}>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginTop:16,marginBottom:12}}>
+          <button onClick={()=>setTab(prevTab==="museums"?"explore":prevTab)} className="hbtn" style={{background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,borderRadius:99,padding:"6px 10px",cursor:"pointer",display:"flex",alignItems:"center"}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textSec} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <h2 style={{margin:0,fontSize:16,fontWeight:700,color:T.textHi,letterSpacing:.5}}>Museums & Galleries</h2>
+          <span style={{fontSize:11,color:T.textDim}}>{GALLERIES.filter(v=>(galFilter==="All"||v.type===galFilter)&&(galHood==="All"||v.neighborhood===galHood)).length}</span>
+        </div>
+
+        {/* Quick stats */}
+        <div style={{display:"flex",gap:8,marginBottom:16,overflowX:"auto",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
+          {[{val:GALLERIES.filter(v=>v.admissionFree).length,label:"Free venues"},{val:GALLERIES.filter(v=>v.type==="Museum").length,label:"Museums"},{val:GALLERIES.filter(v=>v.type==="Gallery").length,label:"Galleries"},{val:GAL_HOODS.length-1,label:"Neighborhoods"}].map((s,i)=>(
+            <div key={i} style={{flexShrink:0,padding:"10px 16px",borderRadius:14,textAlign:"center",background:CG._,border:`1px solid ${T.border}`,minWidth:80}}>
+              <p style={{fontSize:20,fontWeight:700,color:"#B39DDB",margin:"0 0 2px"}}>{s.val}</p>
+              <p style={{fontSize:9,color:T.textSec,fontWeight:600,letterSpacing:1,textTransform:"uppercase",margin:0}}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Type filter */}
+        <div style={{display:"flex",gap:6,marginBottom:8,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+          {GAL_FILTERS.map(f=>{const active=galFilter===f;return(
+            <button key={f} onClick={()=>setGalFilter(f)} className="pill" style={{padding:"6px 14px",borderRadius:99,background:active?"rgba(179,157,219,.12)":"rgba(255,255,255,.04)",border:`1px solid ${active?"rgba(179,157,219,.35)":T.border}`,color:active?"#B39DDB":T.textSec,cursor:"pointer",fontSize:10,fontWeight:active?700:500,letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap",flexShrink:0}}>
+              {f==="All"?`All (${GALLERIES.length})`:`${f} (${GALLERIES.filter(v=>v.type===f).length})`}
+            </button>);})}
+        </div>
+
+        {/* Neighborhood filter */}
+        <div style={{display:"flex",gap:5,marginBottom:20,overflowX:"auto",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
+          {GAL_HOODS.map(n=>{const active=galHood===n;return(
+            <button key={n} onClick={()=>setGalHood(n)} className="pill" style={{padding:"5px 11px",borderRadius:99,background:active?"rgba(255,255,255,.06)":"transparent",border:`1px solid ${active?T.borderHi:"transparent"}`,color:active?T.textHi:T.textDim,cursor:"pointer",fontSize:10,fontWeight:active?600:400,whiteSpace:"nowrap",flexShrink:0}}>
+              {n}
+            </button>);})}
+        </div>
+
+        {/* Venue cards */}
+        {(()=>{const galFiltered=GALLERIES.filter(v=>(galFilter==="All"||v.type===galFilter)&&(galHood==="All"||v.neighborhood===galHood));const today=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date().getDay()];const ac="#B39DDB";const artGrad="linear-gradient(135deg,#271F30 0%,#30263A 60%,#292134 100%)";return galFiltered.length===0?(
+          <div style={{textAlign:"center",padding:"40px 0"}}>
+            <p style={{fontSize:14,color:T.textSec}}>No venues match those filters.</p>
+            <button onClick={()=>{setGalFilter("All");setGalHood("All");}} className="hbtn" style={{marginTop:12,padding:"10px 20px",borderRadius:99,cursor:"pointer",background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Reset Filters</button>
+          </div>
+        ):galFiltered.map(v=>{const open=galExpanded===v.id;const todayH=v.hours?.find(h=>h.day===today);const isOpen=todayH&&!todayH.closed;const isLateNight=todayH?.late;return(
+          <div key={v.id} style={{marginBottom:12}}>
+            {/* Card header */}
+            <div onClick={()=>setGalExpanded(open?null:v.id)} style={{borderRadius:open?"18px 18px 0 0":18,background:artGrad,overflow:"hidden",border:`1px solid ${open?ac+"44":T.border}`,borderBottom:open?`1px solid ${T.border}`:undefined,cursor:"pointer"}}>
+              <div style={{position:"relative",height:open?160:120,overflow:"hidden"}}>
+                <img src={v.img} alt={v.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>
+                <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(39,31,48,.2) 0%,rgba(39,31,48,.85) 100%)"}}/>
+                <div style={{position:"absolute",top:10,left:12,display:"flex",gap:6}}>
+                  <span style={{fontSize:8,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",padding:"3px 9px",borderRadius:99,background:`${ac}25`,color:ac,border:`1px solid ${ac}40`}}>{v.type}</span>
+                  {v.admissionFree&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",padding:"3px 9px",borderRadius:99,background:"rgba(125,212,160,.15)",color:T.green,border:"1px solid rgba(125,212,160,.25)"}}>Free</span>}
+                  {v.badge&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"3px 9px",borderRadius:99,background:"rgba(212,173,101,.15)",color:T.gold,border:"1px solid rgba(212,173,101,.25)"}}>{v.badge}</span>}
+                </div>
+                <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 14px 12px"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10}}>
+                    <div style={{flex:1,minWidth:0}}>
+                      <h3 style={{fontSize:16,fontWeight:700,color:T.textHi,margin:"0 0 4px",lineHeight:1.2}}>{v.name}</h3>
+                      <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
+                        <span style={{fontSize:11,color:T.venue}}>{v.neighborhood}</span>
+                        {todayH&&<span style={{fontSize:9,fontWeight:600,color:isOpen?T.green:T.red}}>{isOpen?`Open today ${todayH.hours}`:"Closed today"}{isLateNight?" \u2022 Late night":""}</span>}
+                      </div>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{transform:open?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s",flexShrink:0}}><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Expanded detail */}
+            {open&&<div style={{background:artGrad,borderRadius:"0 0 18px 18px",border:`1px solid ${ac}44`,borderTop:"none",padding:"16px 16px 20px"}}>
+              <p style={{fontSize:13,color:T.textBody,lineHeight:1.7,margin:"0 0 18px"}}>{v.blurb}</p>
+
+              {/* Address + contact */}
+              <div style={{padding:"14px",borderRadius:14,marginBottom:16,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`}}>
+                <p style={{fontSize:12,color:T.textHi,margin:"0 0 4px",fontWeight:600}}>{v.address}</p>
+                {v.phone&&<p style={{fontSize:11,color:T.textSec,margin:"0 0 2px"}}>{v.phone}</p>}
+                <p style={{fontSize:11,color:ac,margin:0}}>{v.admission}</p>
+              </div>
+
+              {/* Hours */}
+              {v.hours&&<div style={{marginBottom:16}}>
+                <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 8px"}}>Hours</p>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {v.hours.map((h,i)=>{const isTd=h.day===today;return(
+                    <div key={i} style={{padding:"6px 10px",borderRadius:10,flex:"0 0 auto",minWidth:isM?"calc(50% - 3px)":"auto",background:isTd?`${T.green}10`:"rgba(255,255,255,.02)",border:`1px solid ${isTd?T.green+"30":"rgba(255,255,255,.04)"}`}}>
+                      <span style={{fontSize:10,fontWeight:700,color:isTd?T.green:T.textDim,marginRight:6}}>{h.day}</span>
+                      <span style={{fontSize:11,color:h.closed?T.textDim:T.textBody}}>{h.hours}</span>
+                      {h.late&&<span style={{fontSize:8,color:ac,marginLeft:4}}>{"\u2605"}</span>}
+                    </div>);})}
+                </div>
+              </div>}
+
+              {/* Exhibitions */}
+              {v.exhibitions&&<div style={{marginBottom:16}}>
+                <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 8px"}}>Exhibitions</p>
+                {v.exhibitions.map((exh,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderTop:i>0?"1px solid rgba(255,255,255,.04)":"none"}}>
+                    <span style={{fontSize:7,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"2px 7px",borderRadius:99,flexShrink:0,background:exh.tag==="Now"?`${T.green}18`:`${ac}18`,color:exh.tag==="Now"?T.green:ac}}>{exh.tag}</span>
+                    <div style={{flex:1,minWidth:0}}>
+                      <p style={{fontSize:12,fontWeight:600,color:T.textHi,margin:0}}>{exh.title}</p>
+                      <p style={{fontSize:10,color:T.textDim,margin:"2px 0 0"}}>{exh.dates}</p>
+                    </div>
+                  </div>))}
+              </div>}
+
+              {/* Highlights */}
+              {v.highlights&&<div style={{marginBottom:16}}>
+                <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 8px"}}>Highlights</p>
+                {v.highlights.map((h,i)=>(
+                  <div key={i} style={{display:"flex",gap:8,padding:"5px 0"}}>
+                    <span style={{width:5,height:5,borderRadius:99,background:ac,flexShrink:0,marginTop:6,opacity:.5}}/>
+                    <p style={{fontSize:12,color:T.textBody,margin:0,lineHeight:1.5}}>{h}</p>
+                  </div>))}
+              </div>}
+
+              {/* Programs */}
+              {v.programs&&<div style={{marginBottom:16}}>
+                <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 8px"}}>Programs & Events</p>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                  {v.programs.map((p,i)=>(
+                    <span key={i} style={{fontSize:10,padding:"5px 11px",borderRadius:99,background:`${ac}08`,border:`1px solid ${ac}22`,color:T.textBody,fontWeight:500}}>{p}</span>))}
+                </div>
+              </div>}
+
+              {/* Notice */}
+              {v.notice&&<div style={{padding:"10px 14px",borderRadius:12,marginBottom:16,background:"rgba(232,54,79,.06)",border:"1px solid rgba(232,54,79,.12)"}}>
+                <p style={{fontSize:11,color:T.textBody,margin:0,lineHeight:1.5}}>
+                  <span style={{color:T.red,fontWeight:700,fontSize:9,letterSpacing:1,textTransform:"uppercase"}}>Notice: </span>{v.notice}
+                </p>
+              </div>}
+
+              {/* Action buttons */}
+              <div style={{display:"flex",gap:8}}>
+                <a href={v.web} target="_blank" rel="noopener noreferrer" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"12px 0",borderRadius:99,textDecoration:"none",background:`linear-gradient(135deg, ${T.accent}, ${T.accent}dd)`,color:T.bg,fontSize:11,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase"}}>Visit Website</a>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name+" "+v.address)}`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"12px 20px",borderRadius:99,textDecoration:"none",background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Map</a>
+              </div>
+            </div>}
+          </div>);})})()}
+
+        {/* First Friday callout */}
+        <div style={{marginTop:28,padding:"20px 18px",borderRadius:18,background:CG._,border:`1px solid ${T.border}`}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+            <span style={{fontSize:28}}>{"\u{1F3A8}"}</span>
+            <div>
+              <p style={{fontSize:15,fontWeight:700,color:T.textHi,margin:0}}>First Friday Art Walk</p>
+              <p style={{fontSize:11,color:"#B39DDB",margin:"3px 0 0",fontWeight:500}}>First Friday of Every Month</p>
+            </div>
+          </div>
+          <p style={{fontSize:13,color:T.textBody,lineHeight:1.7,margin:"0 0 12px"}}>Omaha's monthly celebration of arts & culture. Galleries across the city open their doors with new exhibitions, live music, refreshments, and artist meet-and-greets. Benson, the Old Market, and Midtown are the main hubs. Most events run 6-9 PM.</p>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+            {["Benson","Old Market","Midtown","North Omaha","Free"].map(t=>(
+              <span key={t} style={{fontSize:9,padding:"4px 10px",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.textSec,fontWeight:500}}>{t}</span>))}
+          </div>
+        </div>
+
         <div style={{height:90}}/>
       </div>}
 

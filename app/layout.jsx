@@ -91,6 +91,35 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+        {/* iOS viewport height fix + prevent body scroll */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                var last = 0;
+                function setH(){
+                  var h = window.innerHeight;
+                  if(h !== last){
+                    last = h;
+                    document.documentElement.style.setProperty('--app-h', h + 'px');
+                  }
+                  requestAnimationFrame(setH);
+                }
+                setH();
+
+                document.addEventListener('touchmove', function(e){
+                  var t = e.target;
+                  while(t && t !== document.body){
+                    if(t.id === 'app-content') return;
+                    if(t.scrollHeight > t.clientHeight && getComputedStyle(t).overflowY !== 'hidden') return;
+                    t = t.parentElement;
+                  }
+                  e.preventDefault();
+                }, {passive: false});
+              })();
+            `,
+          }}
+        />
       </head>
       <body><Providers>{children}</Providers></body>
     </html>

@@ -1,0 +1,87 @@
+{
+  "parks": {
+    "cunningham-lake": { "unsplash": "photo-1696787945520-48a0b7e89c88", "alt": "Cunningham Lake" },
+    "gene-leahy-mall": { "unsplash": "photo-1441974231531-c6227db76b6e", "alt": "Gene Leahy Mall" },
+    "zorinsky-lake": { "unsplash": "photo-1557929878-b358f3bdbdd7", "alt": "Zorinsky Lake" },
+    "standing-bear-lake": { "unsplash": "photo-1651282025373-2bda7c28e179", "alt": "Standing Bear Lake" },
+    "heartland-america": { "unsplash": "photo-1764923067178-e935ce6a1f73", "alt": "Heartland of America Park" },
+    "fontenelle-forest": { "unsplash": "photo-1448375240586-882707db888b", "alt": "Fontenelle Forest" },
+    "lauritzen-gardens": { "unsplash": "photo-1585320806297-9794b3e4eeae", "alt": "Lauritzen Gardens" },
+    "elmwood-park": { "unsplash": "photo-1769184619863-c3de34d7c8b8", "alt": "Elmwood Park" },
+    "memorial-park": { "unsplash": "photo-1759193513693-97638b7f1160", "alt": "Memorial Park" },
+    "chalco-hills": { "unsplash": "photo-1717379759277-f8fd8ba1615a", "alt": "Chalco Hills" },
+    "walnut-creek": { "unsplash": "photo-1758038564613-c0f710730233", "alt": "Walnut Creek Lake" },
+    "turner-park": { "unsplash": "photo-1765099272142-c5ca0ed02fcb", "alt": "Turner Park" }
+  },
+  "venues": {
+    "10": { "unsplash": "photo-1508854710579-5cecc3a9ff17", "alt": "Reverb Lounge" },
+    "30": { "unsplash": "photo-1415201364774-f6f0bb35f28f", "alt": "The Jewell" },
+    "43": { "unsplash": "photo-1552674605-db6ffd4facb5", "alt": "Fontenelle Forest" },
+    "51": { "unsplash": "photo-1543007629-3748be7b45f0", "alt": "Backline Comedy" },
+    "60": { "unsplash": "photo-1470229722913-7c0e2dbbafd3", "alt": "Pinewood Bowl Theater" },
+    "61": { "unsplash": "photo-1546708770-589dab7b22c7", "alt": "Bourbon Theatre" },
+    "62": { "unsplash": "photo-1555939594-58d7cb561ad1", "alt": "Lied Center" }
+  },
+  "hoods": {
+    "old-market": {
+      "imgs": ["photo-1768573264763-63b2e4b43ae7", "photo-1700519140360-a32b29e4d26f", "photo-1672015810250-71dc79a43dda"],
+      "alt": "Old Market"
+    },
+    "benson": {
+      "imgs": ["photo-1692113569278-ecf365a8347d", "photo-1683527610945-b567aa5aa880", "photo-1563094890-4810af8847eb"],
+      "alt": "Benson"
+    },
+    "dundee": {
+      "imgs": ["photo-1764096535135-936651fee5df", "photo-1763325088610-b4ddfcf04a64", "photo-1759306449870-b89cd06fe219"],
+      "alt": "Dundee"
+    },
+    "blackstone": {
+      "imgs": ["photo-1552815534-3193a1faec82", "photo-1571520620924-6f4c9d500177", "photo-1694544357727-6fff491d665c"],
+      "alt": "Blackstone"
+    },
+    "north-downtown": {
+      "imgs": ["photo-1656283384093-1e227e621fad", "photo-1669459846550-c60006acdec6", "photo-1682447404920-4be1294c2854"],
+      "alt": "North Downtown"
+    },
+    "little-italy": {
+      "imgs": ["photo-1740362867098-f05db24f6bf9", "photo-1734356959885-54fe2e99c1cd", "photo-1650016714864-25b3847b6901"],
+      "alt": "Little Italy"
+    },
+    "aksarben": {
+      "imgs": ["photo-1764445319977-9f92482b2927", "photo-1745756115195-7db80daeb4c2", "photo-1768913124915-44434848d3bc"],
+      "alt": "Aksarben Village"
+    },
+    "west-omaha": {
+      "imgs": ["photo-1603616833090-22586c4ab5b6", "photo-1637946095935-75936cf3c11c", "photo-1684602766513-7d0694cd5bd0"],
+      "alt": "West Omaha"
+    },
+    "south-omaha": {
+      "imgs": ["photo-1747835680062-94a22ca03ba7", "photo-1771252692623-e2fe7874fadf", "photo-1612276545130-093b9f330be4"],
+      "alt": "South Omaha"
+    },
+    "midtown": {
+      "imgs": ["photo-1766360884068-b83757593c2f", "photo-1574101412892-7e945f20b282", "photo-1633485672364-b0c82adb7662"],
+      "alt": "Midtown Crossing"
+    }
+  },
+  "trails": {
+    "t1": { "unsplash": "photo-1552674605-db6ffd4facb5", "alt": "Keystone Trail" },
+    "t2": { "unsplash": "photo-1759193531554-49a8c73f1463", "alt": "Bob Kerrey Bridge Loop" },
+    "t3": { "unsplash": "photo-1761419177049-8d52d805dd32", "alt": "Fontenelle Forest trails" },
+    "t4": { "unsplash": "photo-1696805170628-2e9be70d19b9", "alt": "Wehrspann Lake Loop" },
+    "t5": { "unsplash": "photo-1720592247618-2d7e968d59fe", "alt": "Zorinsky Lake Trail" }
+  },
+  "seeds": {
+    "1": { "unsplash": "photo-1604364505966-e35d40abb1ae", "alt": "Black Jacket Symphony" },
+    "2": { "unsplash": "photo-1558625332-9a35ee767f24", "alt": "Tig Notaro" },
+    "3": { "unsplash": "photo-1640862101983-9f7ef7fd7cc9", "alt": "Creighton vs. DePaul" },
+    "4": { "unsplash": "photo-1516450360452-9312f5e86fc7", "alt": "Nate Jackson Live" },
+    "5": { "unsplash": "photo-1682133114083-81319fc857fe", "alt": "Ethel Cain" },
+    "6": { "unsplash": "photo-1612872087720-bb876e2e67d1", "alt": "LOVB Nebraska" },
+    "7": { "unsplash": "photo-1543986567-9c089f815520", "alt": "All Them Witches" },
+    "8": { "unsplash": "photo-1603910234616-3b5f4a6be2b4", "alt": "Backline Improv" },
+    "9": { "unsplash": "photo-1566577739112-5180d4bf9390", "alt": "Storm Chasers Opener" },
+    "10": { "unsplash": "photo-1723465522849-832b1e4dfcbb", "alt": "Pinewood Bowl Concert" },
+    "11": { "unsplash": "photo-1557929878-b358f3bdbdd7", "alt": "Husker Volleyball" }
+  }
+}

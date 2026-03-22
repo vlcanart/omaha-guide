@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { TRAIL_MAP_DATA } from "./trail-data";
 const TrailMap=dynamic(()=>import("./TrailMap"),{ssr:false,loading:()=>(
@@ -101,6 +101,8 @@ const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
 export default function GOPrototype(){
   const router=useRouter();
   const[mounted,setMounted]=useState(false);
+  const contentRef=useRef(null);
+  const scrollTop=()=>{if(contentRef.current)contentRef.current.scrollTo(0,0);else scrollTop();};
   const[nowTv,setNowTv]=useState(50);
   const[tv,setTv]=useState(50);
   const[isLive,setIsLive]=useState(true);
@@ -118,9 +120,10 @@ export default function GOPrototype(){
   const[tab,setTab]=useState("today");
   const[prevTab,setPrevTab]=useState("today");
   const[favs,setFavs]=useState([]);
-  const[evCat,setEvCat]=useState("all");
+  const[evCat,setEvCat]=useState("concerts");
   const[evSub,setEvSub]=useState("all");
-  const[dateRange,setDateRange]=useState("all");
+  const[selectedDates,setSelectedDates]=useState(new Set([CAL_DATES[0].iso]));
+  const[showSubs,setShowSubs]=useState(false);
   useEffect(()=>{setMounted(true);const nv=getNowTv();setNowTv(nv);setTv(nv);setW(window.innerWidth);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);},[]);
   useEffect(()=>{const h=()=>setW(window.innerWidth);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h)},[]);
   useEffect(()=>{const tick=()=>{const nv=getNowTv();setNowTv(nv);if(isLive)setTv(nv);const n=new Date(),h=n.getHours()%12||12,m=n.getMinutes();setTimeLabel(`${h}:${m<10?"0":""}${m} ${n.getHours()>=12?"PM":"AM"}`);};const id=setInterval(tick,60000);return()=>clearInterval(id);},[isLive]);
@@ -136,9 +139,9 @@ export default function GOPrototype(){
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+slugify(ev.title,ev.id)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
   const[evShow,setEvShow]=useState(30);
-  useEffect(()=>{if(tab!=="events"){setEvCat("all");setEvSub("all");setDateRange("all");setEvShow(30);}},[tab]);
-  useEffect(()=>{setEvShow(30);},[evCat,evSub,dateRange]);
-  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>evCat==="all"||e.cat===evCat).filter(e=>matchDate(e,dateRange)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,dateRange,cities]);
+  useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);setEvShow(30);}},[tab]);
+  useEffect(()=>{setEvShow(30);},[evCat,evSub,selectedDates]);
+  const filteredEvents=useMemo(()=>EVENTS.filter(e=>cityMatch(e)).filter(e=>e.cat===evCat).filter(e=>matchDate(e,selectedDates)).filter(e=>matchSub(e,evSub)).sort((a,b)=>{const da=a.date?.match(/^\d{4}/)?a.date:"0000",db=b.date?.match(/^\d{4}/)?b.date:"0000";return da.localeCompare(db);}),[evCat,evSub,selectedDates,cities]);
   const nb=Math.max(0,Math.min(1,(tv-50)/20));
   const isDay=tv<60,isNite=tv>=60;
   const mLabel=isDay?"Today":"Tonight";
@@ -178,15 +181,16 @@ export default function GOPrototype(){
      All other tabs get compact strip (95-135px) showing bottom third of skyline.
      SVG's xMidYMax slice anchors buildings at bottom; crops above church steeple.
      GO: title stays visible at reduced size. No celestial or weather elements. */
-  const fullHero=tab==="today";
-  const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:");
+  const fullHero=tab==="today"||tab==="events";
+  const isTrailPage=tab.startsWith("trail:")||tab.startsWith("event:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:");
   const heroH=isTrailPage?"0px":fullHero?(isD?"55vh":isM?"50vh":"52vh"):(isD?"120px":isM?"95px":"105px");
   const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
   const heroMax=isTrailPage?0:fullHero?560:135;
 
   return (
-    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:T.sans,paddingBottom:130}}>
+    <div id="app-shell" style={{background:T.bg,color:T.text,fontFamily:T.sans}}>
       {!mounted?<div style={{height:"100vh",background:T.bg}}/>:<>
+      <div id="app-content" ref={contentRef}>
 
       {/* ═══ HERO ═══ */}
       <div style={{position:"relative",height:heroH,minHeight:heroMin,maxHeight:heroMax,overflow:"hidden",transition:"height 0.5s ease, min-height 0.5s ease, max-height 0.5s ease"}}>
@@ -259,7 +263,7 @@ export default function GOPrototype(){
           <Head text="Trails & Rides" count={TRAILS.length} mt={4} color="#81C784"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {TRAILS.map(t=>(
-              <div key={t.id} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start"}}>
+              <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
                   <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -295,12 +299,32 @@ export default function GOPrototype(){
                   <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <Head text="Walking Tours" count={WALKS.length} color="#FFB74D"/>
+          <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
+            {WALKS.map(wk=>(
+              <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
+                <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
+                  {wk.icon("#FFB74D",36)}
+                  <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
+                    <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
+                    <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>
+                  </div>
+                </div>
+                <div style={{padding:"10px 12px 12px"}}>
+                  <h3 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{wk.name}</h3>
+                  <p style={{margin:"4px 0 0",fontSize:11,color:T.textBody,lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{wk.desc}</p>
+                  <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>{wk.tags.map(tag=><span key={tag} style={{fontSize:8,padding:"2px 7px",borderRadius:99,background:"rgba(255,255,255,.04)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
 
           <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
           {DAYTIME.map((a,i)=>(
-            <div key={a.id} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`}}>
+            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("venue:"+a.id);scrollTop();}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
                 <div style={{flex:1}}>
@@ -392,27 +416,37 @@ export default function GOPrototype(){
 
       {/* ═══ EVENTS TAB ═══ */}
       {tab==="events"&&<div style={sec}>
-        {/* City filter */}
-        <div style={{display:"flex",gap:8,flexWrap:"nowrap",overflowX:"auto",paddingTop:16,paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {[["omaha","Omaha"],["cb","Council Bluffs"],["lincoln","Lincoln"]].map(([k,label])=><button key={k} onClick={()=>togCity(k)} style={{background:cities.has(k)?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${cities.has(k)?T.accent+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:36}}><span style={{fontSize:11,fontWeight:600,color:cities.has(k)?T.accent:T.textSec,letterSpacing:1,textTransform:"uppercase"}}>{label}</span></button>)}
+        {/* Calendar date scroller */}
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingTop:16,paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
+          {CAL_DATES.map(cd=>{const sel=selectedDates.has(cd.iso);return(
+            <button key={cd.iso} onClick={()=>setSelectedDates(prev=>selectDateRange(cd.iso,prev))} className="daybtn" style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:sel?T.accent:"rgba(255,255,255,.06)",border:`1px solid ${sel?T.accent:T.border}`,borderRadius:14,padding:"8px 10px",cursor:"pointer",flexShrink:0,minWidth:52,minHeight:62}}>
+              <span style={{fontSize:9,fontWeight:600,color:sel?"#000":T.textSec,letterSpacing:.8,textTransform:"uppercase"}}>{cd.wd}</span>
+              <span style={{fontSize:20,fontWeight:700,color:sel?"#000":T.text,lineHeight:1.1}}>{cd.dn}</span>
+              <span style={{fontSize:8,fontWeight:600,color:sel?"#000":T.textDim,letterSpacing:.5,textTransform:"uppercase"}}>{cd.mn}</span>
+            </button>);
+          })}
         </div>
-        {/* Date presets */}
-        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {DATE_PRESETS.map(dp=><button key={dp.id} onClick={()=>setDateRange(dp.id)} style={{background:dateRange===dp.id?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${dateRange===dp.id?T.accent+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:36}}><span style={{fontSize:11,fontWeight:600,color:dateRange===dp.id?T.accent:T.textSec,letterSpacing:.8}}>{dp.label}</span></button>)}
-        </div>
+        {/* Quick date presets */}
+        {(()=>{const wk=getWeekDates(),we=getWeekendDates(),mo=getMonthDates();return(
+        <div style={{display:"flex",gap:8,paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+          {[{label:"This Week",dates:wk},{label:"Weekend",dates:we},{label:"This Month",dates:mo}].map(p=>{const active=setsEqual(selectedDates,p.dates);return(
+            <button key={p.label} onClick={()=>setSelectedDates(active?new Set([CAL_DATES[0].iso]):p.dates)} style={{background:active?`${T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${active?T.accent+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}>
+              <span style={{fontSize:10,fontWeight:600,color:active?T.accent:T.textSec,letterSpacing:.6}}>{p.label}</span>
+            </button>);})}
+        </div>);})()}
         {/* Category pills */}
         <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:8,WebkitOverflowScrolling:"touch"}}>
-          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
+          {ECATS.map(ec=>{const ac=CA[ec.id]||T.accent;return<button key={ec.id} onClick={()=>{setEvCat(ec.id);setEvSub("all");setShowSubs(true);}} style={{background:evCat===ec.id?`${ac}18`:"rgba(255,255,255,.06)",border:`1px solid ${evCat===ec.id?ac+"40":T.border}`,borderRadius:99,padding:"8px 16px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,display:"flex",alignItems:"center",gap:5,minHeight:36}}><span style={{fontSize:14}}>{ec.emoji}</span><span style={{fontSize:11,fontWeight:600,color:evCat===ec.id?ac:T.textSec,letterSpacing:.8}}>{ec.label}</span></button>;})}
         </div>
-        {/* Subcategory pills */}
-        {evCat!=="all"&&ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
+        {/* Subcategory pills — hidden until category tapped */}
+        {showSubs&&ESUBS[evCat]&&<div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:10,WebkitOverflowScrolling:"touch"}}>
           <button onClick={()=>setEvSub("all")} style={{background:evSub==="all"?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub==="all"?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub==="all"?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>All</span></button>
           {ESUBS[evCat].map(s=><button key={s} onClick={()=>setEvSub(s)} style={{background:evSub===s?`${CA[evCat]||T.accent}18`:"rgba(255,255,255,.06)",border:`1px solid ${evSub===s?(CA[evCat]||T.accent)+"40":T.border}`,borderRadius:99,padding:"7px 14px",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,minHeight:34}}><span style={{fontSize:10,fontWeight:600,color:evSub===s?CA[evCat]||T.accent:T.textSec,letterSpacing:.6}}>{s}</span></button>)}
         </div>}
         {/* Events heading */}
-        <Head text={evCat==="all"?"All Events":ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
+        <Head text={ECATS.find(c=>c.id===evCat)?.label||"Events"} count={filteredEvents.length} mt={4} color={CA[evCat]||T.accent}/>
         {/* Event cards — paginated for performance */}
-        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvCat("all");setEvSub("all");setDateRange("all");}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
+        {filteredEvents.length===0?<div style={{textAlign:"center",padding:"40px 20px"}}><p style={{fontSize:14,color:T.textSec,marginBottom:12}}>No events match your filters</p><button onClick={()=>{setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);}} className="hbtn" style={{background:`${T.accent}15`,border:`1px solid ${T.accent}33`,borderRadius:99,padding:"10px 24px",cursor:"pointer",color:T.accent,fontSize:13,fontWeight:600,minHeight:40}}>Clear Filters</button></div>:<>
         {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
@@ -467,7 +501,7 @@ export default function GOPrototype(){
         <Head text="Trails & Rides" count={TRAILS.length} color="#81C784"/>
         <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
           {TRAILS.map(t=>(
-            <div key={t.id} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start"}}>
+            <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
                 <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -498,8 +532,8 @@ export default function GOPrototype(){
                 <a href={mapsDir(wk.lat,wk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:4,marginTop:10,padding:"7px 14px",borderRadius:99,background:"rgba(255,183,77,.1)",border:"1px solid rgba(255,183,77,.2)",color:"#FFB74D",fontSize:10,fontWeight:600,textDecoration:"none"}}>{IC.dir("#FFB74D",11)} Start Walk</a>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         {/* ── Neighborhoods ── */}
         <Head text="Neighborhoods" count={HOODS.length} color="#CE93D8"/>
@@ -951,7 +985,7 @@ export default function GOPrototype(){
         if(!ev)return null;
         return <EventDetail event={ev} isSaved={favs.includes(ev.id)}
           onToggleSave={()=>tog(ev.id)}
-          onBack={()=>{setTab(prevTab);window.scrollTo(0,0);}}
+          onBack={()=>{setTab(prevTab);scrollTop();}}
           isM={isM} isT={isT} isD={isD}/>;
       })()}
 
@@ -1074,7 +1108,7 @@ export default function GOPrototype(){
             {park.trails.map((t,i)=>{
               const dc=t.difficulty==="Easy"?pc:t.difficulty==="Moderate"?"#E8B54D":T.red;
               const hasMap=!!TRAIL_MAP_DATA[parkId];
-              return <div key={i} onClick={()=>{if(hasMap){setTab("trail:"+parkId+":"+i);window.scrollTo(0,0);}}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12,cursor:hasMap?"pointer":"default"}}>
+              return <div key={i} onClick={()=>{if(hasMap){setTab("trail:"+parkId+":"+i);scrollTop();}}} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"18px 16px":"20px 18px",marginBottom:12,cursor:hasMap?"pointer":"default"}}>
                 <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:10}}>
                   <div>
                     <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:0}}>{t.name}</p>
@@ -1234,6 +1268,119 @@ export default function GOPrototype(){
         </div>;
       })()}
 
+      {/* ═══ TRAIL DETAIL PAGE ═══ */}
+      {tab.startsWith("trailDetail:")&&(()=>{
+        const trailId=tab.split(":")[1];
+        const trailDataMap={t1:"keystone-trail",t2:"bob-kerrey-bridge",t3:"fontenelle-forest",t4:"chalco-hills",t5:"zorinsky-lake"};
+        const dataKey=trailDataMap[trailId];
+        const tData=dataKey?TRAIL_MAP_DATA[dataKey]:null;
+        if(!tData)return null;
+        return <TrailMap parkId={dataKey} parkName={TRAILS.find(t=>t.id===trailId)?.name||"Trail"}
+          parkColor={tData.trails[0]?.color||"#81C784"} initialTrailIndex={0}
+          trailMapData={tData}
+          onBack={()=>{setTab(prevTab||"today");scrollTop();}}/>;
+      })()}
+
+      {/* ═══ VENUE DETAIL PAGE ═══ */}
+      {tab.startsWith("venue:")&&(()=>{
+        const venueId=tab.split(":")[1];
+        const venue=DAYTIME.find(a=>a.id===venueId);
+        if(!venue)return null;
+        const venueEvents=EVENTS.filter(e=>e.venue&&venue.name&&(e.venue.toLowerCase().includes(venue.name.split(" ")[0].toLowerCase())||venue.name.toLowerCase().includes(e.venue.split(" ")[0].toLowerCase()))).slice(0,5);
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            {venue.img?<img src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <span style={{fontSize:36,marginBottom:8,display:"block"}}>{venue.icon}</span>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{venue.name}</h1>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
+            <div style={{background:`${T.accent}15`,border:`1px solid ${T.accent}30`,borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Admission</div>
+              <div style={{fontSize:13,fontWeight:600,color:T.accent}}>{venue.price}</div>
+            </div>
+            <div style={{background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Time</div>
+              <div style={{fontSize:13,fontWeight:600,color:T.textHi}}>{venue.time}</div>
+            </div>
+          </div>
+          <p style={{margin:"16px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{venue.desc}</p>
+          {venue.highlights&&<div style={{marginTop:24}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Highlights</h3>
+            <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8}}>
+              {venue.highlights.map((h,i)=>(
+                <div key={i} style={{padding:"12px 16px",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,borderRadius:14,display:"flex",gap:10,alignItems:"center"}}>
+                  <div style={{width:8,height:8,borderRadius:"50%",background:T.accent,flexShrink:0}}/>
+                  <span style={{fontSize:13,color:T.textBody}}>{h}</span>
+                </div>
+              ))}
+            </div>
+          </div>}
+          {venue.address&&<div style={{marginTop:16,padding:"12px 16px",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,borderRadius:14}}>
+            <div style={{fontSize:10,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Address</div>
+            <div style={{fontSize:12,color:T.textBody}}>{venue.address}</div>
+          </div>}
+          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{venue.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+          {venueEvents.length>0&&<div style={{marginTop:24}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Upcoming Events</h3>
+            {venueEvents.map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+              <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:14,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:8,cursor:"pointer"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontSize:18}}>{ev.emoji}</span>
+                  <div style={{flex:1}}>
+                    <h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{ev.title}</h4>
+                    <p style={{margin:"2px 0 0",fontSize:11,color:ac,fontWeight:500}}>{ev.date} · {ev.time}</p>
+                  </div>
+                  <span style={{fontSize:12,color:T.textDim}}>{ev.price}</span>
+                </div>
+              </div>
+            );})}
+          </div>}
+          <div style={{display:"flex",gap:8,marginTop:20}}>
+            <a href={mapsDir(venue.lat,venue.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir(T.textBody,14)} Directions</a>
+            {venue.url&&<a href={venue.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:`${T.accent}15`,border:`1px solid ${T.accent}30`,color:T.accent,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.link(T.accent,13)} Visit Website</a>}
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
+      {/* ═══ WALK DETAIL PAGE ═══ */}
+      {tab.startsWith("walk:")&&(()=>{
+        const walkId=tab.split(":")[1];
+        const walk=WALKS.find(w=>w.id===walkId);
+        if(!walk)return null;
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?280:220,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            <div style={{width:"100%",height:"100%",background:CG.hood}}/>
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{walk.icon("#FFB74D",64)}</div>
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{walk.name}</h1>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
+            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Distance</div>
+              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.distance}</div>
+            </div>
+            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Time</div>
+              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.time}</div>
+            </div>
+          </div>
+          <p style={{margin:"16px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{walk.desc}</p>
+          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{walk.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+          <div style={{display:"flex",gap:8,marginTop:24}}>
+            <a href={mapsDir(walk.lat,walk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",color:"#FFB74D",fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir("#FFB74D",14)} Get Directions</a>
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
       {/* ═══ TRAIL MAP (accessed from Park Detail) ═══ */}
       {tab.startsWith("trail:")&&(()=>{
         const parts=tab.split(":");
@@ -1246,13 +1393,15 @@ export default function GOPrototype(){
         return <TrailMap parkId={tParkId} parkName={tPark.name}
           parkColor={tPark.color||"#81C784"} initialTrailIndex={trailIdx}
           trailMapData={tData}
-          onBack={()=>{setParkTab("trails");setTab("park:"+tParkId);window.scrollTo(0,0);}}/>;
+          onBack={()=>{setParkTab("trails");setTab("park:"+tParkId);scrollTop();}}/>;
       })()}
 
+      </div>{/* end #app-content */}
+
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:50,padding:"0 14px max(4px,env(safe-area-inset-bottom))",display:"flex",flexDirection:"column",alignItems:"center"}}>
-        {tab==="today"&&<div style={{width:"100%",maxWidth:isD?480:isT?400:360,padding:"8px 14px 4px",background:"rgba(20,22,24,.95)",backdropFilter:"blur(22px)",borderRadius:"14px 14px 0 0",borderTop:`1px solid ${T.border}`,borderLeft:`1px solid ${T.border}`,borderRight:`1px solid ${T.border}`}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
+      <div id="app-nav" style={{display:"flex",flexDirection:"column",background:"#000"}}>
+        {tab==="today"&&<div style={{width:"100%",maxWidth:isD?560:isT?480:9999,padding:"8px 14px 4px",background:"rgba(32,34,38,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.1)`,margin:"0 auto"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,maxWidth:440,margin:"0 auto"}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>
             <div style={{flex:1,position:"relative",height:36,borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,overflow:"hidden",cursor:"pointer"}}>
               <div style={{position:"absolute",left:0,top:0,bottom:0,width:`${Math.max(4,Math.min(96,tv))}%`,borderRadius:99,background:"linear-gradient(90deg,#F4C97E 0%,#87CEEB 22%,#E6956B 52%,#5C3470 78%,#1A2444 100%)",opacity:.35,transition:drag?"none":"width .4s ease"}}/>
@@ -1269,14 +1418,15 @@ export default function GOPrototype(){
             </button>
           </div>
         </div>}
-        <div style={{background:"rgba(27,29,33,.93)",backdropFilter:"blur(22px)",borderRadius:tab==="today"?"0 0 16px 16px":"16px",display:"flex",justifyContent:"space-around",padding:"6px 4px 8px",width:"100%",maxWidth:isD?480:isT?400:360,border:`1px solid ${T.border}`,borderTop:tab==="today"?"none":`1px solid ${T.border}`}}>
+        <div style={{background:"rgba(38,40,46,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.12)`,display:"flex",justifyContent:"space-around",padding:"6px 4px 8px",paddingBottom:"max(8px, env(safe-area-inset-bottom, 8px))",width:"100%"}}>
           {tabsD.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.08)":"transparent",border:"none",cursor:"pointer",padding:isD?"10px 24px":"10px 16px",borderRadius:11,minWidth:isD?80:isT?68:60,minHeight:48,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",transition:"all .2s"}}>
-              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.52)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
-              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")))||(tab.startsWith("event:")&&prevTab===t.id))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,background:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?"rgba(94,196,182,.1)":"transparent",border:"none",cursor:"pointer",padding:isD?"10px 24px":"10px 16px",borderRadius:11,minWidth:isD?80:isT?68:60,minHeight:48,color:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",transition:"all .2s"}}>
+              <span style={{position:"relative"}}>{t.icon((tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?T.accent:"rgba(242,239,233,.55)",isD?24:22)}{t.id==="saved"&&favs.length>0&&<span style={{position:"absolute",top:-4,right:-8,background:T.accent,color:T.bg,fontSize:8,fontWeight:700,borderRadius:99,padding:"1px 4px",minWidth:12,textAlign:"center"}}>{favs.length}</span>}</span>
+              <span style={{fontSize:isD?11:10,fontWeight:(tab===t.id||(t.id==="explore"&&(tab==="venues"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("venue:")||tab.startsWith("walk:")))||(tab.startsWith("event:")&&prevTab===t.id))?600:500,letterSpacing:.8,textTransform:"uppercase"}}>{t.label}</span>
             </button>
           ))}
         </div>
+        <div style={{background:"#000",width:"100%",minHeight:"max(env(safe-area-inset-bottom, 0px), 8px)"}}/>
       </div>
 
       <style>{`

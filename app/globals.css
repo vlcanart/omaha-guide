@@ -14,15 +14,44 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
   margin: 0;
-  overflow-x: hidden;
-  background: #141618;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #000;
   color: #F2EFE9;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* App shell: fills body, flex column keeps nav at bottom */
+#app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  height: var(--app-h, 100dvh);
+  overflow: hidden;
+}
+
+#app-content {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+#app-nav {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  background: #000;
 }
 
 ::placeholder {
@@ -116,12 +145,7 @@ body {
   transform: scale(0.98);
 }
 
-/* PWA safe areas */
-@supports (padding: max(0px)) {
-  body {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
+/* PWA safe areas — handled by fixed nav bar */
 
 /* ═══ Leaflet Dark Theme Overrides ═══ */
 .leaflet-container {

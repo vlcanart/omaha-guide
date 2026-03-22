@@ -1,5 +1,6 @@
 import { GALLERIES } from "../../data/galleries";
 import { GalleryClient } from "./GalleryClient";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
 
 export function generateStaticParams() {
   return GALLERIES.map(g => ({ id: g.id }));
@@ -67,6 +68,7 @@ export default function GalleryPage({ params }) {
 
   return (
     <>
+      <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <GalleryClient gallery={gallery} />

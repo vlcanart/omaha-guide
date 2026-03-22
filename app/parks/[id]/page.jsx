@@ -1,5 +1,6 @@
 import { PARKS } from "../../data/parks";
 import { ParkClient } from "./ParkClient";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
 
 export function generateStaticParams() {
   return PARKS.map(p => ({ id: p.id }));
@@ -53,6 +54,7 @@ export default function ParkPage({ params }) {
 
   return (
     <>
+      <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <ParkClient park={park} />

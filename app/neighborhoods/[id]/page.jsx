@@ -1,5 +1,6 @@
 import { HOODS } from "../../data/hoods";
 import { NeighborhoodClient } from "./NeighborhoodClient";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
 
 export function generateStaticParams() {
   return HOODS.map(h => ({ id: h.id }));
@@ -52,6 +53,7 @@ export default function NeighborhoodPage({ params }) {
 
   return (
     <>
+      <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <NeighborhoodClient hood={hood} />

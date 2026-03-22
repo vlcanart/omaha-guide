@@ -2,6 +2,7 @@ import { SEED_EVENTS } from "../../data/events";
 import { INGESTED_EVENTS } from "../../events-data";
 import { slugify } from "../../lib/helpers";
 import { EventDetailClient } from "./EventDetailClient";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
 
 function getAllEvents() {
   return [...SEED_EVENTS, ...(INGESTED_EVENTS || [])];
@@ -77,6 +78,7 @@ export default function EventPage({ params }) {
 
   return (
     <>
+      <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <EventDetailClient event={ev} />

@@ -1,5 +1,6 @@
 import { VENUES } from "../../data/venues";
 import { VenueClient } from "./VenueClient";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
 
 export function generateStaticParams() {
   return VENUES.map(v => ({ id: String(v.id) }));
@@ -55,6 +56,7 @@ export default function VenuePage({ params }) {
 
   return (
     <>
+      <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <VenueClient venue={venue} />

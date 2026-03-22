@@ -28,6 +28,14 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* Detail / sub-pages need normal scrolling (not app-shell locked) */
+body.detail-page {
+  overflow: auto;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100%;
+}
+
 /* App shell: fills body, flex column keeps nav at bottom */
 #app-shell {
   display: flex;

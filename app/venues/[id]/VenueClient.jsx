@@ -45,7 +45,7 @@ export function VenueClient({ venue, upcomingEvents }) {
 
         {/* ═══ HERO ═══ */}
         <div style={{ position: "relative", height: isD ? 340 : isM ? 280 : 300, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
-          <img src={venue.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.45 }} onError={function(e) { e.target.style.display = "none"; }} />
+          <img loading="lazy" src={venue.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.45 }} onError={function(e) { e.target.style.display = "none"; }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(20,22,24,.15) 0%,rgba(20,22,24,.95) 100%)" }} />
 
           <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(20,22,24,.6)", backdropFilter: "blur(8px)", border: "1px solid " + T.border, borderRadius: 99, padding: "8px 12px", display: "flex", alignItems: "center", gap: 6, color: T.textBody, fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none" }}>

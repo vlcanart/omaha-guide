@@ -57,8 +57,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+          onLoad="this.onload=null;this.rel='stylesheet'"
         />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -108,6 +110,7 @@ export default function RootLayout({ children }) {
                 setH();
 
                 document.addEventListener('touchmove', function(e){
+                  if(document.body.classList.contains('detail-page')) return;
                   var t = e.target;
                   while(t && t !== document.body){
                     if(t.id === 'app-content') return;

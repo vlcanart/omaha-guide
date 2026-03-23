@@ -22,7 +22,7 @@ export function GalleryClient({ gallery }) {
 
         {/* HERO IMAGE */}
         <div style={{ position: "relative", height: isD ? 280 : isM ? 220 : 250, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
-          <img src={gallery.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .55 }} />
+          <img loading="lazy" src={gallery.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .55 }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(39,31,48,.2) 0%,rgba(39,31,48,.85) 100%)" }} />
 
           {/* Back button */}

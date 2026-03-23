@@ -276,7 +276,7 @@ export default function GOPrototype(){
             {TRAILS.map(t=>(
               <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
-                  <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
+                  <img loading="lazy" src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                   <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
                     <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(125,212,160,.15)",color:"#81C784",fontWeight:700}}>{t.difficulty}</span>
@@ -302,7 +302,7 @@ export default function GOPrototype(){
             {WALKS.map(wk=>(
               <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
-                  {wk.icon("#FFB74D",36)}
+                  {IC[wk.iconKey]?IC[wk.iconKey]("#FFB74D",36):null}
                   <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>
@@ -351,7 +351,7 @@ export default function GOPrototype(){
             {GALLERIES.filter(v=>v.type==="Kids").map(v=>(
               <Link key={v.id} href={v.id==="zoo"?"/zoo/":venueHref(v.name)||"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
                 <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
-                  <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                  <img loading="lazy" src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)"}}/>
                   <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
                     {v.badge&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"3px 8px",borderRadius:99,background:"rgba(212,173,101,.15)",color:T.gold,border:"1px solid rgba(212,173,101,.25)"}}>{v.badge}</span>}
@@ -500,7 +500,7 @@ export default function GOPrototype(){
           {PARKS.map(p=>(
             <Link key={p.id} href={"/parks/"+p.id+"/"} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
               <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
-                <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                <img loading="lazy" src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                 <div style={{position:"absolute",top:10,left:10}}><span style={{fontSize:18}}>{p.icon}</span></div>
                 <div style={{position:"absolute",bottom:10,left:12}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{p.name}</h3></div>
@@ -523,7 +523,7 @@ export default function GOPrototype(){
           {TRAILS.map(t=>(
             <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
-                <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
+                <img loading="lazy" src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                 <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
                   <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(125,212,160,.15)",color:"#81C784",fontWeight:700}}>{t.difficulty}</span>
@@ -545,7 +545,7 @@ export default function GOPrototype(){
           {HOODS.map(h=>(
             <Link key={h.id} href={"/neighborhoods/"+h.id+"/"} onClick={()=>setSpotCat("all")} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?220:isM?180:200,minWidth:isD?220:isM?180:200,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
               <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
-                <img src={(h.imgs||[])[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
+                <img loading="lazy" src={(h.imgs||[])[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)`}}/>
                 <div style={{position:"absolute",top:10,left:10}}>
                   <div style={{width:8,height:8,borderRadius:"50%",background:h.color,boxShadow:`0 0 8px ${h.color}66`}}/>
@@ -622,7 +622,7 @@ export default function GOPrototype(){
         {VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).filter(v=>venCat==="all"||v.type===venCat).map((v,i)=>(
           <Link key={v.id} href={v.slug===("henry-doorly-zoo")?"/zoo/":"/venues/"+(v.slug||v.id)+"/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`}}>
             <div style={{position:"relative",height:isD?140:isM?100:115,overflow:"hidden"}}>
-              <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+              <img loading="lazy" src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
               <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
               <div style={{position:"absolute",top:10,right:10,display:"flex",gap:5}}>
                 <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:600}}>{v.type}</span>
@@ -687,7 +687,7 @@ export default function GOPrototype(){
             {/* Card header */}
             <div onClick={()=>setGalExpanded(open?null:v.id)} style={{borderRadius:open?"18px 18px 0 0":18,background:artGrad,overflow:"hidden",border:`1px solid ${open?ac+"44":T.border}`,borderBottom:open?`1px solid ${T.border}`:undefined,cursor:"pointer"}}>
               <div style={{position:"relative",height:open?160:120,overflow:"hidden"}}>
-                <img src={v.img} alt={v.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>
+                <img loading="lazy" src={v.img} alt={v.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(39,31,48,.2) 0%,rgba(39,31,48,.85) 100%)"}}/>
                 <div style={{position:"absolute",top:10,left:12,display:"flex",gap:6}}>
                   <span style={{fontSize:8,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",padding:"3px 9px",borderRadius:99,background:`${ac}25`,color:ac,border:`1px solid ${ac}40`}}>{v.type}</span>
@@ -815,7 +815,7 @@ export default function GOPrototype(){
 
           {/* ── HERO IMAGE ── */}
           <div style={{position:"relative",height:isD?280:isM?220:250,overflow:"hidden",borderRadius:"0 0 24px 24px"}}>
-            <img src={hImgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
+            <img loading="lazy" src={hImgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
             <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)`}}/>
             <button onClick={()=>setTab("explore")} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(20,22,24,.6)",backdropFilter:"blur(8px)",border:`1px solid ${T.border}`,borderRadius:99,padding:"8px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:.5}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Explore</button>
             <div style={{position:"absolute",bottom:0,left:0,right:0,padding:`0 ${px}px 20px`}}>
@@ -839,7 +839,7 @@ export default function GOPrototype(){
           {/* ── IMAGE CAROUSEL ── */}
           {hImgs.length>1&&<div style={{display:"flex",gap:8,overflowX:"auto",margin:"16px 0",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
             {hImgs.map((img,i)=><div key={i} style={{width:isD?200:isM?150:170,height:isD?130:isM?100:110,borderRadius:14,overflow:"hidden",flexShrink:0,border:`1px solid ${T.border}`}}>
-              <img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.65}}/>
+              <img loading="lazy" src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.65}}/>
             </div>)}
           </div>}
 
@@ -933,7 +933,7 @@ export default function GOPrototype(){
             {hoodVenues.map((v,i)=>(
               <Link key={v.id} href={v.slug==="henry-doorly-zoo"?"/zoo/":"/venues/"+(v.slug||v.id)+"/"} className="ecard" style={{display:"flex",alignItems:"center",gap:12,textDecoration:"none",color:"inherit",background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 14px",marginBottom:6}}>
                 <div style={{width:48,height:48,borderRadius:14,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.05)"}}>
-                  <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.6}} onError={e=>{e.target.style.display="none"}}/>
+                  <img loading="lazy" src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.6}} onError={e=>{e.target.style.display="none"}}/>
                 </div>
                 <div style={{flex:1,minWidth:0}}>
                   <h4 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{v.name}</h4>
@@ -1012,7 +1012,7 @@ export default function GOPrototype(){
 
           {/* ── HERO IMAGE ── */}
           <div style={{position:"relative",height:isD?280:isM?220:250,overflow:"hidden",borderRadius:"0 0 24px 24px"}}>
-            <img src={park.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
+            <img loading="lazy" src={park.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
             <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)`}}/>
             <button onClick={()=>setTab("explore")} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(20,22,24,.6)",backdropFilter:"blur(8px)",border:`1px solid ${T.border}`,borderRadius:99,padding:"8px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:.5}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Explore</button>
             <div style={{position:"absolute",top:16,right:16,display:"flex",gap:8}}>
@@ -1295,7 +1295,7 @@ export default function GOPrototype(){
         const venueEvents=EVENTS.filter(e=>e.venue&&venue.name&&(e.venue.toLowerCase().includes(venue.name.split(" ")[0].toLowerCase())||venue.name.toLowerCase().includes(e.venue.split(" ")[0].toLowerCase()))).slice(0,5);
         return(<div style={{...sec,paddingTop:0}}>
           <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
-            {venue.img?<img src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
+            {venue.img?<img loading="lazy" src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
             <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
             <div style={{position:"absolute",bottom:20,left:20,right:20}}>
@@ -1361,7 +1361,7 @@ export default function GOPrototype(){
         return(<div style={{...sec,paddingTop:0}}>
           <div style={{position:"relative",height:isD?280:220,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
             <div style={{width:"100%",height:"100%",background:CG.hood}}/>
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{walk.icon("#FFB74D",64)}</div>
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{IC[walk.iconKey]?IC[walk.iconKey]("#FFB74D",64):null}</div>
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
             <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
             <div style={{position:"absolute",bottom:20,left:20,right:20}}>

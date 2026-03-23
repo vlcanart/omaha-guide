@@ -103,35 +103,35 @@ export function VenueClient({ venue, upcomingEvents }) {
                   var gr = CG[ev.cat] || CG._ || "rgba(255,255,255,.02)";
                   var isToday = days === 0;
                   return (
-                    <div key={i} style={{ borderRadius: 16, border: "1px solid " + T.border, overflow: "hidden", background: gr }}>
-                      <Link href={"/events/" + ev.slug + "/"} style={{ display: "flex", alignItems: "stretch", textDecoration: "none", color: "inherit" }}>
-                        {/* Calendar date card */}
-                        {dp && <div style={{ width: 62, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRight: "1px solid " + T.border, background: isToday ? catColor + "12" : "rgba(255,255,255,.03)" }}>
-                          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: isToday ? catColor : T.textDim, textTransform: "uppercase" }}>{dp.mon}</span>
-                          <span style={{ fontSize: 24, fontWeight: 700, color: isToday ? T.textHi : T.textHi, lineHeight: 1.1 }}>{dp.day}</span>
-                          <span style={{ fontSize: 9, fontWeight: 600, color: isToday ? catColor : T.textDim, letterSpacing: 0.5 }}>{dp.dow}</span>
-                        </div>}
-                        {/* Event info */}
-                        <div style={{ flex: 1, minWidth: 0, padding: isM ? "12px 12px" : "14px 16px" }}>
-                          <div style={{ display: "flex", gap: 6, marginBottom: 5, flexWrap: "wrap", alignItems: "center" }}>
-                            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 99, background: catColor + "18", color: catColor, border: "1px solid " + catColor + "33" }}>{(CAT_EMOJI[ev.cat] || "") + " " + (ev.cat || "event")}</span>
-                            {days !== null && days >= 0 && <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 99, background: isToday ? catColor + "15" : "rgba(255,255,255,.06)", color: isToday ? catColor : T.textSec }}>{isToday ? "Today" : days === 1 ? "Tomorrow" : days + " days"}</span>}
+                    <div key={i} style={{ borderRadius: 16, overflow: "hidden", display: "flex", alignItems: "stretch", background: "#FAFAFA", border: "1px solid rgba(0,0,0,.08)" }}>
+                      {/* Calendar date card — full height white */}
+                      {dp && <div style={{ width: 66, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#FFFFFF", borderRight: "1px solid rgba(0,0,0,.08)" }}>
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: isToday ? catColor : "#999", textTransform: "uppercase" }}>{dp.mon}</span>
+                        <span style={{ fontSize: 26, fontWeight: 800, color: "#1A1A1A", lineHeight: 1.1 }}>{dp.day}</span>
+                        <span style={{ fontSize: 9, fontWeight: 600, color: isToday ? catColor : "#999", letterSpacing: 0.5 }}>{dp.dow}</span>
+                      </div>}
+                      {/* Event info + ticket */}
+                      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+                        <Link href={"/events/" + ev.slug + "/"} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: isM ? "12px 12px" : "14px 16px", textDecoration: "none", color: "inherit", flex: 1 }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: "flex", gap: 6, marginBottom: 5, flexWrap: "wrap", alignItems: "center" }}>
+                              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 99, background: catColor + "18", color: catColor, border: "1px solid " + catColor + "33" }}>{(CAT_EMOJI[ev.cat] || "") + " " + (ev.cat || "event")}</span>
+                              {days !== null && days >= 0 && <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 99, background: isToday ? catColor + "12" : "rgba(0,0,0,.05)", color: isToday ? catColor : "#777" }}>{isToday ? "Today" : days === 1 ? "Tomorrow" : days + " days"}</span>}
+                            </div>
+                            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#1A1A1A", lineHeight: 1.25 }}>{ev.title}</h3>
+                            <p style={{ margin: "4px 0 0", fontSize: 11, color: "#666" }}>{ev.time || ""}{ev.price ? " \u00B7 " + ev.price : ""}</p>
                           </div>
-                          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.textHi, lineHeight: 1.2 }}>{ev.title}</h3>
-                          <p style={{ margin: "4px 0 0", fontSize: 11, color: T.textSec }}>{ev.time || ""}{ev.price ? " \u00B7 " + ev.price : ""}</p>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", paddingRight: 14, flexShrink: 0 }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-                        </div>
-                      </Link>
-                      {ev.url && ev.url !== "#" && (
-                        <div style={{ padding: "0 " + (isM ? 14 : 18) + "px 12px" }}>
-                          <a href={ev.url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 0", borderRadius: 99, textDecoration: "none", background: "linear-gradient(135deg," + catColor + "," + catColor + "cc)", color: T.bg, fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>
-                            <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            Get Tickets
-                          </a>
-                        </div>
-                      )}
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BBB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 4 }}><polyline points="9 18 15 12 9 6" /></svg>
+                        </Link>
+                        {ev.url && ev.url !== "#" && (
+                          <div style={{ padding: "0 " + (isM ? 12 : 16) + "px 12px", display: "flex", justifyContent: "flex-end" }}>
+                            <a href={ev.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 20px", borderRadius: 99, textDecoration: "none", background: catColor, color: "#fff", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>
+                              <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                              Tickets
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

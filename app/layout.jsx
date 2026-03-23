@@ -113,8 +113,10 @@ export default function RootLayout({ children }) {
                   if(document.body.classList.contains('detail-page')) return;
                   var t = e.target;
                   while(t && t !== document.body){
-                    if(t.id === 'app-content') return;
-                    if(t.scrollHeight > t.clientHeight && getComputedStyle(t).overflowY !== 'hidden') return;
+                    if(t.id === 'app-content' || t.id === 'app-shell') return;
+                    var s = getComputedStyle(t);
+                    if((t.scrollHeight > t.clientHeight && s.overflowY !== 'hidden') ||
+                       (t.scrollWidth > t.clientWidth && s.overflowX !== 'hidden')) return;
                     t = t.parentElement;
                   }
                   e.preventDefault();

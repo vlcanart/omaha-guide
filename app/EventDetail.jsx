@@ -44,6 +44,108 @@ const I={
   tv:(c,s=14)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>,
 };
 
+/* ═══ KNOWN TEAMS (for auto-enrichment) ═══ */
+const TEAMS={
+  "creighton":{name:"Creighton Bluejays",abbr:"CU",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},
+  "bluejays":{name:"Creighton Bluejays",abbr:"CU",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},
+  "nebraska":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
+  "huskers":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
+  "omaha":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
+  "mavericks":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
+  "storm chasers":{name:"Storm Chasers",abbr:"OMA",color:"#003DA5",logo:""},
+  "union omaha":{name:"Union Omaha",abbr:"UO",color:"#1C2B39",logo:""},
+  "iowa":{name:"Iowa",abbr:"IOW",color:"#FFCD00",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2294.png"},
+  "kansas":{name:"Kansas",abbr:"KU",color:"#0051BA",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png"},
+  "villanova":{name:"Villanova",abbr:"NOVA",color:"#00205B",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/222.png"},
+  "marquette":{name:"Marquette",abbr:"MARQ",color:"#003366",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/269.png"},
+  "xavier":{name:"Xavier",abbr:"XAV",color:"#0C2340",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2752.png"},
+  "uconn":{name:"UConn",abbr:"UCONN",color:"#000E2F",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/41.png"},
+  "butler":{name:"Butler",abbr:"BUT",color:"#13294B",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2166.png"},
+  "depaul":{name:"DePaul",abbr:"DPU",color:"#005EB8",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/305.png"},
+  "seton hall":{name:"Seton Hall",abbr:"SHU",color:"#004488",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2550.png"},
+  "st. john":{name:"St. John's",abbr:"SJU",color:"#C8102E",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2599.png"},
+  "georgetown":{name:"Georgetown",abbr:"GTOWN",color:"#041E42",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/46.png"},
+  "providence":{name:"Providence",abbr:"PROV",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2507.png"},
+  "wisconsin":{name:"Wisconsin",abbr:"WIS",color:"#C5050C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/275.png"},
+  "minnesota":{name:"Minnesota",abbr:"MINN",color:"#7A0019",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/135.png"},
+  "michigan":{name:"Michigan",abbr:"MICH",color:"#00274C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/130.png"},
+  "ohio state":{name:"Ohio State",abbr:"OSU",color:"#BB0000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/194.png"},
+  "penn state":{name:"Penn State",abbr:"PSU",color:"#041E42",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/213.png"},
+};
+
+function autoEnrichSports(ev){
+  if(ev.cat!=="sports"||ev.matchup)return ev;
+  const t=ev.title.toLowerCase();
+  const enriched={...ev};
+
+  // Try to parse "Team A v Team B" or "Team A vs Team B" or "Team A vs. Team B"
+  const vsMatch=t.match(/^(.+?)\s+(?:v\.?\s*|vs\.?\s+)(.+?)(?:\s+at\s+|\s*$)/i);
+  if(vsMatch){
+    const find=(str)=>{
+      const s=str.trim().toLowerCase();
+      for(const[k,v]of Object.entries(TEAMS)){if(s.includes(k))return v;}
+      // Fallback: use the name parts
+      const words=str.trim().split(/\s+/);
+      const abbr=words.map(w=>w[0]).join("").toUpperCase().slice(0,4);
+      return{name:str.trim(),abbr,color:"#64B5F6",logo:""};
+    };
+    const away=find(vsMatch[1]);
+    const home=find(vsMatch[2]);
+    // Determine which is home based on venue keywords
+    const venL=ev.venue?.toLowerCase()||"";
+    const homeIsFirst=venL.includes("baxter")||venL.includes("morrison")||t.includes("omaha")||t.includes("creighton")||t.includes("husker")||t.includes("nebraska");
+    enriched.matchup={home:homeIsFirst?away:home,away:homeIsFirst?home:away};
+  }
+
+  // Auto-generate tags
+  if(!enriched.tags||enriched.tags.length===0){
+    const tags=[];
+    if(t.includes("basketball"))tags.push("Basketball");
+    else if(t.includes("baseball")||t.includes("schwab field")||ev.venue?.toLowerCase().includes("schwab"))tags.push("Baseball");
+    else if(t.includes("volleyball"))tags.push("Volleyball");
+    else if(t.includes("football"))tags.push("Football");
+    else if(t.includes("hockey"))tags.push("Hockey");
+    else if(t.includes("soccer"))tags.push("Soccer");
+    else if(t.includes("wrestling"))tags.push("Wrestling");
+    else tags.push("Sports");
+
+    // Detect college / pro
+    if(t.includes("bluejay")||t.includes("creighton"))tags.push("Big East","Creighton");
+    else if(t.includes("husker")||t.includes("nebraska"))tags.push("Big Ten","Nebraska");
+    else if(t.includes("maverick")||t.includes("uno")||t.includes("omaha mav"))tags.push("Summit League","UNO");
+    else if(t.includes("storm chaser"))tags.push("Minor League Baseball","Triple-A");
+    else if(t.includes("union omaha"))tags.push("USL League One");
+
+    if(tags.length===0)tags.push("Live Sports");
+    tags.push("Event");
+    enriched.tags=tags;
+  }
+
+  // Auto-generate pricing tiers if none exist and there's a price
+  if(!enriched.pricing&&enriched.price){
+    const priceMatch=enriched.price.match(/\$(\d+)/);
+    if(priceMatch){
+      const base=parseInt(priceMatch[0].replace("$",""));
+      enriched.pricing=[
+        {tier:"Upper Level",price:`$${base}`,note:"General seating"},
+        {tier:"Lower Level",price:`$${Math.round(base*1.8)}`,note:"Closer to the action"},
+        {tier:"Premium Seats",price:`$${Math.round(base*3)}`,note:"Best views"},
+      ];
+    }
+  }
+
+  // Detect sport from venue for better desc
+  if(enriched.desc&&enriched.desc.length<60){
+    const venL=(ev.venue||"").toLowerCase();
+    if(venL.includes("schwab"))enriched.venueType=enriched.venueType||"Ballpark";
+    else if(venL.includes("chi health")||venL.includes("baxter")||venL.includes("devaney"))enriched.venueType=enriched.venueType||"Arena";
+    else if(venL.includes("werner"))enriched.venueType=enriched.venueType||"Ballpark";
+    else if(venL.includes("morrison"))enriched.venueType=enriched.venueType||"Stadium";
+  }
+
+  return enriched;
+}
+
 /* ═══ HELPERS ═══ */
 function fmtDate(d){
   if(!d)return"";
@@ -192,7 +294,8 @@ function InfoRow({icon,label,value,accent}){
 }
 
 /* ═══ MAIN COMPONENT ═══ */
-export default function EventDetail({event:ev,isSaved,onToggleSave,onBack,isM,isT,isD}){
+export default function EventDetail({event:rawEv,isSaved,onToggleSave,onBack,isM,isT,isD}){
+  const ev=autoEnrichSports(rawEv);
   const[scrollY,setScrollY]=useState(0);
   const[imgErr,setImgErr]=useState(false);
 
@@ -351,6 +454,9 @@ export default function EventDetail({event:ev,isSaved,onToggleSave,onBack,isM,is
           <a href={mapsUrl(ev.address||ev.venue)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",textDecoration:"none"}}>
             {I.pin(T.textSec,13)} Directions
           </a>
+          {ev.date&&ev.date.match(/^\d{4}-\d{2}-\d{2}/)&&<a href={`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${ev.date.replace(/-/g,"")}/${ev.date.replace(/-/g,"")}&details=${encodeURIComponent((ev.venue||"")+" "+(ev.address||""))}&location=${encodeURIComponent(ev.address||ev.venue||"")}`} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",textDecoration:"none"}}>
+            {I.cal(T.textSec,13)} Calendar
+          </a>}
           <button onClick={()=>doShare(ev.title)} className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",cursor:"pointer"}}>
             {I.share(T.textSec,13)} Share
           </button>

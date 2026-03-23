@@ -97,17 +97,26 @@ function autoEnrichSports(ev){
     enriched.matchup={home:homeIsFirst?away:home,away:homeIsFirst?home:away};
   }
 
+  // Detect sport type
+  const venL=(ev.venue||"").toLowerCase();
+  let sport="Sports";
+  if(t.includes("basketball")||venL.includes("chi health center")||venL.includes("baxter arena"))sport="Basketball";
+  else if(t.includes("baseball")||venL.includes("schwab")||venL.includes("werner"))sport="Baseball";
+  else if(t.includes("volleyball")||venL.includes("devaney"))sport="Volleyball";
+  else if(t.includes("football")||venL.includes("memorial stadium"))sport="Football";
+  else if(t.includes("hockey")||venL.includes("ice"))sport="Hockey";
+  else if(t.includes("soccer")||venL.includes("caniglia")||t.includes("union omaha"))sport="Soccer";
+  else if(t.includes("wrestling"))sport="Wrestling";
+  else if(t.includes("tennis"))sport="Tennis";
+  else if(t.includes("golf"))sport="Golf";
+  enriched.sportType=enriched.sportType||sport;
+
+  // Add sport type to matchup for display
+  if(enriched.matchup)enriched.matchup.sportType=enriched.sportType;
+
   // Auto-generate tags
   if(!enriched.tags||enriched.tags.length===0){
-    const tags=[];
-    if(t.includes("basketball"))tags.push("Basketball");
-    else if(t.includes("baseball")||t.includes("schwab field")||ev.venue?.toLowerCase().includes("schwab"))tags.push("Baseball");
-    else if(t.includes("volleyball"))tags.push("Volleyball");
-    else if(t.includes("football"))tags.push("Football");
-    else if(t.includes("hockey"))tags.push("Hockey");
-    else if(t.includes("soccer"))tags.push("Soccer");
-    else if(t.includes("wrestling"))tags.push("Wrestling");
-    else tags.push("Sports");
+    const tags=[sport];
 
     // Detect college / pro
     if(t.includes("bluejay")||t.includes("creighton"))tags.push("Big East","Creighton");
@@ -116,8 +125,7 @@ function autoEnrichSports(ev){
     else if(t.includes("storm chaser"))tags.push("Minor League Baseball","Triple-A");
     else if(t.includes("union omaha"))tags.push("USL League One");
 
-    if(tags.length===0)tags.push("Live Sports");
-    tags.push("Event");
+    tags.push("Live Sports");
     enriched.tags=tags;
   }
 
@@ -223,8 +231,15 @@ function MatchupCard({matchup}){
       {t.rank&&<span style={{fontSize:10,fontWeight:700,color:CA.sports,background:"rgba(100,181,246,0.12)",padding:"3px 10px",borderRadius:99}}>{t.rank}</span>}
     </div>
   );
+  const SPORT_ICONS={Basketball:"\u{1F3C0}",Baseball:"\u26BE",Volleyball:"\u{1F3D0}",Football:"\u{1F3C8}",Hockey:"\u{1F3D2}",Soccer:"\u26BD",Wrestling:"\u{1F93C}",Tennis:"\u{1F3BE}",Golf:"\u26F3",Sports:"\u{1F3DF}\uFE0F"};
+  const sportIcon=SPORT_ICONS[matchup.sportType]||"\u{1F3DF}\uFE0F";
   return(
     <div style={{background:CG.sports,borderRadius:18,border:`1px solid ${T.border}`,padding:"24px 20px",marginBottom:16}}>
+      {/* Sport type badge */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
+        <span style={{fontSize:16}}>{sportIcon}</span>
+        <span style={{fontSize:11,fontWeight:700,color:CA.sports,letterSpacing:2.5,textTransform:"uppercase"}}>{matchup.sportType||"Sports"}</span>
+      </div>
       <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 20px",textAlign:"center"}}>Matchup Preview</p>
       <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
         <Team t={matchup.home}/>

@@ -123,14 +123,18 @@ export function VenueClient({ venue, upcomingEvents }) {
                           </div>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 4 }}><polyline points="9 18 15 12 9 6" /></svg>
                         </Link>
-                        {ev.url && ev.url !== "#" && (
-                          <div style={{ padding: "0 " + (isM ? 12 : 16) + "px 12px", display: "flex", justifyContent: "flex-end" }}>
+                        <div style={{ padding: "0 " + (isM ? 12 : 16) + "px 12px", display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                          <Link href={"/events/" + ev.slug + "/"} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "10px 24px", borderRadius: 99, textDecoration: "none", background: "rgba(255,255,255,.06)", border: "1px solid " + T.border, color: T.textHi, fontSize: 11, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase" }}>
+                            <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            More Info
+                          </Link>
+                          {ev.url && ev.url !== "#" && (
                             <a href={ev.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "10px 28px", borderRadius: 99, textDecoration: "none", background: catColor, color: "#fff", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>
                               <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                               Tickets
                             </a>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
                   );

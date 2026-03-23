@@ -112,6 +112,8 @@ function GoBar() {
 function Hero() {
   return (
     <div style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${t.pagePx} 3rem`, background: t.bg, overflow: "hidden" }}>
+      {/* Hero image */}
+      <img loading="lazy" src="https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=1200&q=70&auto=format" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
       {/* Ambient glow — warm amber chandelier light from above */}
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 60% 40% at 50% 15%, rgba(212,162,76,0.10) 0%, transparent 65%), radial-gradient(ellipse 50% 60% at 80% 80%, rgba(74,106,122,0.06) 0%, transparent 55%)`, pointerEvents: "none" }} />
       {/* Art Deco rail lines */}

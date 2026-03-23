@@ -160,6 +160,8 @@ function Hero() {
         overflow: "hidden",
       }}
     >
+      {/* Hero image */}
+      <img loading="lazy" src="https://images.unsplash.com/photo-1566985446843-5ab671017dcc?w=1200&q=70&auto=format" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
       {/* Ambient glow */}
       <div
         style={{
@@ -545,10 +547,21 @@ const collections = [
   },
 ];
 
+function FullWidthImage({ src, alt, height = "45vh" }) {
+  return (
+    <div style={{ position: "relative", width: "100%", height, overflow: "hidden" }}>
+      <img loading="lazy" src={src} alt={alt || ""} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.7 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(20,22,24,1) 0%, transparent 15%, transparent 85%, rgba(20,22,24,1) 100%)", pointerEvents: "none" }} />
+    </div>
+  );
+}
+
 function Collection() {
   const [hovered, setHovered] = useState(null);
 
   return (
+    <>
+    <FullWidthImage src="https://images.unsplash.com/photo-1566985446843-5ab671017dcc?w=1200&q=70&auto=format" alt="Joslyn Art Museum interior" />
     <section
       style={{
         padding: `4.5rem ${t.pagePx}`,
@@ -654,6 +667,7 @@ function Collection() {
         </div>
       </div>
     </section>
+    </>
   );
 }
 

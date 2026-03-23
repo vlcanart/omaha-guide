@@ -91,6 +91,7 @@ import { PARKS } from "./data/parks";
 import { HOODS } from "./data/hoods";
 import { SEED_EVENTS, ECATS, ESUBS, DATE_PRESETS, matchDate as _matchDate, matchSub } from "./data/events";
 import { VENUES, VCATS } from "./data/venues";
+import { eventSlug } from "./events/event-utils";
 
 /* Icon resolver — data files store icon keys as strings, IC holds the render functions */
 const resolveIcon = (key) => typeof key === 'function' ? key : (typeof key === 'string' && IC[key]) ? IC[key] : null;
@@ -147,7 +148,7 @@ export default function GOPrototype(){
   const sec={maxWidth:mxW,margin:"0 auto",padding:`0 ${px}px`};
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
-  const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+slugify(ev.title,ev.id)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
+  const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+eventSlug(ev)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
   const venueHref=(name)=>{const ven=VENUES.find(x=>x.name===name);if(ven&&ven.slug==="henry-doorly-zoo")return"/zoo/";return ven?"/venues/"+ven.slug+"/":null;};
   const[evShow,setEvShow]=useState(30);
   useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);setEvShow(30);}},[tab]);

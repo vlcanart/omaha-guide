@@ -49,7 +49,7 @@ export function NeighborhoodClient({ hood }) {
 
         {/* -- HERO IMAGE -- */}
         <div style={{ position: "relative", height: isD ? 280 : isM ? 220 : 250, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
-          <img src={hImgs[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} />
+          <img loading="lazy" src={hImgs[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)" }} />
           <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(20,22,24,.6)", backdropFilter: "blur(8px)", border: `1px solid ${T.border}`, borderRadius: 99, padding: "8px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: T.textBody, fontSize: 10, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Explore
@@ -75,7 +75,7 @@ export function NeighborhoodClient({ hood }) {
           {/* -- IMAGE CAROUSEL -- */}
           {hImgs.length > 1 && <div style={{ display: "flex", gap: 8, overflowX: "auto", margin: "16px 0", paddingBottom: 4, WebkitOverflowScrolling: "touch" }}>
             {hImgs.map((img, i) => <div key={i} style={{ width: isD ? 200 : isM ? 150 : 170, height: isD ? 130 : isM ? 100 : 110, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: `1px solid ${T.border}` }}>
-              <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .65 }} />
+              <img loading="lazy" src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .65 }} />
             </div>)}
           </div>}
 
@@ -169,7 +169,7 @@ export function NeighborhoodClient({ hood }) {
             {hoodVenues.map((v, i) => (
               <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", background: CG._, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 14px", marginBottom: 6 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,.05)" }}>
-                  <img src={v.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .6 }} onError={e => { e.target.style.display = "none" }} />
+                  <img loading="lazy" src={v.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .6 }} onError={e => { e.target.style.display = "none" }} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <h4 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.textHi }}>{v.name}</h4>

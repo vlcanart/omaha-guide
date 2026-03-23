@@ -40,7 +40,7 @@ var IMG_MAP=[
   [["volleyball","lovb"],"photo-1612872087720-bb876e2e67d1"],
 ];
 
-function uImg(id){return "https://images.unsplash.com/"+id+"?w=600&q=75";}
+function uImg(id){return "https://images.unsplash.com/"+id+"?w=480&q=70&auto=format";}
 function pickImg(ev){var ti=(ev.title||"").toLowerCase();var tags=(ev.tags||[]).map(function(t){return t.toLowerCase();});for(var k=0;k<IMG_MAP.length;k++){var keys=IMG_MAP[k][0];var img=IMG_MAP[k][1];for(var j=0;j<keys.length;j++){if(ti.indexOf(keys[j])!==-1||tags.indexOf(keys[j])!==-1)return uImg(img);}}return uImg("photo-1501386761578-eac5c94b800a");}
 function fmtDate(d){if(!d)return"";return new Date(d+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});}
 function fmtShort(d){if(!d)return"";return new Date(d+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}
@@ -58,7 +58,7 @@ function MatchupCard(props){
   function Team(p){var t=p.t;return(
     <div style={{textAlign:"center",flex:1}}>
       <div style={{width:88,height:88,borderRadius:99,margin:"0 auto 12px",background:"linear-gradient(135deg,"+t.color+"33,"+t.color+"11)",border:"3px solid "+t.color+"55",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden",boxShadow:"0 4px 20px "+t.color+"22"}}>
-        {t.logo?<img src={t.logo} alt={t.name} style={{width:62,height:62,objectFit:"contain"}}/>
+        {t.logo?<img loading="lazy" src={t.logo} alt={t.name} style={{width:62,height:62,objectFit:"contain"}}/>
         :<span style={{fontSize:28,fontWeight:800,color:"#fff",letterSpacing:-1}}>{t.abbr}</span>}
       </div>
       <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:"0 0 2px"}}>{t.name}</p>
@@ -91,7 +91,7 @@ function ArtistLineup(props){
     <div style={{display:"flex",flexDirection:"column",gap:10}}>
       {lineup.map(function(a,i){return(
         <div key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",borderRadius:16,background:"rgba(255,255,255,0.02)",border:"1px solid "+T.border}}>
-          <div style={{width:56,height:56,borderRadius:14,overflow:"hidden",flexShrink:0,border:"2px solid rgba(94,196,182,0.2)"}}><img src={a.img} alt={a.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
+          <div style={{width:56,height:56,borderRadius:14,overflow:"hidden",flexShrink:0,border:"2px solid rgba(94,196,182,0.2)"}}><img loading="lazy" src={a.img} alt={a.name} style={{width:"100%",height:"100%",objectFit:"cover"}}/></div>
           <div style={{flex:1,minWidth:0}}><p style={{fontSize:15,fontWeight:700,color:T.textHi,margin:0}}>{a.name}</p><p style={{fontSize:11,color:T.accent,margin:"3px 0 0",fontWeight:500}}>{a.role}{a.setTime?" \u00B7 "+a.setTime:""}</p></div>
           {i===0&&<span style={{fontSize:9,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"3px 10px",borderRadius:99,background:"rgba(94,196,182,0.10)",color:T.accent,border:"1px solid rgba(94,196,182,0.2)"}}>Headliner</span>}
         </div>);})}
@@ -188,7 +188,7 @@ export default function ConcertEventClient(props){
     <div style={{minHeight:"100vh",background:T.bg,fontFamily:T.sans,color:T.text,paddingBottom:48}}>
       {/* HERO */}
       <div style={{position:"relative",height:isM?380:460,overflow:"hidden"}}>
-        <img src={heroImg} alt={ev.title} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.5}}/>
+        <img loading="lazy" src={heroImg} alt={ev.title} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.5}}/>
         <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.05) 0%,rgba(20,22,24,0.15) 25%,rgba(20,22,24,0.75) 65%,#141618 100%)"}}/>
 
         <a href="/" style={{position:"absolute",top:16,left:px,zIndex:2,display:"flex",alignItems:"center",gap:6,padding:"8px 16px 8px 12px",borderRadius:99,background:"rgba(20,22,24,0.75)",border:"1px solid rgba(255,255,255,0.2)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",textDecoration:"none",color:T.text,fontSize:12,fontWeight:600}}>
@@ -251,7 +251,7 @@ export default function ConcertEventClient(props){
         {ev.ytId&&(<div style={{marginBottom:24}}>
           <p style={{fontSize:12,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 10px"}}>{isSports?"Highlights":"Watch & Listen"}</p>
           {!showYt?(<div onClick={function(){setShowYt(true);}} style={{position:"relative",borderRadius:16,overflow:"hidden",cursor:"pointer",border:"1px solid "+T.border,aspectRatio:"16/9"}}>
-            <img src={ytThumb} alt="Preview" style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.7}}/>
+            <img loading="lazy" src={ytThumb} alt="Preview" style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.7}}/>
             <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.3)"}}><div style={{width:60,height:60,borderRadius:99,background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",border:"1px solid rgba(255,255,255,0.2)"}}><svg width={24} height={24} viewBox="0 0 24 24" fill="#fff" stroke="none"><polygon points="8,5 20,12 8,19"/></svg></div></div>
             <div style={{position:"absolute",bottom:10,left:12,display:"flex",alignItems:"center",gap:6}}><svg width={12} height={12} viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)" stroke="none"><polygon points="5,3 19,12 5,21"/></svg><span style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>{isSports?"Watch Highlights":"Watch Live Performance"}</span></div>
           </div>):(<div style={{borderRadius:16,overflow:"hidden",border:"1px solid "+T.border,aspectRatio:"16/9"}}><iframe src={ytEmbed} title={ev.title} style={{width:"100%",height:"100%",border:"none"}} allow="autoplay; encrypted-media" allowFullScreen/></div>)}

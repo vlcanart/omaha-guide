@@ -9,11 +9,11 @@ export const TRAILS=[
 ];
 
 export const WALKS=[
-  {id:"w1",name:"Old Market Historic Walk",desc:"Cobblestone streets, 19th-century warehouses, galleries. Start at 10th & Howard.",time:"45 min",distance:"1.2 mi",lat:41.2555,lng:-95.932,tags:["History","Architecture"],icon:"camera"},
-  {id:"w2",name:"Benson Mainstreet",desc:"Omaha's most eclectic neighborhood. Vintage shops, murals, record stores, dive bars.",time:"1 hr",distance:"1.5 mi",lat:41.281,lng:-95.954,tags:["Music","Vintage"],icon:"walk"},
-  {id:"w3",name:"Blackstone to Dundee",desc:"Cocktail district to tree-lined neighborhood restaurants. Hit Crescent Moon and Pitch.",time:"1.5 hr",distance:"2.1 mi",lat:41.259,lng:-95.965,tags:["Dining","Cocktails"],icon:"food"},
-  {id:"w4",name:"North Omaha Murals",desc:"Street art celebrating Black history, jazz legends, and community resilience.",time:"1 hr",distance:"1.8 mi",lat:41.28,lng:-95.94,tags:["Art","Culture"],icon:"camera"},
-  {id:"w5",name:"RiverFront Trail",desc:"Gene Leahy Mall → Heartland of America Park → Lewis & Clark Landing.",time:"40 min",distance:"1.4 mi",lat:41.258,lng:-95.928,tags:["Riverfront","Family"],icon:"walk"},
+  {id:"w1",name:"Old Market Historic Walk",desc:"Cobblestone streets, 19th-century warehouses, galleries. Start at 10th & Howard.",time:"45 min",distance:"1.2 mi",lat:41.2555,lng:-95.932,tags:["History","Architecture"],iconKey:"camera"},
+  {id:"w2",name:"Benson Mainstreet",desc:"Omaha's most eclectic neighborhood. Vintage shops, murals, record stores, dive bars.",time:"1 hr",distance:"1.5 mi",lat:41.281,lng:-95.954,tags:["Music","Vintage"],iconKey:"walk"},
+  {id:"w3",name:"Blackstone to Dundee",desc:"Cocktail district to tree-lined neighborhood restaurants. Hit Crescent Moon and Pitch.",time:"1.5 hr",distance:"2.1 mi",lat:41.259,lng:-95.965,tags:["Dining","Cocktails"],iconKey:"food"},
+  {id:"w4",name:"North Omaha Murals",desc:"Street art celebrating Black history, jazz legends, and community resilience.",time:"1 hr",distance:"1.8 mi",lat:41.28,lng:-95.94,tags:["Art","Culture"],iconKey:"camera"},
+  {id:"w5",name:"RiverFront Trail",desc:"Gene Leahy Mall → Heartland of America Park → Lewis & Clark Landing.",time:"40 min",distance:"1.4 mi",lat:41.258,lng:-95.928,tags:["Riverfront","Family"],iconKey:"walk"},
 ];
 
 export const SUNSETS=[

@@ -42,7 +42,7 @@ export function ZooClient() {
 
         {/* ═══════ HERO ═══════ */}
         <div style={{ position: "relative", height: isD ? 340 : isM ? 280 : 300, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
-          <img src={ZOO_INFO.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} />
+          <img loading="lazy" src={ZOO_INFO.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(20,22,24,.15) 0%,rgba(20,22,24,.95) 100%)" }} />
 
           {/* Back */}
@@ -172,7 +172,7 @@ export function ZooClient() {
                 <div key={ex.id} onClick={() => setExpanded(open ? null : ex.id)} className="ecard" style={{ background: zooGrad, borderRadius: 18, border: `1px solid ${open ? ac + "44" : T.border}`, overflow: "hidden", cursor: "pointer" }}>
                   {/* Image */}
                   <div style={{ position: "relative", height: open ? 140 : 100, overflow: "hidden" }}>
-                    <img src={ex.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} onError={e => { e.target.style.display = "none" }} />
+                    <img loading="lazy" src={ex.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} onError={e => { e.target.style.display = "none" }} />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(30,36,32,.2) 0%,rgba(30,36,32,.9) 100%)" }} />
                     <div style={{ position: "absolute", top: 8, left: 10, display: "flex", gap: 5 }}>
                       <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 99, background: ex.cat === "indoor" ? "rgba(100,181,246,.15)" : ex.cat === "interactive" ? "rgba(129,199,132,.15)" : "rgba(255,183,77,.15)", color: ex.cat === "indoor" ? "#64B5F6" : ex.cat === "interactive" ? "#81C784" : ac }}>{ex.cat === "indoor" ? "Indoor" : ex.cat === "interactive" ? "Interactive" : "Outdoor"}</span>

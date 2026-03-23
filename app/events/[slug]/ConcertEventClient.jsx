@@ -50,6 +50,40 @@ function calUrl(ev){var s=ev.date?ev.date.replace(/-/g,""):"20260101";return "ht
 
 function YTMusicIcon(props){var s=props.size||22;return(<svg width={s} height={s} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11.5" fill="#FF0000"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="#fff" strokeWidth="1.2"/><polygon points="10.5,8 16.5,12 10.5,16" fill="#fff"/></svg>);}
 
+var SPORT_ICONS={Basketball:"\uD83C\uDFC0",Baseball:"\u26BE",Volleyball:"\uD83C\uDFD0",Football:"\uD83C\uDFC8",Hockey:"\uD83C\uDFD2",Soccer:"\u26BD",Wrestling:"\uD83E\uDD3C",Tennis:"\uD83C\uDFBE",Golf:"\u26F3",Sports:"\uD83C\uDFDF\uFE0F"};
+
+function MatchupCard(props){
+  var m=props.matchup;if(!m||!m.home||!m.away)return null;
+  var sportIcon=SPORT_ICONS[m.sportType]||"\uD83C\uDFDF\uFE0F";
+  function Team(p){var t=p.t;return(
+    <div style={{textAlign:"center",flex:1}}>
+      <div style={{width:88,height:88,borderRadius:99,margin:"0 auto 12px",background:"linear-gradient(135deg,"+t.color+"33,"+t.color+"11)",border:"3px solid "+t.color+"55",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden",boxShadow:"0 4px 20px "+t.color+"22"}}>
+        {t.logo?<img src={t.logo} alt={t.name} style={{width:62,height:62,objectFit:"contain"}}/>
+        :<span style={{fontSize:28,fontWeight:800,color:"#fff",letterSpacing:-1}}>{t.abbr}</span>}
+      </div>
+      <p style={{fontSize:16,fontWeight:700,color:T.textHi,margin:"0 0 2px"}}>{t.name}</p>
+      {t.record&&<p style={{fontSize:12,color:T.textSec,margin:"0 0 6px"}}>{t.record}</p>}
+      {t.rank&&<span style={{fontSize:10,fontWeight:700,color:CA.sports,background:"rgba(100,181,246,0.12)",padding:"3px 10px",borderRadius:99}}>{t.rank}</span>}
+    </div>
+  );}
+  return(
+    <div style={{background:"linear-gradient(135deg,#1A2430 0%,#21303E 60%,#1C2836 100%)",borderRadius:18,border:"1px solid "+T.border,padding:"24px 20px",marginBottom:16}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16}}>
+        <span style={{fontSize:16}}>{sportIcon}</span>
+        <span style={{fontSize:11,fontWeight:700,color:CA.sports,letterSpacing:2.5,textTransform:"uppercase"}}>{m.sportType||"Sports"}</span>
+      </div>
+      <p style={{fontSize:10,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 20px",textAlign:"center"}}>Matchup Preview</p>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
+        <Team t={m.home}/>
+        <div style={{width:44,height:44,borderRadius:99,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.04)",border:"1px solid "+T.border}}>
+          <span style={{fontSize:14,fontWeight:300,color:T.textDim,letterSpacing:2}}>vs</span>
+        </div>
+        <Team t={m.away}/>
+      </div>
+    </div>
+  );
+}
+
 function ArtistLineup(props){
   var lineup=props.lineup;if(!lineup||!lineup.length)return null;
   return(<div style={{marginBottom:24}}>
@@ -196,6 +230,9 @@ export default function ConcertEventClient(props){
 
         {/* Artist Lineup (concerts only) */}
         {!isSports&&<ArtistLineup lineup={ev.lineup}/>}
+
+        {/* Matchup Card (sports only) */}
+        {isSports&&ev.matchup&&<MatchupCard matchup={ev.matchup}/>}
 
         {/* About */}
         {ev.desc&&<div style={{marginBottom:24}}><p style={{fontSize:12,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 10px"}}>{isSports?"About This Game":"About This Event"}</p><p style={{fontSize:15,color:T.textBody,lineHeight:1.75,margin:0}}>{ev.desc}</p></div>}

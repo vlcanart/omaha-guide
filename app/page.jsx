@@ -351,7 +351,7 @@ export default function GOPrototype(){
           <Head text="Kids & Family" count={GALLERIES.filter(v=>v.type==="Kids").length} color="#FFB74D"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {GALLERIES.filter(v=>v.type==="Kids").map(v=>(
-              <Link key={v.id} href={"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
+              <Link key={v.id} href={v.id==="zoo"?"/zoo/":"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
                 <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
                   <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)"}}/>
@@ -774,6 +774,7 @@ export default function GOPrototype(){
               </div>}
 
               {/* Action buttons */}
+              {v.id==="zoo"&&<Link href="/zoo/" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,width:"100%",padding:"12px 0",borderRadius:99,textDecoration:"none",background:"linear-gradient(135deg,rgba(255,183,77,.15),rgba(255,183,77,.08))",border:"1px solid rgba(255,183,77,.3)",color:"#FFB74D",fontSize:11,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>View Full Zoo Page →</Link>}
               <div style={{display:"flex",gap:8}}>
                 <a href={v.web} target="_blank" rel="noopener noreferrer" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"12px 0",borderRadius:99,textDecoration:"none",background:`linear-gradient(135deg, ${T.accent}, ${T.accent}dd)`,color:T.bg,fontSize:11,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase"}}>Visit Website</a>
                 <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name+" "+v.address)}`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"12px 20px",borderRadius:99,textDecoration:"none",background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>Map</a>

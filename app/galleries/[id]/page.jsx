@@ -32,7 +32,20 @@ export function generateMetadata({ params }) {
   };
 }
 
+function ZooRedirect() {
+  return (
+    <>
+      <meta httpEquiv="refresh" content="0;url=/zoo/" />
+      <div style={{ minHeight: "100vh", background: "#141618", color: "#F2EFE9", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p>Redirecting to <a href="/zoo/" style={{ color: "#5EC4B6" }}>Zoo page</a>...</p>
+      </div>
+    </>
+  );
+}
+
 export default function GalleryPage({ params }) {
+  if (params.id === "zoo") return <ZooRedirect />;
+
   const gallery = GALLERIES.find(g => g.id === params.id);
   if (!gallery) return <div style={{ minHeight: "100vh", background: "#141618", color: "#F2EFE9", display: "flex", alignItems: "center", justifyContent: "center" }}><p>Gallery not found</p></div>;
 

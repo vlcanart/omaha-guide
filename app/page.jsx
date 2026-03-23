@@ -1359,32 +1359,91 @@ export default function GOPrototype(){
         const walkId=tab.split(":")[1];
         const walk=WALKS.find(w=>w.id===walkId);
         if(!walk)return null;
+        const wAc="#FFB74D";const wSoft="rgba(255,183,77,.12)";const wBdr="rgba(255,183,77,.25)";
+        const mapQ=encodeURIComponent(walk.startPoint||walk.name+", Omaha NE");
         return(<div style={{...sec,paddingTop:0}}>
-          <div style={{position:"relative",height:isD?280:220,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
-            <div style={{width:"100%",height:"100%",background:CG.hood}}/>
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{IC[walk.iconKey]?IC[walk.iconKey]("#FFB74D",64):null}</div>
-            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
+          {/* HERO */}
+          <div style={{position:"relative",height:isD?320:isM?260:280,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:`0 -${px}px`}}>
+            {walk.img?<img loading="lazy" src={walk.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>:<div style={{width:"100%",height:"100%",background:CG.hood}}/>}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.15) 0%,rgba(20,22,24,.95) 100%)"}}/>
             <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
-              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{walk.name}</h1>
+            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:`0 ${px}px 20px`}}>
+              <div style={{display:"flex",gap:6,marginBottom:8}}><span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"4px 10px",borderRadius:99,background:wSoft,color:wAc,border:`1px solid ${wBdr}`}}>Walking Tour</span>{walk.difficulty&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"4px 10px",borderRadius:99,background:"rgba(255,255,255,.06)",color:T.textSec}}>{walk.difficulty}</span>}</div>
+              <h1 style={{margin:0,fontSize:isD?30:isM?24:27,fontWeight:700,color:T.textHi,lineHeight:1.15}}>{walk.name}</h1>
+              <p style={{margin:"6px 0 0",fontSize:11,color:T.textSec}}>{walk.distance} \u00B7 {walk.time} \u00B7 {walk.stops?walk.stops.length:0} stops</p>
             </div>
           </div>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
-            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
-              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Distance</div>
-              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.distance}</div>
-            </div>
-            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
-              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Time</div>
-              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.time}</div>
+
+          {/* QUICK STATS */}
+          <div style={{display:"flex",gap:8,margin:"16px 0",overflowX:"auto",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
+            {[{val:walk.distance,unit:"Distance",icon:"\uD83D\uDCCF"},{val:walk.time,unit:"Time",icon:"\u23F1\uFE0F"},{val:walk.difficulty||"Easy",unit:"Difficulty",icon:"\uD83E\uDDB6"},{val:String(walk.stops?walk.stops.length:0),unit:"Stops",icon:"\uD83D\uDCCD"}].map((s,i)=>(<div key={i} style={{flexShrink:0,padding:"12px 16px",borderRadius:14,textAlign:"center",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,minWidth:80}}><span style={{fontSize:14}}>{s.icon}</span><p style={{fontSize:16,fontWeight:700,color:wAc,margin:"2px 0 0"}}>{s.val}</p><p style={{fontSize:9,color:T.textSec,fontWeight:600,letterSpacing:1,textTransform:"uppercase",margin:0}}>{s.unit}</p></div>))}
+          </div>
+
+          {/* ABOUT */}
+          <p style={{fontSize:14,color:T.textBody,lineHeight:1.7,margin:"0 0 8px"}}>{walk.longDesc||walk.desc}</p>
+          {walk.startPoint&&<p style={{fontSize:11,color:wAc,fontWeight:600,margin:"0 0 16px",letterSpacing:.3}}>{"\uD83D\uDEB6 Start: "+walk.startPoint}</p>}
+          <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:20}}>{walk.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+
+          {/* MAP */}
+          <div style={{marginBottom:24}}>
+            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Route Map</h2>
+            <div style={{borderRadius:16,overflow:"hidden",border:`1px solid ${T.border}`,height:isD?280:200}}>
+              <iframe title="Walk Map" width="100%" height="100%" style={{border:"none",filter:"invert(90%) hue-rotate(180deg)"}} loading="lazy" src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q="+mapQ+"&zoom=15&maptype=roadmap"}/>
             </div>
           </div>
-          <p style={{margin:"16px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{walk.desc}</p>
-          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{walk.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
-          <div style={{display:"flex",gap:8,marginTop:24}}>
-            <a href={mapsDir(walk.lat,walk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",color:"#FFB74D",fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir("#FFB74D",14)} Get Directions</a>
+
+          {/* STOPS ALONG THE WAY */}
+          {walk.stops&&walk.stops.length>0&&<div style={{marginBottom:24}}>
+            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Stops Along the Way <span style={{color:T.textDim,fontSize:11,letterSpacing:1}}>({walk.stops.length})</span></h2>
+            <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              {walk.stops.map((stop,i)=>(
+                <div key={i} style={{display:"flex",gap:14,padding:"16px",borderRadius:16,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`}}>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,flexShrink:0}}>
+                    <div style={{width:36,height:36,borderRadius:99,background:wSoft,border:`1px solid ${wBdr}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:wAc}}>{i+1}</div>
+                    {stop.img&&<div style={{width:56,height:56,borderRadius:12,overflow:"hidden",border:`1px solid ${T.border}`}}><img loading="lazy" src={stop.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.75}}/></div>}
+                  </div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
+                      <span style={{fontSize:16}}>{stop.icon}</span>
+                      <h3 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{stop.name}</h3>
+                    </div>
+                    <p style={{margin:"0 0 8px",fontSize:12,color:T.textBody,lineHeight:1.5}}>{stop.desc}</p>
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${stop.lat},${stop.lng}`} target="_blank" rel="noopener noreferrer" style={{fontSize:10,color:wAc,fontWeight:600,textDecoration:"none",display:"inline-flex",alignItems:"center",gap:4}}>{IC.pin(wAc,12)} Open in Maps</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>}
+
+          {/* HIGHLIGHTS */}
+          {walk.highlights&&<div style={{marginBottom:24}}>
+            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Highlights</h2>
+            <div style={{borderRadius:16,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`,padding:"14px 16px"}}>
+              {walk.highlights.map((h,i)=>(<div key={i} style={{display:"flex",gap:8,padding:"6px 0"}}><span style={{width:4,height:4,borderRadius:99,background:wAc,flexShrink:0,marginTop:7,opacity:.6}}/><p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.5}}>{h}</p></div>))}
+            </div>
+          </div>}
+
+          {/* TIPS */}
+          {walk.tips&&<div style={{marginBottom:24}}>
+            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Tips</h2>
+            <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8}}>
+              {walk.tips.map((tip,i)=>(<div key={i} style={{background:"rgba(255,255,255,.02)",borderRadius:16,border:`1px solid ${T.border}`,padding:"14px"}}>
+                <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+                  <span style={{fontSize:20,flexShrink:0}}>{tip.icon}</span>
+                  <div><h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{tip.title}</h4><p style={{margin:"4px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{tip.text}</p></div>
+                </div>
+              </div>))}
+            </div>
+          </div>}
+
+          {/* CTAs */}
+          <div style={{display:"flex",gap:8,marginBottom:28}}>
+            <a href={mapsDir(walk.lat,walk.lng)} target="_blank" rel="noopener noreferrer" className="cta" style={{flex:1,padding:"14px 0",borderRadius:99,background:`linear-gradient(135deg,${wAc},${wAc}dd)`,color:T.bg,fontSize:12,fontWeight:700,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8,letterSpacing:1.5,textTransform:"uppercase"}}>{IC.dir(T.bg,14)} Start Walk</a>
+            <button onClick={()=>{if(navigator.share)navigator.share({title:walk.name,url:window.location.href}).catch(()=>{});else navigator.clipboard?.writeText(window.location.href);}} className="hbtn" style={{padding:"14px 20px",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{IC.share(T.textSec,13)} Share</button>
           </div>
-          <div style={{height:120}}/>
+
+          <div style={{textAlign:"center",paddingBottom:20,borderTop:`1px solid ${T.border}`,paddingTop:16}}><p style={{fontSize:9,color:"rgba(235,230,220,.2)",margin:0}}>{"\u00A9"} 2026 GO: Guide to Omaha</p></div>
+          <div style={{height:80}}/>
         </div>);
       })()}
 

@@ -302,8 +302,9 @@ export default function GOPrototype(){
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {WALKS.map(wk=>(
               <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
-                <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
-                  {IC[wk.iconKey]?IC[wk.iconKey]("#FFB74D",36):null}
+                <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
+                  {wk.img?<img loading="lazy" src={wk.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>:<div style={{width:"100%",height:"100%",background:"rgba(255,183,77,.08)",display:"flex",alignItems:"center",justifyContent:"center"}}>{IC[wk.iconKey]?IC[wk.iconKey]("#FFB74D",36):null}</div>}
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                   <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>

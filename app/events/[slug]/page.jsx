@@ -28,6 +28,88 @@ var VENUE_MAP = {
   "North Omaha Music & Arts": { lat: 41.28, lng: -95.95, cap: "200", area: "North Omaha", type: "Community", url: "#", addr: "North Omaha, NE" },
 };
 
+var TEAMS={
+  "creighton":{name:"Creighton Bluejays",abbr:"CU",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},
+  "bluejays":{name:"Creighton Bluejays",abbr:"CU",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},
+  "nebraska":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
+  "huskers":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
+  "omaha":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
+  "mavericks":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
+  "storm chasers":{name:"Storm Chasers",abbr:"OMA",color:"#003DA5",logo:""},
+  "union omaha":{name:"Union Omaha",abbr:"UO",color:"#1C2B39",logo:""},
+  "supernovas":{name:"Omaha Supernovas",abbr:"SUP",color:"#E8364F",logo:""},
+  "lancers":{name:"Omaha Lancers",abbr:"OL",color:"#003DA5",logo:""},
+  "iowa":{name:"Iowa",abbr:"IOW",color:"#FFCD00",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2294.png"},
+  "kansas":{name:"Kansas",abbr:"KU",color:"#0051BA",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png"},
+  "villanova":{name:"Villanova",abbr:"NOVA",color:"#00205B",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/222.png"},
+  "marquette":{name:"Marquette",abbr:"MARQ",color:"#003366",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/269.png"},
+  "xavier":{name:"Xavier",abbr:"XAV",color:"#0C2340",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2752.png"},
+  "uconn":{name:"UConn",abbr:"UCONN",color:"#000E2F",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/41.png"},
+  "butler":{name:"Butler",abbr:"BUT",color:"#13294B",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2166.png"},
+  "depaul":{name:"DePaul",abbr:"DPU",color:"#005EB8",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/305.png"},
+  "seton hall":{name:"Seton Hall",abbr:"SHU",color:"#004488",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2550.png"},
+  "st. john":{name:"St. John's",abbr:"SJU",color:"#C8102E",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2599.png"},
+  "georgetown":{name:"Georgetown",abbr:"GTOWN",color:"#041E42",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/46.png"},
+  "providence":{name:"Providence",abbr:"PROV",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2507.png"},
+  "wisconsin":{name:"Wisconsin",abbr:"WIS",color:"#C5050C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/275.png"},
+  "minnesota":{name:"Minnesota",abbr:"MINN",color:"#7A0019",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/135.png"},
+  "michigan":{name:"Michigan",abbr:"MICH",color:"#00274C",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/130.png"},
+  "ohio state":{name:"Ohio State",abbr:"OSU",color:"#BB0000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/194.png"},
+  "penn state":{name:"Penn State",abbr:"PSU",color:"#041E42",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/213.png"},
+};
+
+function enrichSports(ev) {
+  if (ev.cat !== "sports" || ev.matchup) return ev;
+  var t = (ev.title || "").toLowerCase();
+  var enriched = Object.assign({}, ev);
+
+  // Parse "Team A v Team B" or "Team A vs Team B"
+  var vsMatch = t.match(/^(.+?)\s+(?:v\.?\s*|vs\.?\s+)(.+?)(?:\s+at\s+|\s*$)/i);
+  if (vsMatch) {
+    var findTeam = function(str) {
+      var s = str.trim().toLowerCase();
+      for (var k in TEAMS) { if (s.includes(k)) return Object.assign({}, TEAMS[k]); }
+      var words = str.trim().split(/\s+/);
+      var abbr = words.map(function(w) { return w[0]; }).join("").toUpperCase().slice(0, 4);
+      return { name: str.trim(), abbr: abbr, color: "#64B5F6", logo: "" };
+    };
+    var teamA = findTeam(vsMatch[1]);
+    var teamB = findTeam(vsMatch[2]);
+    var venL = (ev.venue || "").toLowerCase();
+    var homeIsFirst = venL.includes("baxter") || venL.includes("morrison") || t.includes("creighton") || t.includes("husker") || t.includes("nebraska");
+    enriched.matchup = { home: homeIsFirst ? teamA : teamB, away: homeIsFirst ? teamB : teamA };
+  }
+
+  // Detect sport type
+  var venL2 = (ev.venue || "").toLowerCase();
+  var sport = "Sports";
+  if (t.includes("basketball") || venL2.includes("chi health center") || venL2.includes("baxter arena")) sport = "Basketball";
+  else if (t.includes("baseball") || venL2.includes("schwab") || venL2.includes("werner")) sport = "Baseball";
+  else if (t.includes("volleyball") || t.includes("supernovas") || venL2.includes("devaney")) sport = "Volleyball";
+  else if (t.includes("football") || venL2.includes("memorial stadium")) sport = "Football";
+  else if (t.includes("hockey") || t.includes("lancers") || venL2.includes("ice")) sport = "Hockey";
+  else if (t.includes("soccer") || t.includes("union omaha") || venL2.includes("caniglia")) sport = "Soccer";
+  else if (t.includes("wrestling")) sport = "Wrestling";
+  enriched.sportType = enriched.sportType || sport;
+  if (enriched.matchup) enriched.matchup.sportType = enriched.sportType;
+
+  // Auto-generate tags if missing
+  if (!enriched.tags || enriched.tags.length === 0) {
+    var tags = [sport];
+    if (t.includes("bluejay") || t.includes("creighton")) tags.push("Big East", "Creighton");
+    else if (t.includes("husker") || t.includes("nebraska")) tags.push("Big Ten", "Nebraska");
+    else if (t.includes("maverick") || t.includes("uno")) tags.push("Summit League", "UNO");
+    else if (t.includes("storm chaser")) tags.push("Minor League Baseball", "Triple-A");
+    else if (t.includes("union omaha")) tags.push("USL League One");
+    else if (t.includes("supernovas")) tags.push("Pro Volleyball", "LOVB");
+    else if (t.includes("lancers")) tags.push("USHL", "Junior Hockey");
+    tags.push("Live Sports");
+    enriched.tags = tags;
+  }
+
+  return enriched;
+}
+
 function getAllEvents() {
   try {
     var seed = Array.isArray(SEED_EVENTS) ? SEED_EVENTS : [];
@@ -63,6 +145,9 @@ export default async function EventPage({ params }) {
       </div>
     );
   }
+
+  // Enrich sports events at build time
+  ev = enrichSports(ev);
 
   var venue = VENUE_MAP[ev.venue] || null;
   var jsonLd = eventJsonLd(ev, venue);

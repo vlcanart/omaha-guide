@@ -621,7 +621,7 @@ export default function GOPrototype(){
             </button>);})}
         </div>
         {VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).filter(v=>venCat==="all"||v.type===venCat).map((v,i)=>(
-          <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`}}>
+          <Link key={v.id} href={v.slug===("henry-doorly-zoo")?"/zoo/":"/venues/"+(v.slug||v.id)+"/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`}}>
             <div style={{position:"relative",height:isD?140:isM?100:115,overflow:"hidden"}}>
               <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
               <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -638,7 +638,7 @@ export default function GOPrototype(){
               <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45}}>{v.desc}</p>
               {(()=>{const b=getVenueBadge(v.name);return b?<span style={{display:"inline-block",marginTop:6,fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}
             </div>
-          </a>
+          </Link>
         ))}
         <div style={{height:90}}/>
       </div>}
@@ -932,7 +932,7 @@ export default function GOPrototype(){
           {hoodVenues.length>0&&<div style={{marginTop:24}}>
             <Head text={"Venues in "+hood.name} count={hoodVenues.length} color={hood.color}/>
             {hoodVenues.map((v,i)=>(
-              <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{display:"flex",alignItems:"center",gap:12,textDecoration:"none",color:"inherit",background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 14px",marginBottom:6}}>
+              <Link key={v.id} href={v.slug==="henry-doorly-zoo"?"/zoo/":"/venues/"+(v.slug||v.id)+"/"} className="ecard" style={{display:"flex",alignItems:"center",gap:12,textDecoration:"none",color:"inherit",background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 14px",marginBottom:6}}>
                 <div style={{width:48,height:48,borderRadius:14,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.05)"}}>
                   <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.6}} onError={e=>{e.target.style.display="none"}}/>
                 </div>
@@ -941,7 +941,7 @@ export default function GOPrototype(){
                   <p style={{margin:"1px 0 0",fontSize:10,color:T.textSec,letterSpacing:.5}}>{v.type} \u00b7 {v.cap}</p>
                 </div>
                 {IC.chev(T.textDim,16)}
-              </a>
+              </Link>
             ))}
           </div>}
 

@@ -148,6 +148,7 @@ export default function GOPrototype(){
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+slugify(ev.title,ev.id)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
+  const venueHref=(name)=>{const v=VENUES.find(v=>v.name===name);if(v&&v.slug==="henry-doorly-zoo")return"/zoo/";return v?"/venues/"+v.slug+"/":null;};
   const[evShow,setEvShow]=useState(30);
   useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);setEvShow(30);}},[tab]);
   useEffect(()=>{setEvShow(30);},[evCat,evSub,selectedDates]);
@@ -318,20 +319,17 @@ export default function GOPrototype(){
 
           <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
           {DAYTIME.map((a,i)=>(
-            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("venue:"+a.id);scrollTop();}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
+            <Link key={a.id} href={venueHref(a.name)||"/venues/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
                 <div style={{flex:1}}>
                   <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{a.name}</h3>
                   <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>
                   <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
-                  <div style={{display:"flex",gap:6,marginTop:10}}>
-                    <a href={mapsDir(a.lat,a.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.dir(T.textBody,11)} Directions</a>
-                    {a.url&&<a href={a.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(94,196,182,.1)",border:"1px solid rgba(94,196,182,.2)",color:T.accent,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.link(T.accent,11)} Visit</a>}
-                  </div>
                 </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:12}}><polyline points="9 18 15 12 9 6"/></svg>
               </div>
-            </div>
+            </Link>
           ))}
 
           {/* Museums & Galleries CTA */}
@@ -351,7 +349,7 @@ export default function GOPrototype(){
           <Head text="Kids & Family" count={GALLERIES.filter(v=>v.type==="Kids").length} color="#FFB74D"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {GALLERIES.filter(v=>v.type==="Kids").map(v=>(
-              <Link key={v.id} href={v.id==="zoo"?"/zoo/":"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
+              <Link key={v.id} href={v.id==="zoo"?"/zoo/":venueHref(v.name)||"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
                 <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
                   <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)"}}/>
@@ -568,16 +566,17 @@ export default function GOPrototype(){
         {/* ── Things To Do ── */}
         <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
         {DAYTIME.map((a,i)=>(
-          <div key={a.id} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+          <Link key={a.id} href={venueHref(a.name)||"/venues/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
               <div style={{flex:1}}>
                 <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{a.name}</h3>
-                {a.url?<a href={a.url} target="_blank" rel="noopener noreferrer" style={{fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent,textDecoration:"none"}}>{a.time} · {a.price}</a>:<p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>}
+                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>
                 <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
               </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:12}}><polyline points="9 18 15 12 9 6"/></svg>
             </div>
-          </div>
+          </Link>
         ))}
 
         {/* ── Venues (compact link to venues view) ── */}

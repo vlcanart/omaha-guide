@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from "react";
 
 const t = {
   bg: "#141618", bgElevated: "#1A1C1F", bgCard: "#1E2023", bgHover: "#252729",
-  surface: "#2A2D30", text: "#F2EFE9", textMuted: "#B8B3AB", textDim: "#7D7870",
+  surface: "#2A2D30", text: "#F2EFE9", textMuted: "#B8B3AB", textBody: "rgba(242,239,233,0.85)", textDim: "#7D7870",
   cream: "#E8E2D6", teal: "#5EC4B6", green: "#6BBF7A",
   // Luminarium — electric violet + bright cyan, science-center energy
   accent: "#8B6CE0", accentSoft: "rgba(139,108,224,0.12)",
   accentDeep: "#6B4CC0", cyan: "#3DD6E8", cyanSoft: "rgba(61,214,232,0.10)",
-  display: "'Cormorant Garamond', Georgia, serif",
-  body: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+  display: "'Inter', system-ui, -apple-system, sans-serif",
+  body: "'Inter', system-ui, -apple-system, sans-serif",
   mono: "'IBM Plex Mono', 'SF Mono', monospace",
   pagePx: "clamp(1rem, 4vw, 2.5rem)", maxW: "1100px", radius: "10px", radiusSm: "6px",
 };
@@ -136,7 +136,7 @@ function About() {
         <SectionHeader label="About" heading="Where curiosity has no age limit." />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
           <Reveal delay={0.1}>
-            <div style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textMuted }}>
+            <div style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textBody }}>
               <p>The Kiewit Luminarium is Omaha&apos;s first dedicated science center — a $101 million, privately funded institution that opened April 15, 2023, at Lewis &amp; Clark Landing on the Missouri Riverfront. It&apos;s part workshop, part museum, part playground.</p>
               <p style={{ marginTop: "1.1rem" }}>Co-created with San Francisco&apos;s Exploratorium — one of the nation&apos;s premier science museums — and designed by HDR as a contemporary &ldquo;machine shed&rdquo; container, the building lifts off the ground toward downtown and anchors into the riverfront boardwalk, with vertical shading fins that animate the facade as pedestrians pass.</p>
             </div>
@@ -249,7 +249,7 @@ function PlanVisit() {
               </div>
               <div style={{ marginTop: "2rem" }}>
                 <BlockTitle>Getting There</BlockTitle>
-                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textMuted, fontWeight: 300 }}>
+                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textBody, fontWeight: 300 }}>
                   <p>345 Riverfront Drive, Omaha, NE 68102. Lewis &amp; Clark Landing on the Missouri Riverfront. Free parking for all guests.</p>
                   <p style={{ marginTop: "0.75rem" }}>Steps from Gene Leahy Mall, the Bob Kerrey Pedestrian Bridge, and CHI Health Center. Part of the $400M+ riverfront revitalization.</p>
                 </div>
@@ -270,7 +270,7 @@ function PlanVisit() {
               <div style={{ fontFamily: t.mono, fontSize: "0.6rem", color: t.textDim, marginTop: "0.6rem", letterSpacing: "0.04em" }}>Museums for All: $1 w/ SNAP EBT or eWIC</div>
               <div style={{ marginTop: "2rem" }}>
                 <BlockTitle>Contact</BlockTitle>
-                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textMuted, fontWeight: 300 }}>
+                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textBody, fontWeight: 300 }}>
                   345 Riverfront Drive<br />Omaha, NE 68102<br />@kiewitluminarium
                 </div>
               </div>
@@ -347,12 +347,15 @@ export default function LuminariumVenuePage() {
   return (
     <div style={{ background: t.bg, color: t.text, minHeight: "100vh" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap');
         @keyframes goFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes goPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
         body { margin: 0; }
         * { box-sizing: border-box; }
+        @media (max-width: 720px) {
+          .venue-grid-2col { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .venue-hero h1 { font-size: clamp(2.2rem, 8vw, 4rem) !important; }
+        }
       `}</style>
       <GoBar />
       <Hero />

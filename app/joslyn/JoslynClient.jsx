@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useResponsive } from "../components/ResponsiveProvider";
 
 // ═══════════════════════════════════════════════════════════════
 // GO: Guide to Omaha — Design Tokens
@@ -25,10 +26,11 @@ const t = {
   gold: "#BDA26B",
   goldSoft: "rgba(189,162,107,0.10)",
 
-  // Typography
-  display: "'Cormorant Garamond', Georgia, serif",
-  body: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+  // Typography — aligned with site-wide Inter
+  display: "'Inter', system-ui, -apple-system, sans-serif",
+  body: "'Inter', system-ui, -apple-system, sans-serif",
   mono: "'IBM Plex Mono', 'SF Mono', monospace",
+  textBody: "rgba(242,239,233,0.85)",
 
   // Spacing
   pagePx: "clamp(1rem, 4vw, 2.5rem)",
@@ -407,6 +409,7 @@ function About() {
       <div style={{ maxWidth: t.maxW, margin: "0 auto" }}>
         <SectionHeader label="About" heading="Nebraska's largest art museum, reimagined." />
         <div
+          className="venue-grid-2col"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -421,7 +424,7 @@ function About() {
                 fontSize: "0.95rem",
                 fontWeight: 300,
                 lineHeight: 1.75,
-                color: t.textMuted,
+                color: t.textBody,
               }}
             >
               <p>
@@ -785,6 +788,7 @@ function PlanVisit() {
           heading="Everything you need to know."
         />
         <div
+          className="venue-grid-2col"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -833,7 +837,7 @@ function PlanVisit() {
                     fontFamily: t.body,
                     fontSize: "0.88rem",
                     lineHeight: 1.7,
-                    color: t.textMuted,
+                    color: t.textBody,
                     fontWeight: 300,
                   }}
                 >
@@ -858,7 +862,7 @@ function PlanVisit() {
                   fontFamily: t.body,
                   fontSize: "0.88rem",
                   lineHeight: 1.7,
-                  color: t.textMuted,
+                  color: t.textBody,
                   fontWeight: 300,
                 }}
               >
@@ -896,7 +900,7 @@ function PlanVisit() {
                     fontFamily: t.body,
                     fontSize: "0.88rem",
                     lineHeight: 1.7,
-                    color: t.textMuted,
+                    color: t.textBody,
                     fontWeight: 300,
                   }}
                 >
@@ -1183,7 +1187,6 @@ export default function JoslynVenuePage() {
     <div style={{ background: t.bg, color: t.text, minHeight: "100vh" }}>
       {/* Global keyframes */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap');
         @keyframes goFadeUp {
           from { opacity: 0; transform: translateY(18px); }
           to { opacity: 1; transform: translateY(0); }
@@ -1195,6 +1198,10 @@ export default function JoslynVenuePage() {
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
         body { margin: 0; }
         * { box-sizing: border-box; }
+        @media (max-width: 720px) {
+          .venue-grid-2col { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .venue-hero h1 { font-size: clamp(2.2rem, 8vw, 4rem) !important; }
+        }
       `}</style>
 
       <GoBar />

@@ -13,6 +13,7 @@ const t = {
   surface: "#2A2D30",
   text: "#F2EFE9",
   textMuted: "#B8B3AB",
+  textBody: "rgba(242,239,233,0.85)",
   textDim: "#7D7870",
   cream: "#E8E2D6",
   teal: "#5EC4B6",
@@ -25,8 +26,8 @@ const t = {
   marble: "#4A6A7A",
   marbleSoft: "rgba(74,106,122,0.10)",
 
-  display: "'Cormorant Garamond', Georgia, serif",
-  body: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+  display: "'Inter', system-ui, -apple-system, sans-serif",
+  body: "'Inter', system-ui, -apple-system, sans-serif",
   mono: "'IBM Plex Mono', 'SF Mono', monospace",
 
   pagePx: "clamp(1rem, 4vw, 2.5rem)",
@@ -198,9 +199,9 @@ function About() {
     <section style={{ padding: `4.5rem ${t.pagePx}`, borderBottom: "1px solid rgba(242,239,233,0.06)" }}>
       <div style={{ maxWidth: t.maxW, margin: "0 auto" }}>
         <SectionHeader label="About" heading="Where architecture is the first exhibit." />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
+        <div className="venue-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
           <Reveal delay={0.1}>
-            <div style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textMuted }}>
+            <div style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textBody }}>
               <p>Built in 1931 by architect Gilbert Stanley Underwood for the Union Pacific Railroad, Omaha&apos;s Union Station was the showpiece of a city at the crossroads of a continent. At its peak, over a million passengers a year passed through its doors.</p>
               <p style={{ marginTop: "1.1rem" }}>When passenger rail declined, the station closed in 1971. Reborn in 1975 as the Western Heritage Museum — and later renamed for philanthropists Charles and Margre Durham — it now houses the region&apos;s premier history museum, a Smithsonian Affiliate with ties to the Library of Congress, National Archives, and Field Museum.</p>
             </div>
@@ -243,7 +244,7 @@ function GreatHall() {
       <div style={{ maxWidth: t.maxW, margin: "0 auto", position: "relative" }}>
         <SectionHeader label="The Great Hall" heading="The Suzanne & Walter Scott Great Hall." />
         <Reveal delay={0.1}>
-          <p style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textMuted, maxWidth: "640px", marginTop: "1.5rem" }}>
+          <p style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textBody, maxWidth: "640px", marginTop: "1.5rem" }}>
             Step into the restored main waiting room and look up. Sculptured plaster painted with gold and silver leaf trim spans a 60-foot ceiling. Ten cathedral-like plate glass windows line the walls. Six immense chandeliers — each 13 feet tall — hang suspended 20 feet above a patterned terrazzo floor flanked by blue and black Belgian marble. Bronze statues by Omaha sculptor John Lajba stand frozen mid-stride, echoing the travelers who once filled this hall.
           </p>
         </Reveal>
@@ -383,7 +384,7 @@ function PlanVisit() {
     <section style={{ padding: `4.5rem ${t.pagePx}` }}>
       <div style={{ maxWidth: t.maxW, margin: "0 auto" }}>
         <SectionHeader label="Plan Your Visit" heading="Everything you need to know." />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
+        <div className="venue-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
           <Reveal delay={0.1}>
             <div>
               <BlockTitle>Hours</BlockTitle>
@@ -397,7 +398,7 @@ function PlanVisit() {
               </div>
               <div style={{ marginTop: "2rem" }}>
                 <BlockTitle>Getting There</BlockTitle>
-                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textMuted, fontWeight: 300 }}>
+                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textBody, fontWeight: 300 }}>
                   <p>801 S 10th Street, Omaha, NE 68108. Free parking on-site including bus/RV spaces.</p>
                   <p style={{ marginTop: "0.75rem" }}>Located in the Rail &amp; Commerce Historic District, steps from the Old Market. Wheelchair accessible with electric scooters available at the front desk.</p>
                 </div>
@@ -421,7 +422,7 @@ function PlanVisit() {
               </div>
               <div style={{ marginTop: "2rem" }}>
                 <BlockTitle>Contact</BlockTitle>
-                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textMuted, fontWeight: 300 }}>
+                <div style={{ fontFamily: t.body, fontSize: "0.88rem", lineHeight: 1.7, color: t.textBody, fontWeight: 300 }}>
                   (402) 444-5071<br />info@durhammuseum.org<br />@TheDurhamMuseum on all platforms
                 </div>
               </div>
@@ -514,12 +515,15 @@ export default function DurhamVenuePage() {
   return (
     <div style={{ background: t.bg, color: t.text, minHeight: "100vh" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap');
         @keyframes goFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes goPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
         html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
         body { margin: 0; }
         * { box-sizing: border-box; }
+        @media (max-width: 720px) {
+          .venue-grid-2col { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .venue-hero h1 { font-size: clamp(2.2rem, 8vw, 4rem) !important; }
+        }
       `}</style>
       <GoBar />
       <Hero />

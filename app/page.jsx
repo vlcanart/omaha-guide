@@ -113,7 +113,7 @@ export default function GOPrototype(){
   const router=useRouter();
   const[mounted,setMounted]=useState(false);
   const contentRef=useRef(null);
-  const scrollTop=()=>{if(contentRef.current)contentRef.current.scrollTo(0,0);else scrollTop();};
+  const scrollTop=()=>{if(contentRef.current)contentRef.current.scrollTo({top:0,behavior:"instant"});};
   const[nowTv,setNowTv]=useState(50);
   const[tv,setTv]=useState(50);
   const[isLive,setIsLive]=useState(true);

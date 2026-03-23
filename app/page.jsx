@@ -148,7 +148,7 @@ export default function GOPrototype(){
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
   const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+slugify(ev.title,ev.id)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
-  const venueHref=(name)=>{const v=VENUES.find(v=>v.name===name);if(v&&v.slug==="henry-doorly-zoo")return"/zoo/";return v?"/venues/"+v.slug+"/":null;};
+  const venueHref=(name)=>{const ven=VENUES.find(x=>x.name===name);if(ven&&ven.slug==="henry-doorly-zoo")return"/zoo/";return ven?"/venues/"+ven.slug+"/":null;};
   const[evShow,setEvShow]=useState(30);
   useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);setEvShow(30);}},[tab]);
   useEffect(()=>{setEvShow(30);},[evCat,evSub,selectedDates]);

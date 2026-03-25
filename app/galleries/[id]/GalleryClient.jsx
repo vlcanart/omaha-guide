@@ -4,7 +4,20 @@ import { T } from "../../lib/design-tokens";
 import { IC } from "../../lib/icons";
 import { useResponsive } from "../../components/ResponsiveProvider";
 
-export function GalleryClient({ gallery }) {
+const CA = { concerts: "#5EC4B6", sports: "#64B5F6", festivals: "#CE93D8", family: "#81C784", arts: "#B39DDB", comedy: "#FFB74D" };
+const CGrad = {
+  concerts: "linear-gradient(135deg,#1A2E32 0%,#213740 60%,#1C3035 100%)",
+  sports: "linear-gradient(135deg,#1A2430 0%,#21303E 60%,#1C2836 100%)",
+  arts: "linear-gradient(135deg,#271F30 0%,#30263A 60%,#292134 100%)",
+  comedy: "linear-gradient(135deg,#2D2518 0%,#3A2F1E 60%,#332A1C 100%)",
+  _: "linear-gradient(135deg,#1E2024 0%,#262A2E 60%,#202428 100%)",
+};
+const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const WDAYS = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+function slugify(t, id) { return (t||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60)+"-"+id; }
+function parseDate(d) { if(!d||!d.match(/^\d{4}/))return null; const dt=new Date(d+"T12:00:00"); return{day:dt.getDate(),month:MONTHS[dt.getMonth()],weekday:WDAYS[dt.getDay()]}; }
+
+export function GalleryClient({ gallery, events = [], contentImage }) {
   const { isM, isT, isD } = useResponsive();
   const mxW = isD ? 860 : isT ? 680 : 600;
   const px = isD ? 32 : isT ? 24 : 16;
@@ -22,7 +35,7 @@ export function GalleryClient({ gallery }) {
 
         {/* HERO IMAGE */}
         <div style={{ position: "relative", height: isD ? 280 : isM ? 220 : 250, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
-          <img src={gallery.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .55 }} />
+          <img src={contentImage || gallery.img} alt={gallery.name} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .55 }} onError={e => { if (contentImage) { e.target.src = gallery.img; e.target.onerror = null; } }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(39,31,48,.2) 0%,rgba(39,31,48,.85) 100%)" }} />
 
           {/* Back button */}
@@ -124,6 +137,33 @@ export function GalleryClient({ gallery }) {
             {gallery.web && <a href={gallery.web} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 0", borderRadius: 99, textDecoration: "none", background: `linear-gradient(135deg, ${T.accent}, ${T.accent}dd)`, color: T.bg, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Visit Website</a>}
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 20px", borderRadius: 99, textDecoration: "none", background: "rgba(255,255,255,.04)", border: `1px solid ${T.border}`, color: T.text, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>Map</a>
           </div>
+
+          {/* UPCOMING EVENTS */}
+          {events.length > 0 && <div style={{ marginBottom: 32 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: T.textSec, letterSpacing: 2.5, textTransform: "uppercase", margin: "0 0 16px" }}>Upcoming Events ({events.length})</p>
+            {events.map(ev => {
+              const eac = CA[ev.cat] || ac;
+              const gr = CGrad[ev.cat] || CGrad._;
+              const d = parseDate(ev.date);
+              return (
+                <div key={ev.id} className="ecard" style={{ background: gr, borderRadius: 16, border: `1px solid ${T.border}`, padding: 0, marginBottom: 10, overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "stretch" }}>
+                    <div style={{ width: isM ? 62 : 72, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "14px 0", background: "rgba(255,255,255,.03)", borderRight: `1px solid ${T.border}` }}>
+                      {d ? <><span style={{ fontSize: 9, fontWeight: 700, color: eac, letterSpacing: 1.5 }}>{d.weekday}</span><span style={{ fontSize: isM ? 22 : 26, fontWeight: 300, color: T.textHi, lineHeight: 1.1, margin: "2px 0" }}>{d.day}</span><span style={{ fontSize: 9, fontWeight: 600, color: T.textDim, letterSpacing: 1 }}>{d.month}</span></> : <span style={{ fontSize: 18 }}>{ev.emoji}</span>}
+                    </div>
+                    <div style={{ flex: 1, padding: "12px 14px", minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.textHi }}>{ev.title}</h3>
+                        {ev.subcategory && <span style={{ fontSize: 8, fontWeight: 600, padding: "2px 7px", borderRadius: 99, background: `${eac}15`, color: eac, letterSpacing: .5 }}>{ev.subcategory}</span>}
+                      </div>
+                      <p style={{ margin: "4px 0 0", fontSize: 11, fontWeight: 500, color: T.textSec }}>{ev.time || "TBD"} {"\u00B7"} {ev.price || "TBD"}</p>
+                    </div>
+                    {ev.url ? <a href={ev.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "0 16px", background: `${eac}12`, borderLeft: `1px solid ${eac}25`, color: eac, fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", textDecoration: "none", flexShrink: 0, gap: 5, whiteSpace: "nowrap" }}>Tickets</a> : <div style={{ display: "flex", alignItems: "center", padding: "0 14px", color: T.textDim, fontSize: 10, fontWeight: 600, flexShrink: 0 }}>Details →</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>}
 
           <div style={{ textAlign: "center", paddingBottom: 32, borderTop: `1px solid ${T.border}`, paddingTop: 20 }}>
             <p style={{ fontSize: 10, color: T.textDim, letterSpacing: .6, margin: "0 0 4px" }}>Info subject to change {"\u00B7"} Verify details at venue websites</p>

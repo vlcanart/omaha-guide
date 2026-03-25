@@ -1,0 +1,148 @@
+{
+  "generated": "2026-03-24T00:22:49.273Z",
+  "totalFolders": 115,
+  "structure": {
+    "artists": {
+      "count": 33,
+      "folders": [
+        "young-dubliners",
+        "the-happy-fits",
+        "whitney-cummings",
+        "bbno-dollar",
+        "lorna-shore",
+        "thursday",
+        "fuel",
+        "brandon-lake",
+        "good-neighbours",
+        "insane-clown-posse",
+        "dance-with-the-dead",
+        "tiffany",
+        "ned-ledoux",
+        "stephen-wilson-jr",
+        "paul-gilbert",
+        "max-mcnown",
+        "william-basinski",
+        "hank-azaria",
+        "clarence-tilton",
+        "vanessa-collier",
+        "pat-metheny",
+        "jo-koy",
+        "bit-brigade",
+        "riley-mulherkar",
+        "el-khat",
+        "the-droptines",
+        "runo-plum",
+        "hot-wheels-suite",
+        "clarion",
+        "stomach-book",
+        "devil-in-the-details",
+        "bingo-loco",
+        "hip-hop-lab"
+      ]
+    },
+    "venues": {
+      "count": 31,
+      "folders": [
+        "chi-health-center",
+        "orpheum-theater",
+        "the-slowdown",
+        "bemis-center",
+        "charles-schwab-field",
+        "baxter-arena",
+        "the-astro",
+        "the-admiral",
+        "holland-center",
+        "werner-park",
+        "steelhouse-omaha",
+        "liberty-first-credit-union-arena",
+        "barnato",
+        "film-streams",
+        "omaha-community-playhouse",
+        "mid-america-center",
+        "hoff-family-arts-center",
+        "whiskey-roadhouse",
+        "north-omaha-music-arts",
+        "holland-music-club",
+        "culxr-house",
+        "henry-doorly-zoo",
+        "witherspoon-theater",
+        "ryan-center-sokol-arena",
+        "tom-hanafan-park",
+        "blackstone-district",
+        "midtown-crossing",
+        "connie-claussen-field",
+        "creighton-softball-stadium",
+        "tal-anderson-field",
+        "tenaska-center"
+      ]
+    },
+    "teams": {
+      "count": 7,
+      "folders": [
+        "creighton-bluejays",
+        "omaha-mavericks",
+        "omaha-lancers",
+        "nebraska-cornhuskers",
+        "omaha-storm-chasers",
+        "omaha-supernovas",
+        "omaha-kings-queens"
+      ]
+    },
+    "neighborhoods": {
+      "count": 15,
+      "folders": [
+        "old-market",
+        "benson",
+        "blackstone",
+        "dundee",
+        "midtown",
+        "aksarben",
+        "north-omaha",
+        "south-omaha",
+        "council-bluffs",
+        "la-vista-papillion",
+        "downtown",
+        "little-italy",
+        "florence",
+        "west-omaha",
+        "elkhorn"
+      ]
+    },
+    "landmarks": {
+      "count": 16,
+      "folders": [
+        "bob-kerrey-pedestrian-bridge",
+        "heartland-of-america-park",
+        "gene-leahy-mall",
+        "lauritzen-gardens",
+        "joslyn-art-museum",
+        "durham-museum",
+        "el-museo-latino",
+        "great-plains-black-history-museum",
+        "freedom-park",
+        "lewis-and-clark-landing",
+        "td-ameritrade-park",
+        "mutual-of-omaha-dome",
+        "woodmen-tower",
+        "first-national-tower",
+        "kenefick-park",
+        "union-station"
+      ]
+    },
+    "categories": {
+      "count": 6,
+      "folders": [
+        "concerts",
+        "sports",
+        "comedy",
+        "arts",
+        "family",
+        "festivals"
+      ]
+    },
+    "hero": {
+      "count": 1,
+      "folders": []
+    }
+  }
+}

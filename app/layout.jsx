@@ -108,6 +108,7 @@ export default function RootLayout({ children }) {
                 setH();
 
                 document.addEventListener('touchmove', function(e){
+                  if(document.body.classList.contains('detail-page')) return;
                   var t = e.target;
                   while(t && t !== document.body){
                     if(t.id === 'app-content') return;

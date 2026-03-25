@@ -95,15 +95,16 @@ import { VENUES, VCATS } from "./data/venues";
 /* Icon resolver — data files store icon keys as strings, IC holds the render functions */
 const resolveIcon = (key) => typeof key === 'function' ? key : (typeof key === 'string' && IC[key]) ? IC[key] : null;
 
-const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
+// Seed events only show if no ingested events exist (first-run fallback)
+const EVENTS=(INGESTED_EVENTS&&INGESTED_EVENTS.length>0)?INGESTED_EVENTS:[...SEED_EVENTS];
 
 /* ═══ DATE / CALENDAR HELPERS ═══ */
 function getCalDates(n){const days=[];const now=new Date();for(let i=0;i<n;i++){const d=new Date(now);d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const wd=d.toLocaleDateString("en-US",{weekday:"short"});const dn=d.getDate();const mn=d.toLocaleDateString("en-US",{month:"short"});days.push({iso,wd:i===0?"Today":i===1?"Tmrw":wd,dn,mn});}return days;}
-const CAL_DATES=getCalDates(14);
+const CAL_DATES=getCalDates(30);
 function selectDateRange(clickedIso,current){const t=CAL_DATES[0].iso;if(clickedIso===t&&current.size<=1)return new Set([t]);const sorted=[...current].sort();if(sorted[sorted.length-1]===clickedIso&&current.size>1)return new Set([t]);const dates=new Set();for(const cd of CAL_DATES){dates.add(cd.iso);if(cd.iso===clickedIso)break;}return dates;}
 function getWeekDates(){const dates=new Set();const now=new Date();for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));if(d.getDay()===0&&i>0)break;}return dates;}
 function getWeekendDates(){const dates=new Set();const now=new Date();const dow=now.getDay();if(dow===0||dow===6){for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getDay()===6||d.getDay()===0)dates.add(d.toISOString().slice(0,10));else if(dates.size>0)break;}}else{const daysToSat=6-dow;for(let i=daysToSat;i<=daysToSat+1;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));}}return dates;}
-function getMonthDates(){const dates=new Set();const now=new Date();const mo=now.getMonth();for(let i=0;i<45;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getMonth()!==mo&&i>0)break;dates.add(d.toISOString().slice(0,10));}return dates;}
+function getMonthDates(){const dates=new Set();const now=new Date();for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));}return dates;}
 function setsEqual(a,b){if(a.size!==b.size)return false;for(const v of a)if(!b.has(v))return false;return true;}
 function matchDate(ev,dates){if(!dates||dates.size===0)return true;return dates.has(ev.date);}
 
@@ -301,7 +302,7 @@ export default function GOPrototype(){
             {WALKS.map(wk=>(
               <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
-                  {wk.icon("#FFB74D",36)}
+                  {typeof wk.icon==="function"?wk.icon("#FFB74D",36):resolveIcon(wk.icon)?.("#FFB74D",36)||<span style={{fontSize:28}}>{wk.icon==="walk"?"🚶":wk.icon==="camera"?"📸":wk.icon==="food"?"🍽️":"🗺️"}</span>}
                   <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>
@@ -318,7 +319,7 @@ export default function GOPrototype(){
 
           <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
           {DAYTIME.map((a,i)=>(
-            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("venue:"+a.id);scrollTop();}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
+            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;router.push({"d1":"/zoo/","d2":"/joslyn/","d3":"/luminarium/","d4":"/lauritzen/","d5":"/durham/"}[a.id]||"/galleries/"+a.id+"/");}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
                 <div style={{flex:1}}>
@@ -327,7 +328,7 @@ export default function GOPrototype(){
                   <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
                   <div style={{display:"flex",gap:6,marginTop:10}}>
                     <a href={mapsDir(a.lat,a.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.dir(T.textBody,11)} Directions</a>
-                    {a.url&&<a href={a.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(94,196,182,.1)",border:"1px solid rgba(94,196,182,.2)",color:T.accent,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.link(T.accent,11)} Visit</a>}
+                    <span onClick={(e)=>{e.stopPropagation();router.push({"d1":"/zoo/","d2":"/joslyn/","d3":"/luminarium/","d4":"/lauritzen/","d5":"/durham/"}[a.id]||"/galleries/"+a.id+"/");}} className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(94,196,182,.1)",border:"1px solid rgba(94,196,182,.2)",color:T.accent,fontSize:10,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>Details →</span>
                   </div>
                 </div>
               </div>
@@ -396,9 +397,10 @@ export default function GOPrototype(){
 
         {isNite&&<div style={{opacity:Math.min(1,nb*1.5),transition:"opacity 0.5s"}}>
           <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",margin:"16px 0 12px"}}><h2 style={{fontSize:14,fontWeight:700,color:mColor,letterSpacing:1,textTransform:"uppercase",margin:0}}>{mLabel}</h2><span style={{fontSize:10,color:T.textDim,letterSpacing:1}}>{timeLabel}</span></div>
-          <Head text={"Tonight's Events"} count={EVENTS.length} mt={4} color={T.accent}/>
+          {(()=>{const now=new Date();const todayISO=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");const todayEvs=EVENTS.filter(e=>e.date===todayISO&&cityMatch(e));const upcomingEvs=EVENTS.filter(e=>e.date>=todayISO&&cityMatch(e)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,15);const topEvs=todayEvs.length>0?todayEvs:upcomingEvs;return(<>
+          <Head text={todayEvs.length>0?(mLabel+"'s Events"):"Upcoming Events"} count={topEvs.length} mt={4} color={T.accent}/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory",marginBottom:10}}>
-            {EVENTS.filter(e=>e.feat&&(cityMatch(e))).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+            {topEvs.slice(0,6).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
               <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,width:isD?340:isM?265:290,minWidth:isD?340:isM?265:290,flexShrink:0,scrollSnapAlign:"start",padding:"16px 16px 18px",cursor:"pointer"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
                   <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{ev.emoji}</div>
@@ -415,12 +417,12 @@ export default function GOPrototype(){
               </div>
             )})}
           </div>
-          {EVENTS.filter(e=>!e.feat).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+          {topEvs.slice(6).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
             <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+                {(ev.contentImage||ev.image)?<div style={{width:48,height:48,borderRadius:12,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.06)"}}><img loading="lazy" src={ev.contentImage||ev.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.parentElement.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20">${ev.emoji||"📅"}</div>`;}} /></div>:<div style={{width:48,height:48,borderRadius:12,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>}
                 <div style={{flex:1}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}{ev.subcategory&&<span style={{fontSize:8,fontWeight:600,padding:"2px 7px",borderRadius:99,background:`${ac}15`,color:ac,letterSpacing:.5}}>{ev.subcategory}</span>}</div>
                   <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                   <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
@@ -431,6 +433,7 @@ export default function GOPrototype(){
               </div>
             </div>
           )})}
+          </>);})()}
         </div>}
 
         {isDay&&<div style={{textAlign:"center",padding:"20px 0",marginTop:8}}><p style={{fontSize:11,color:T.textDim,letterSpacing:.8}}>Slide forward to preview tonight →</p></div>}
@@ -472,9 +475,9 @@ export default function GOPrototype(){
         {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+              {(ev.contentImage||ev.image)?<div style={{width:52,height:52,borderRadius:14,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.06)"}}><img loading="lazy" src={ev.contentImage||ev.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.parentElement.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:22">${ev.emoji||"📅"}</div>`;}} /></div>:<div style={{width:52,height:52,borderRadius:14,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{ev.emoji}</div>}
               <div style={{flex:1}}>
-                <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}{ev.subcategory&&<span style={{fontSize:8,fontWeight:600,padding:"2px 7px",borderRadius:99,background:`${ac}15`,color:ac,letterSpacing:.5}}>{ev.subcategory}</span>}</div>
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                 <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
@@ -568,14 +571,15 @@ export default function GOPrototype(){
         {/* ── Things To Do ── */}
         <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
         {DAYTIME.map((a,i)=>(
-          <div key={a.id} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+          <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;router.push({"d1":"/zoo/","d2":"/joslyn/","d3":"/luminarium/","d4":"/lauritzen/","d5":"/durham/"}[a.id]||"/galleries/"+a.id+"/");}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
               <div style={{flex:1}}>
                 <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{a.name}</h3>
-                {a.url?<a href={a.url} target="_blank" rel="noopener noreferrer" style={{fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent,textDecoration:"none"}}>{a.time} · {a.price}</a>:<p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>}
+                <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>
                 <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
               </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:4}}><polyline points="9 18 15 12 9 6"/></svg>
             </div>
           </div>
         ))}
@@ -621,7 +625,7 @@ export default function GOPrototype(){
             </button>);})}
         </div>
         {VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).filter(v=>venCat==="all"||v.type===venCat).map((v,i)=>(
-          <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`}}>
+          <Link key={v.id} href={"/venues/"+v.id+"/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`,cursor:"pointer"}}>
             <div style={{position:"relative",height:isD?140:isM?100:115,overflow:"hidden"}}>
               <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
               <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
@@ -638,7 +642,7 @@ export default function GOPrototype(){
               <p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.45}}>{v.desc}</p>
               {(()=>{const b=getVenueBadge(v.name);return b?<span style={{display:"inline-block",marginTop:6,fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}
             </div>
-          </a>
+          </Link>
         ))}
         <div style={{height:90}}/>
       </div>}
@@ -1354,6 +1358,46 @@ export default function GOPrototype(){
         </div>);
       })()}
 
+      {/* ═══ VENUE PAGE (from VENUES tab) ═══ */}
+      {tab.startsWith("venuepage:")&&(()=>{
+        const vid=parseInt(tab.split(":")[1]);
+        const v=VENUES.find(x=>x.id===vid);
+        if(!v)return null;
+        const venueEvents=EVENTS.filter(e=>{const vl=(e.venue||"").toLowerCase(),nl=(v.name||"").toLowerCase();return vl.includes(nl.split(" ")[0])||nl.includes(vl.split(" ")[0]);}).sort((a,b)=>(a.date||"").localeCompare(b.date||"")).slice(0,20);
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            {v.img?<img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"venues");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{v.name}</h1>
+              <p style={{margin:"4px 0 0",fontSize:12,color:T.venue}}>{v.area} · {v.cap} capacity · {v.type}</p>
+            </div>
+          </div>
+          <p style={{margin:"16px 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{v.desc}</p>
+          {venueEvents.length>0&&<div style={{marginTop:20}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Upcoming Events ({venueEvents.length})</h3>
+            {venueEvents.map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+              <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:14,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:8,cursor:"pointer"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  {(ev.contentImage||ev.image)?<img loading="lazy" src={ev.contentImage||ev.image} alt="" style={{width:40,height:40,borderRadius:10,objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<span style={{fontSize:18}}>{ev.emoji}</span>}
+                  <div style={{flex:1}}>
+                    <h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{ev.title}</h4>
+                    <p style={{margin:"2px 0 0",fontSize:11,color:ac,fontWeight:500}}>{ev.date} · {ev.time}{ev.subcategory?` · ${ev.subcategory}`:""}</p>
+                  </div>
+                  <span style={{fontSize:13,fontWeight:300,color:T.textHi}}>{ev.price}</span>
+                </div>
+              </div>
+            );})}
+          </div>}
+          <div style={{display:"flex",gap:8,marginTop:20}}>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name+" Omaha NE")}`} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir(T.textBody,14)} Directions</a>
+            {v.url&&<a href={v.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:`${T.accent}15`,border:`1px solid ${T.accent}30`,color:T.accent,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.link(T.accent,13)} Website</a>}
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
       {/* ═══ WALK DETAIL PAGE ═══ */}
       {tab.startsWith("walk:")&&(()=>{
         const walkId=tab.split(":")[1];
@@ -1362,7 +1406,7 @@ export default function GOPrototype(){
         return(<div style={{...sec,paddingTop:0}}>
           <div style={{position:"relative",height:isD?280:220,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
             <div style={{width:"100%",height:"100%",background:CG.hood}}/>
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{walk.icon("#FFB74D",64)}</div>
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{typeof walk.icon==="function"?walk.icon("#FFB74D",64):resolveIcon(walk.icon)?.("#FFB74D",64)||<span style={{fontSize:48}}>{walk.icon==="walk"?"🚶":walk.icon==="camera"?"📸":walk.icon==="food"?"🍽️":"🗺️"}</span>}</div>
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
             <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
             <div style={{position:"absolute",bottom:20,left:20,right:20}}>

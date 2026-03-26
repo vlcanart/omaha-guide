@@ -80,66 +80,17 @@ function Reveal({ children, delay = 0, style = {} }) {
 // ═══════════════════════════════════════════════════════════════
 function GoBar() {
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.75rem 1.25rem",
-        background: "rgba(20,22,24,0.85)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        borderBottom: `1px solid rgba(242,239,233,0.06)`,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-        <span
-          style={{
-            fontFamily: t.mono,
-            fontSize: "0.65rem",
-            fontWeight: 600,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: t.teal,
-          }}
-        >
-          GO:
-        </span>
-        <span
-          style={{
-            fontFamily: t.body,
-            fontSize: "0.7rem",
-            fontWeight: 400,
-            letterSpacing: "0.06em",
-            color: t.cream,
-          }}
-        >
-          Guide to Omaha
-        </span>
-      </div>
-      <div style={{ display: "flex", gap: "0.35rem" }}>
-        {["Venues", "Events", "Explore"].map((label) => (
-          <span
-            key={label}
-            style={{
-              fontFamily: t.body,
-              fontSize: "0.6rem",
-              letterSpacing: "0.04em",
-              color: t.cream,
-              padding: "0.35rem 0.8rem",
-              borderRadius: "100px",
-              border: `1px solid rgba(242,239,233,0.08)`,
-              cursor: "pointer",
-            }}
-          >
-            {label}
-          </span>
-        ))}
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", background: "rgba(20,22,24,0.88)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(242,239,233,0.06)" }}>
+      <a href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+        <div style={{ width: 32, height: 32, borderRadius: 99, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(242,239,233,0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.1em", color: "#5EC4B6" }}>GO:</span>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 400, color: "#E8E2D6" }}>Guide to Omaha</span>
+      </a>
+      <div style={{ display: "flex", gap: 6 }}>
+        <a href="/?tab=events" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.65rem", color: "#E8E2D6", padding: "6px 12px", borderRadius: 99, border: "1px solid rgba(242,239,233,0.1)", textDecoration: "none" }}>Events</a>
+        <a href="/?tab=explore" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.65rem", color: "#E8E2D6", padding: "6px 12px", borderRadius: 99, border: "1px solid rgba(242,239,233,0.1)", textDecoration: "none" }}>Explore</a>
       </div>
     </div>
   );
@@ -153,7 +104,7 @@ function Hero() {
     <div
       style={{
         position: "relative",
-        minHeight: "100vh",
+        minHeight: "100svh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
@@ -163,7 +114,7 @@ function Hero() {
       }}
     >
       {/* Hero image */}
-      <img loading="lazy" src="https://images.unsplash.com/photo-1566985446843-5ab671017dcc?w=1200&q=70&auto=format" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
+      <img loading="lazy" src="/images/venues/joslyn-art-museum.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
       {/* Ambient glow */}
       <div
         style={{
@@ -412,7 +363,7 @@ function About() {
           className="venue-grid-2col"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
             gap: "3.5rem",
             marginTop: "2.5rem",
           }}
@@ -564,7 +515,7 @@ function Collection() {
 
   return (
     <>
-    <FullWidthImage src="https://images.unsplash.com/photo-1566985446843-5ab671017dcc?w=1200&q=70&auto=format" alt="Joslyn Art Museum interior" />
+    <FullWidthImage src="/images/venues/joslyn-art-museum.jpg" alt="Joslyn Art Museum interior" />
     <section
       style={{
         padding: `4.5rem ${t.pagePx}`,
@@ -791,7 +742,7 @@ function PlanVisit() {
           className="venue-grid-2col"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
             gap: "3.5rem",
             marginTop: "2.5rem",
           }}
@@ -1183,8 +1134,10 @@ function SiteFooter() {
 // PAGE COMPONENT — default export
 // ═══════════════════════════════════════════════════════════════
 export default function JoslynVenuePage() {
+  // Scroll to top on mount
+  useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
-    <div style={{ background: t.bg, color: t.text, minHeight: "100vh" }}>
+    <div style={{ background: t.bg, color: t.text, minHeight: "100svh" }}>
       {/* Global keyframes */}
       <style>{`
         @keyframes goFadeUp {

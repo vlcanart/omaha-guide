@@ -35,15 +35,17 @@ function Reveal({ children, delay = 0, style = {} }) {
 
 function GoBar() {
   return (
-    <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.75rem 1.25rem", background: "rgba(20,22,24,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(242,239,233,0.06)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-        <span style={{ fontFamily: t.mono, fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: t.teal }}>GO:</span>
-        <span style={{ fontFamily: t.body, fontSize: "0.7rem", fontWeight: 400, letterSpacing: "0.06em", color: t.cream }}>Guide to Omaha</span>
-      </div>
-      <div style={{ display: "flex", gap: "0.35rem" }}>
-        {["Venues", "Events", "Explore"].map((l) => (
-          <span key={l} style={{ fontFamily: t.body, fontSize: "0.6rem", letterSpacing: "0.04em", color: t.cream, padding: "0.35rem 0.8rem", borderRadius: "100px", border: "1px solid rgba(242,239,233,0.08)", cursor: "pointer" }}>{l}</span>
-        ))}
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", background: "rgba(20,22,24,0.88)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(242,239,233,0.06)" }}>
+      <a href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+        <div style={{ width: 32, height: 32, borderRadius: 99, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(242,239,233,0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.1em", color: "#5EC4B6" }}>GO:</span>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 400, color: "#E8E2D6" }}>Guide to Omaha</span>
+      </a>
+      <div style={{ display: "flex", gap: 6 }}>
+        <a href="/?tab=events" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.65rem", color: "#E8E2D6", padding: "6px 12px", borderRadius: 99, border: "1px solid rgba(242,239,233,0.1)", textDecoration: "none" }}>Events</a>
+        <a href="/?tab=explore" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.65rem", color: "#E8E2D6", padding: "6px 12px", borderRadius: 99, border: "1px solid rgba(242,239,233,0.1)", textDecoration: "none" }}>Explore</a>
       </div>
     </div>
   );
@@ -51,9 +53,9 @@ function GoBar() {
 
 function Hero() {
   return (
-    <div style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${t.pagePx} 3rem`, background: t.bg, overflow: "hidden" }}>
+    <div style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${t.pagePx} 3rem`, background: t.bg, overflow: "hidden" }}>
       {/* Hero image */}
-      <img loading="lazy" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=70&auto=format" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.15, pointerEvents: "none" }} />
+      <img loading="lazy" src="/images/venues/kiewit-luminarium.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.15, pointerEvents: "none" }} />
       {/* Electric glow — dual plasma spots */}
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 45% 35% at 60% 30%, rgba(139,108,224,0.09) 0%, transparent 60%), radial-gradient(ellipse 40% 50% at 25% 75%, rgba(61,214,232,0.06) 0%, transparent 55%)`, pointerEvents: "none" }} />
       {/* Geometric: stellated icosahedron hint — intersecting triangles */}
@@ -134,7 +136,7 @@ function About() {
     <section style={{ padding: `4.5rem ${t.pagePx}`, borderBottom: "1px solid rgba(242,239,233,0.06)" }}>
       <div style={{ maxWidth: t.maxW, margin: "0 auto" }}>
         <SectionHeader label="About" heading="Where curiosity has no age limit." />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "3.5rem", marginTop: "2.5rem" }}>
           <Reveal delay={0.1}>
             <div style={{ fontFamily: t.body, fontSize: "0.95rem", fontWeight: 300, lineHeight: 1.75, color: t.textBody }}>
               <p>The Kiewit Luminarium is Omaha&apos;s first dedicated science center — a $101 million, privately funded institution that opened April 15, 2023, at Lewis &amp; Clark Landing on the Missouri Riverfront. It&apos;s part workshop, part museum, part playground.</p>
@@ -231,7 +233,7 @@ function PlanVisit() {
     <section style={{ padding: `4.5rem ${t.pagePx}` }}>
       <div style={{ maxWidth: t.maxW, margin: "0 auto" }}>
         <SectionHeader label="Plan Your Visit" heading="Everything you need to know." />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3.5rem", marginTop: "2.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "3.5rem", marginTop: "2.5rem" }}>
           <Reveal delay={0.1}>
             <div>
               <BlockTitle>Hours</BlockTitle>
@@ -344,8 +346,10 @@ function SiteFooter() {
 }
 
 export default function LuminariumVenuePage() {
+  // Scroll to top on mount
+  useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
-    <div style={{ background: t.bg, color: t.text, minHeight: "100vh" }}>
+    <div style={{ background: t.bg, color: t.text, minHeight: "100svh" }}>
       <style>{`
         @keyframes goFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes goPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }

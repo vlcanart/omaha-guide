@@ -1,8 +1,9 @@
 import { u } from '../lib/helpers';
+const h = (name) => `/images/hoods/${name}`;
 
 export const HOODS=[
   {id:"old-market",name:"Old Market",sub:"Downtown",desc:"Cobblestone streets, galleries, chef-driven restaurants, and Omaha's best nightlife. The cultural heart of the city since the 1800s.",lat:41.2555,lng:-95.932,color:"#5EC4B6",
-    imgs:[u("photo-1519999482648-25049ddd37b1"),u("photo-1555939594-58d7cb561ad1"),u("photo-1503095396549-807759245b35")],
+    imgs:[h("old-market-1.jpg"),h("old-market-2.jpg"),h("old-market-3.jpg")],
     history:"The Old Market began as a wholesale fruit and vegetable market in the late 1800s. The brick warehouses along Howard and Jones streets housed produce dealers until the 1960s, when artists and entrepreneurs began converting the abandoned spaces into galleries and studios. A pivotal restoration movement in the 1970s preserved the cobblestone streets and iron facades that define the district today. The Passageway, M's Pub (before the 2015 fire), and the Artists Cooperative Gallery were early anchors that proved mixed-use urban revitalization could work.",
     walk:{name:"Old Market Loop",distance:"1.2 mi",time:"45 min",steps:["Start at 10th & Howard by the flower murals","Walk south on 10th — peek into Jackson Street galleries","Cut through The Passageway to Jones Street","West on Jones past Upstream Brewing and M's Pub site","South on 13th to the Bemis Center for Contemporary Arts","Circle back via Howard Street for restaurants and shops"]},
     spots:[
@@ -38,7 +39,7 @@ export const HOODS=[
     tags:["Dining","Nightlife","Shopping","Galleries","History","Cobblestone"],
     vibe:"Historic & Walkable",bestFor:"First-time visitors, date nights, weekend strolls"},
   {id:"benson",name:"Benson",sub:"Maple Street",desc:"Omaha's most eclectic neighborhood. Dive bars, vinyl shops, murals, and the undisputed indie music capital of the city.",lat:41.281,lng:-95.954,color:"#CE93D8",
-    imgs:[u("photo-1459749411175-04bf5292ceea"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1508854710579-5cecc3a9ff17")],
+    imgs:[h("benson-1.jpg"),h("benson-2.jpg"),h("benson-3.jpg")],
     history:"Originally an independent city founded in 1887 by Erastus Benson, a railroad executive. It was annexed into Omaha in 1917 but never lost its fiercely independent spirit. The main drag, Maple Street, went through cycles of boom and decline before a creative renaissance in the 2000s. The Waiting Room opened in 2007, anchoring what became a nationally recognized indie music corridor. Today Benson has more live music per block than anywhere in Nebraska.",
     walk:{name:"Benson Main Drag",distance:"1.5 mi",time:"1 hr",steps:["Start at The Waiting Room (6212 Maple)","Walk west past vinyl shops and vintage stores","Detour south on 60th for murals and street art","Continue west to Reverb Lounge and Beercade","Hit Benson Brewery and Jake's Cigars","End at The Sydney for cocktails or O'Leaver's for punk rock"]},
     spots:[
@@ -70,7 +71,7 @@ export const HOODS=[
     tags:["Music","Bars","Vintage","Murals","Indie","Record Shops"],
     vibe:"Eclectic & Creative",bestFor:"Music lovers, night owls, creatives"},
   {id:"dundee",name:"Dundee",sub:"Memorial Park Area",desc:"Tree-lined streets, walkable restaurants on Underwood Ave, and Elmwood Park trails. Classic Omaha at its most charming.",lat:41.262,lng:-95.975,color:"#81C784",
-    imgs:[u("photo-1448375240586-882707db888b"),u("photo-1414235077428-338989a2e8c0"),u("photo-1552674605-db6ffd4facb5")],
+    imgs:[h("dundee-1.jpg"),h("dundee-2.jpg"),h("dundee-3.jpg")],
     history:"Dundee was platted in 1880 and developed as one of Omaha's first streetcar suburbs. The name comes from Dundee, Scotland. Warren Buffett has lived in the same Dundee house since 1958, purchased for $31,500. Happy Hollow Country Club (1907) and the historic Dundee Theater (1925, now a Film Streams location) anchor the neighborhood's century-old identity. Underwood Avenue's restaurant boom in the 2010s transformed a quiet residential strip into one of Omaha's top dining destinations.",
     walk:{name:"Dundee to Elmwood",distance:"2.1 mi",time:"1 hr",steps:["Start at 50th & Underwood — the restaurant corridor","Walk west past Dario's, Dante, and Pitch Pizzeria","Turn south on 52nd toward Elmwood Park","Loop through Elmwood's shaded trails and bridge","Return via Happy Hollow Blvd past historic homes","End at Dundee Dell for a beer"]},
     spots:[
@@ -109,7 +110,7 @@ export const HOODS=[
     tags:["Dining","Parks","Walking","Family","Film","Historic Homes"],
     vibe:"Charming & Walkable",bestFor:"Foodies, families, park lovers"},
   {id:"blackstone",name:"Blackstone",sub:"Farnam Street",desc:"Omaha's cocktail and culinary hub. Speakeasies, breweries, and chef-driven spots packed into a few electric blocks.",lat:41.259,lng:-95.965,color:"#FFB74D",
-    imgs:[u("photo-1470229722913-7c0e2dbbafd3"),u("photo-1415201364774-f6f0bb35f28f"),u("photo-1511671782779-c97d3d27a1d4")],
+    imgs:[h("blackstone-1.jpg"),h("blackstone-2.jpg"),h("blackstone-3.jpg")],
     history:"Named for the Blackstone Hotel (1916), this stretch of Farnam once housed Omaha's grandest lodging. The hotel hosted JFK, Nixon, and celebrities during its heyday. After decades of decline, a massive revitalization beginning around 2015 transformed the district into Omaha's premier cocktail and dining destination. The Blackstone Social, Scriptown Brewing, and a wave of chef-driven restaurants catalyzed the comeback. The historic hotel itself reopened as a Marriott Autograph Collection property.",
     walk:{name:"Blackstone Bar Hop",distance:"0.8 mi",time:"1.5 hrs",steps:["Start at Scriptown Brewing (38th & Farnam)","Walk east to Berry & Rye speakeasy","Cross to Nite Owl for craft cocktails","Hit Stirnella for dinner (or Yoshitomo for sushi)","End at Crescent Moon for Belgian ales"]},
     spots:[
@@ -137,7 +138,7 @@ export const HOODS=[
     tags:["Cocktails","Dining","Nightlife","Craft Beer","Speakeasy"],
     vibe:"Trendy & Buzzy",bestFor:"Date nights, cocktail enthusiasts, foodies"},
   {id:"north-downtown",name:"North Downtown",sub:"NoDo",desc:"The Slowdown, Film Streams, Steelhouse Omaha, and a growing creative corridor between downtown and the riverfront.",lat:41.2691,lng:-95.9251,color:"#64B5F6",
-    imgs:[u("photo-1501386761578-eac5c94b800a"),u("photo-1459749411175-04bf5292ceea"),u("photo-1540039155733-5bb30b53aa14")],
+    imgs:[h("north-downtown-1.jpg"),h("north-downtown-2.jpg"),h("north-downtown-3.jpg")],
     history:"Once warehouse district and rail yards, NoDo's transformation began with Saddle Creek Records relocating The Slowdown here in 2007. Film Streams' Ruth Sokolof Theater followed. The opening of Steelhouse Omaha (2024) and continued development around 14th and Webster have made this the live entertainment spine of the city. The area connects the Old Market to the north via a creative corridor that grows each year.",
     walk:{name:"NoDo Music Walk",distance:"1 mi",time:"40 min",steps:["Start at The Slowdown (14th & Mike Fahey)","Walk to Film Streams / Ruth Sokolof Theater","Continue south past Steelhouse Omaha","Detour east to the riverfront pedestrian bridge","Return via Capitol Avenue"]},
     spots:[
@@ -158,7 +159,7 @@ export const HOODS=[
     tags:["Music","Film","Arts","Venues","Live Shows"],
     vibe:"Creative & Up-and-Coming",bestFor:"Concertgoers, film buffs, night out"},
   {id:"little-italy",name:"Little Italy",sub:"South 10th Street",desc:"Historic neighborhood home to BLUEBARN Theatre, The Admiral, and authentic Italian spots. Gritty charm meets cultural depth.",lat:41.2543,lng:-95.9365,color:"#E8364F",
-    imgs:[u("photo-1503095396549-807759245b35"),u("photo-1574391884720-bbc3740c59d1"),u("photo-1459749411175-04bf5292ceea")],
+    imgs:[h("little-italy-1.jpg"),h("little-italy-2.jpg"),h("little-italy-3.jpg")],
     history:"Italian immigrants began settling along South 10th Street in the 1890s, establishing bakeries, grocers, and social clubs. The Santa Lucia Festival (started 1925) is still celebrated annually. The former Sokol Auditorium, built by Czech immigrants, was reborn as The Admiral — now one of Omaha's best mid-size concert venues. BLUEBARN Theatre relocated here in 2016, adding contemporary theater to the neighborhood's cultural mix.",
     walk:{name:"Little Italy Heritage Walk",distance:"0.9 mi",time:"30 min",steps:["Start at Orsi's Italian Bakery (621 Pacific)","Walk south on 10th past historic storefronts","Visit the Sons of Italy Lodge marker","Continue to The Admiral / Sokol Auditorium","End at BLUEBARN Theatre"]},
     spots:[
@@ -175,7 +176,7 @@ export const HOODS=[
     tags:["Theater","Music","Italian","Heritage","Bakeries"],
     vibe:"Historic & Authentic",bestFor:"Theater fans, history buffs, Italian food lovers"},
   {id:"aksarben",name:"Aksarben Village",sub:"67th & Center",desc:"Modern mixed-use with Stinson Park, restaurants, Baxter Arena, and year-round community events.",lat:41.244,lng:-95.96,color:"#B39DDB",
-    imgs:[u("photo-1441974231531-c6227db76b6e"),u("photo-1547347298-4074fc3086f0"),u("photo-1470229722913-7c0e2dbbafd3")],
+    imgs:[h("aksarben-1.jpg"),h("aksarben-2.jpg"),h("aksarben-3.jpg")],
     history:"The name is 'Nebraska' spelled backward. The original Ak-Sar-Ben racetrack and coliseum (1919–1995) hosted horse racing, rodeos, and the famous Ak-Sar-Ben Ball. The 250-acre site was redeveloped starting in 2007 into a mixed-use village anchored by Stinson Park and Baxter Arena (home of UNO Mavericks). The development is considered one of the most successful urban revitalization projects in the Midwest.",
     spots:[
       {name:"Flagship Commons",type:"Food Hall",cat:"eat",desc:"Multi-vendor food hall. Something for everyone.",addr:"Aksarben Village",price:"$$",icon:"\u{1F371}",known:"Multiple vendors, communal tables"},
@@ -192,7 +193,7 @@ export const HOODS=[
     tags:["Parks","Events","Dining","Family","Arena"],
     vibe:"Modern & Community",bestFor:"Families, UNO fans, festival-goers"},
   {id:"west-omaha",name:"West Omaha",sub:"144th to Elkhorn",desc:"Suburban dining, Barnato lounge, Zorinsky Lake, and family-friendly activities. Where Omaha spreads out.",lat:41.258,lng:-96.07,color:"#4DD0E1",
-    imgs:[u("photo-1500534314263-0869cef27f7d"),u("photo-1511671782779-c97d3d27a1d4"),u("photo-1470229722913-7c0e2dbbafd3")],
+    imgs:[h("west-omaha-1.jpg"),h("west-omaha-2.jpg"),h("west-omaha-3.jpg")],
     history:"West Omaha's rapid expansion began in the 1990s as families moved to newly developed subdivisions. Village Pointe shopping center, the Funny Bone comedy club, and Barnato (an art-deco music lounge attached to a Bentley dealership) represent the eclectic mix of suburban convenience and unexpected cultural offerings.",
     spots:[
       {name:"Barnato",type:"Lounge",cat:"eat",desc:"Art-deco cocktail lounge attached to the Bentley dealership. And it's great.",addr:"West Dodge",price:"$$$",icon:"\u{1F378}",known:"Craft cocktails, art-deco"},
@@ -207,7 +208,7 @@ export const HOODS=[
     tags:["Family","Dining","Parks","Comedy","Shopping"],
     vibe:"Suburban & Varied",bestFor:"Families, comedy fans, lake lovers"},
   {id:"south-omaha",name:"South Omaha",sub:"24th & L Street",desc:"Authentic taquerias, the Zoo, Lauritzen Gardens, and deep cultural roots. Omaha's most flavorful neighborhood.",lat:41.23,lng:-95.94,color:"#FF8A65",
-    imgs:[u("photo-1534567153574-2b12153a87f0"),u("photo-1585320806297-9794b3e4eeae"),u("photo-1555939594-58d7cb561ad1")],
+    imgs:[h("south-omaha-1.jpg"),h("south-omaha-2.jpg"),h("south-omaha-3.jpg")],
     history:"South Omaha was an independent city from 1886–1915, built around the Union Stockyards — once the world's largest livestock market. Waves of immigrants (Czech, Polish, Irish, Lithuanian, Mexican) came to work the yards. The stockyards closed in 1999, but the neighborhood's multicultural DNA endures. South 24th Street is now the heart of Omaha's vibrant Latino community, with some of the most authentic Mexican food between Chicago and Denver.",
     walk:{name:"South O Taco Trail",distance:"1.8 mi",time:"1 hr",steps:["Start at 24th & L Street","Walk south on 24th past taco trucks and taquerias","Stop at El Dorado for birria tacos","Continue to Jacobo's grocery for pan dulce","Detour east to the Golden Spike monument","End at Lauritzen Gardens or the Zoo"]},
     spots:[
@@ -226,7 +227,7 @@ export const HOODS=[
     tags:["Food","Culture","Zoo","Gardens","Latino","Tacos"],
     vibe:"Flavorful & Cultural",bestFor:"Foodies, culture seekers, families"},
   {id:"midtown",name:"Midtown Crossing",sub:"Turner Blvd",desc:"Turner Park, Mutual of Omaha campus, restaurants, and the summer home of Jazz on the Green.",lat:41.255,lng:-95.96,color:"#AED581",
-    imgs:[u("photo-1465847899084-d164df4dedc6"),u("photo-1441974231531-c6227db76b6e"),u("photo-1470229722913-7c0e2dbbafd3")],
+    imgs:[h("midtown-1.jpg"),h("midtown-2.jpg"),h("midtown-3.jpg")],
     history:"The Mutual of Omaha headquarters campus has anchored this area since 1957. Midtown Crossing, a mixed-use development opening in phases from 2009, brought residential towers, restaurants, and retail around Turner Park. Jazz on the Green (free outdoor concerts on Thursday evenings in summer) has been a beloved Omaha tradition since 1993.",
     spots:[
       {name:"Blue Sushi Sake Grill",type:"Restaurant",cat:"eat",desc:"Creative sushi and strong sake program.",addr:"Midtown Crossing",price:"$$",icon:"\u{1F363}",known:"Creative rolls, sake flights"},

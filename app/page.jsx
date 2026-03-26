@@ -91,20 +91,20 @@ import { PARKS } from "./data/parks";
 import { HOODS } from "./data/hoods";
 import { SEED_EVENTS, ECATS, ESUBS, DATE_PRESETS, matchDate as _matchDate, matchSub } from "./data/events";
 import { VENUES, VCATS } from "./data/venues";
-import { eventSlug } from "./events/event-utils";
 
 /* Icon resolver — data files store icon keys as strings, IC holds the render functions */
 const resolveIcon = (key) => typeof key === 'function' ? key : (typeof key === 'string' && IC[key]) ? IC[key] : null;
 
-const EVENTS=[...SEED_EVENTS,...(INGESTED_EVENTS||[])];
+// Seed events only show if no ingested events exist (first-run fallback)
+const EVENTS=(INGESTED_EVENTS&&INGESTED_EVENTS.length>0)?INGESTED_EVENTS:[...SEED_EVENTS];
 
 /* ═══ DATE / CALENDAR HELPERS ═══ */
 function getCalDates(n){const days=[];const now=new Date();for(let i=0;i<n;i++){const d=new Date(now);d.setDate(d.getDate()+i);const iso=d.toISOString().slice(0,10);const wd=d.toLocaleDateString("en-US",{weekday:"short"});const dn=d.getDate();const mn=d.toLocaleDateString("en-US",{month:"short"});days.push({iso,wd:i===0?"Today":i===1?"Tmrw":wd,dn,mn});}return days;}
-const CAL_DATES=getCalDates(14);
+const CAL_DATES=getCalDates(30);
 function selectDateRange(clickedIso,current){const t=CAL_DATES[0].iso;if(clickedIso===t&&current.size<=1)return new Set([t]);const sorted=[...current].sort();if(sorted[sorted.length-1]===clickedIso&&current.size>1)return new Set([t]);const dates=new Set();for(const cd of CAL_DATES){dates.add(cd.iso);if(cd.iso===clickedIso)break;}return dates;}
 function getWeekDates(){const dates=new Set();const now=new Date();for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));if(d.getDay()===0&&i>0)break;}return dates;}
 function getWeekendDates(){const dates=new Set();const now=new Date();const dow=now.getDay();if(dow===0||dow===6){for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getDay()===6||d.getDay()===0)dates.add(d.toISOString().slice(0,10));else if(dates.size>0)break;}}else{const daysToSat=6-dow;for(let i=daysToSat;i<=daysToSat+1;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));}}return dates;}
-function getMonthDates(){const dates=new Set();const now=new Date();const mo=now.getMonth();for(let i=0;i<45;i++){const d=new Date(now);d.setDate(d.getDate()+i);if(d.getMonth()!==mo&&i>0)break;dates.add(d.toISOString().slice(0,10));}return dates;}
+function getMonthDates(){const dates=new Set();const now=new Date();for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()+i);dates.add(d.toISOString().slice(0,10));}return dates;}
 function setsEqual(a,b){if(a.size!==b.size)return false;for(const v of a)if(!b.has(v))return false;return true;}
 function matchDate(ev,dates){if(!dates||dates.size===0)return true;return dates.has(ev.date);}
 
@@ -113,7 +113,7 @@ export default function GOPrototype(){
   const router=useRouter();
   const[mounted,setMounted]=useState(false);
   const contentRef=useRef(null);
-  const scrollTop=()=>{if(contentRef.current)contentRef.current.scrollTo({top:0,behavior:"instant"});};
+  const scrollTop=()=>{if(contentRef.current)contentRef.current.scrollTo(0,0);else scrollTop();};
   const[nowTv,setNowTv]=useState(50);
   const[tv,setTv]=useState(50);
   const[isLive,setIsLive]=useState(true);
@@ -148,8 +148,7 @@ export default function GOPrototype(){
   const sec={maxWidth:mxW,margin:"0 auto",padding:`0 ${px}px`};
   const sk=useMemo(()=>interp(tv),[tv]);
   const tog=id=>setFavs(p=>p.includes(id)?p.filter(f=>f!==id):[...p,id]);
-  const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+eventSlug(ev)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
-  const venueHref=(name)=>{const ven=VENUES.find(x=>x.name===name);if(ven&&ven.slug==="henry-doorly-zoo")return"/zoo/";if(ven&&ven.slug==="joslyn-art-museum")return"/joslyn/";if(ven&&ven.slug==="lauritzen-gardens")return"/lauritzen/";if(ven&&ven.slug==="the-durham-museum")return"/durham/";if(ven&&ven.slug==="kiewit-luminarium")return"/luminarium/";return ven?"/venues/"+ven.slug+"/":null;};
+  const navigateToEvent=(id)=>{const ev=EVENTS.find(e=>e.id===id);if(ev){router.push("/events/"+slugify(ev.title,ev.id)+"/");}else{setPrevTab(tab);setTab("event:"+id);window.scrollTo(0,0);}};
   const[evShow,setEvShow]=useState(30);
   useEffect(()=>{if(tab!=="events"){setEvCat("concerts");setEvSub("all");setSelectedDates(new Set([CAL_DATES[0].iso]));setShowSubs(false);setEvShow(30);}},[tab]);
   useEffect(()=>{setEvShow(30);},[evCat,evSub,selectedDates]);
@@ -277,7 +276,7 @@ export default function GOPrototype(){
             {TRAILS.map(t=>(
               <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
                 <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
-                  <img loading="lazy" src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
+                  <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                   <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
                     <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(125,212,160,.15)",color:"#81C784",fontWeight:700}}>{t.difficulty}</span>
@@ -302,9 +301,8 @@ export default function GOPrototype(){
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {WALKS.map(wk=>(
               <div key={wk.id} onClick={()=>{setPrevTab(tab);setTab("walk:"+wk.id);scrollTop();}} className="ecard" style={{background:CG.hood,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
-                <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
-                  {wk.img?<img loading="lazy" src={wk.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>:<div style={{width:"100%",height:"100%",background:"rgba(255,183,77,.08)",display:"flex",alignItems:"center",justifyContent:"center"}}>{IC[wk.iconKey]?IC[wk.iconKey]("#FFB74D",36):null}</div>}
-                  <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
+                <div style={{position:"relative",height:isD?100:80,overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,183,77,.08)"}}>
+                  {typeof wk.icon==="function"?wk.icon("#FFB74D",36):resolveIcon(wk.icon)?.("#FFB74D",36)||<span style={{fontSize:28}}>{wk.icon==="walk"?"🚶":wk.icon==="camera"?"📸":wk.icon==="food"?"🍽️":"🗺️"}</span>}
                   <div style={{position:"absolute",bottom:8,left:10,right:10,display:"flex",gap:5}}>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,183,77,.18)",color:"#FFB74D",fontWeight:600}}>{wk.distance}</span>
                     <span style={{fontSize:9,padding:"2px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:500}}>{wk.time}</span>
@@ -321,17 +319,20 @@ export default function GOPrototype(){
 
           <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
           {DAYTIME.map((a,i)=>(
-            <Link key={a.id} href={venueHref(a.name)||"/venues/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
+            <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;router.push({"d1":"/zoo/","d2":"/joslyn/","d3":"/luminarium/","d4":"/lauritzen/","d5":"/durham/"}[a.id]||"/galleries/"+a.id+"/");}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
                 <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
                 <div style={{flex:1}}>
                   <h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{a.name}</h3>
                   <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>
                   <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
+                  <div style={{display:"flex",gap:6,marginTop:10}}>
+                    <a href={mapsDir(a.lat,a.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(255,255,255,.05)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:10,fontWeight:600,textDecoration:"none",display:"flex",alignItems:"center",gap:4}}>{IC.dir(T.textBody,11)} Directions</a>
+                    <span onClick={(e)=>{e.stopPropagation();router.push({"d1":"/zoo/","d2":"/joslyn/","d3":"/luminarium/","d4":"/lauritzen/","d5":"/durham/"}[a.id]||"/galleries/"+a.id+"/");}} className="hbtn" style={{padding:"7px 14px",borderRadius:99,background:"rgba(94,196,182,.1)",border:"1px solid rgba(94,196,182,.2)",color:T.accent,fontSize:10,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>Details →</span>
+                  </div>
                 </div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:12}}><polyline points="9 18 15 12 9 6"/></svg>
               </div>
-            </Link>
+            </div>
           ))}
 
           {/* Museums & Galleries CTA */}
@@ -351,9 +352,9 @@ export default function GOPrototype(){
           <Head text="Kids & Family" count={GALLERIES.filter(v=>v.type==="Kids").length} color="#FFB74D"/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory"}}>
             {GALLERIES.filter(v=>v.type==="Kids").map(v=>(
-              <Link key={v.id} href={v.id==="zoo"?"/zoo/":venueHref(v.name)||"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
+              <Link key={v.id} href={v.id==="zoo"?"/zoo/":"/galleries/"+v.id+"/"} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
                 <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
-                  <img loading="lazy" src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                  <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)"}}/>
                   <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
                     {v.badge&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"3px 8px",borderRadius:99,background:"rgba(212,173,101,.15)",color:T.gold,border:"1px solid rgba(212,173,101,.25)"}}>{v.badge}</span>}
@@ -396,9 +397,10 @@ export default function GOPrototype(){
 
         {isNite&&<div style={{opacity:Math.min(1,nb*1.5),transition:"opacity 0.5s"}}>
           <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",margin:"16px 0 12px"}}><h2 style={{fontSize:14,fontWeight:700,color:mColor,letterSpacing:1,textTransform:"uppercase",margin:0}}>{mLabel}</h2><span style={{fontSize:10,color:T.textDim,letterSpacing:1}}>{timeLabel}</span></div>
-          <Head text={"Tonight's Events"} count={EVENTS.length} mt={4} color={T.accent}/>
+          {(()=>{const now=new Date();const todayISO=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");const todayEvs=EVENTS.filter(e=>e.date===todayISO&&cityMatch(e));const upcomingEvs=EVENTS.filter(e=>e.date>=todayISO&&cityMatch(e)).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,15);const topEvs=todayEvs.length>0?todayEvs:upcomingEvs;return(<>
+          <Head text={todayEvs.length>0?(mLabel+"'s Events"):"Upcoming Events"} count={topEvs.length} mt={4} color={T.accent}/>
           <div style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:6,WebkitOverflowScrolling:"touch",scrollSnapType:"x mandatory",marginBottom:10}}>
-            {EVENTS.filter(e=>e.feat&&(cityMatch(e))).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+            {topEvs.slice(0,6).map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
               <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,width:isD?340:isM?265:290,minWidth:isD?340:isM?265:290,flexShrink:0,scrollSnapAlign:"start",padding:"16px 16px 18px",cursor:"pointer"}}>
                 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
                   <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{ev.emoji}</div>
@@ -415,12 +417,12 @@ export default function GOPrototype(){
               </div>
             )})}
           </div>
-          {EVENTS.filter(e=>!e.feat).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+          {topEvs.slice(6).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
             <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:`cardIn .3s ${i*.04}s both`,cursor:"pointer"}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-                <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+                {(ev.contentImage||ev.image)?<div style={{width:48,height:48,borderRadius:12,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.06)"}}><img loading="lazy" src={ev.contentImage||ev.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.parentElement.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:20">${ev.emoji||"📅"}</div>`;}} /></div>:<div style={{width:48,height:48,borderRadius:12,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>}
                 <div style={{flex:1}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}{ev.subcategory&&<span style={{fontSize:8,fontWeight:600,padding:"2px 7px",borderRadius:99,background:`${ac}15`,color:ac,letterSpacing:.5}}>{ev.subcategory}</span>}</div>
                   <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                   <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
@@ -431,6 +433,7 @@ export default function GOPrototype(){
               </div>
             </div>
           )})}
+          </>);})()}
         </div>}
 
         {isDay&&<div style={{textAlign:"center",padding:"20px 0",marginTop:8}}><p style={{fontSize:11,color:T.textDim,letterSpacing:.8}}>Slide forward to preview tonight →</p></div>}
@@ -472,9 +475,9 @@ export default function GOPrototype(){
         {filteredEvents.slice(0,evShow).map((ev,i)=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
           <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,animation:i<10?`cardIn .3s ${i*.04}s both`:"none",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-              <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{ev.emoji}</div>
+              {(ev.contentImage||ev.image)?<div style={{width:52,height:52,borderRadius:14,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.06)"}}><img loading="lazy" src={ev.contentImage||ev.image} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.parentElement.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:22">${ev.emoji||"📅"}</div>`;}} /></div>:<div style={{width:52,height:52,borderRadius:14,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{ev.emoji}</div>}
               <div style={{flex:1}}>
-                <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}</div>
+                <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{ev.title}</h3>{(()=>{const b=getBadge(ev);return b?<span style={{fontSize:8,fontWeight:700,padding:"2px 7px",borderRadius:99,background:b.bg,color:b.color,letterSpacing:.6,textTransform:"uppercase"}}>{b.text}</span>:null;})()}{ev.subcategory&&<span style={{fontSize:8,fontWeight:600,padding:"2px 7px",borderRadius:99,background:`${ac}15`,color:ac,letterSpacing:.5}}>{ev.subcategory}</span>}</div>
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,color:ac,letterSpacing:1.4}}>{ev.date} · {ev.time}</p>
                 <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{ev.desc}</p>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
@@ -502,7 +505,7 @@ export default function GOPrototype(){
           {PARKS.map(p=>(
             <Link key={p.id} href={"/parks/"+p.id+"/"} className="ecard" style={{background:CG.park,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?280:isM?240:260,minWidth:isD?280:isM?240:260,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
               <div style={{position:"relative",height:isD?120:100,overflow:"hidden"}}>
-                <img loading="lazy" src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+                <img src={p.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                 <div style={{position:"absolute",top:10,left:10}}><span style={{fontSize:18}}>{p.icon}</span></div>
                 <div style={{position:"absolute",bottom:10,left:12}}><h3 style={{margin:0,fontSize:15,fontWeight:600,color:T.textHi}}>{p.name}</h3></div>
@@ -525,7 +528,7 @@ export default function GOPrototype(){
           {TRAILS.map(t=>(
             <div key={t.id} onClick={(e)=>{if(e.target.closest("a"))return;setPrevTab(tab);setTab("trailDetail:"+t.id);scrollTop();}} className="ecard" style={{background:CG.trail,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?300:isM?258:275,minWidth:isD?300:isM?258:275,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer"}}>
               <div style={{position:"relative",height:isD?125:105,overflow:"hidden"}}>
-                <img loading="lazy" src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
+                <img src={t.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
                 <div style={{position:"absolute",top:10,left:10,display:"flex",gap:5}}>
                   <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(125,212,160,.15)",color:"#81C784",fontWeight:700}}>{t.difficulty}</span>
@@ -547,7 +550,7 @@ export default function GOPrototype(){
           {HOODS.map(h=>(
             <Link key={h.id} href={"/neighborhoods/"+h.id+"/"} onClick={()=>setSpotCat("all")} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",width:isD?220:isM?180:200,minWidth:isD?220:isM?180:200,flexShrink:0,scrollSnapAlign:"start",cursor:"pointer",textDecoration:"none",color:"inherit"}}>
               <div style={{position:"relative",height:isD?130:110,overflow:"hidden"}}>
-                <img loading="lazy" src={(h.imgs||[])[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
+                <img src={(h.imgs||[])[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}} onError={e=>{e.target.style.display="none"}}/>
                 <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.9) 100%)`}}/>
                 <div style={{position:"absolute",top:10,left:10}}>
                   <div style={{width:8,height:8,borderRadius:"50%",background:h.color,boxShadow:`0 0 8px ${h.color}66`}}/>
@@ -568,7 +571,7 @@ export default function GOPrototype(){
         {/* ── Things To Do ── */}
         <Head text="Things To Do" count={DAYTIME.length} color={T.accent}/>
         {DAYTIME.map((a,i)=>(
-          <Link key={a.id} href={venueHref(a.name)||"/venues/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8}}>
+          <div key={a.id} onClick={(e)=>{if(e.target.closest("a"))return;router.push({"d1":"/zoo/","d2":"/joslyn/","d3":"/luminarium/","d4":"/lauritzen/","d5":"/durham/"}[a.id]||"/galleries/"+a.id+"/");}} className="ecard" style={{background:CG._,borderRadius:18,border:`1px solid ${T.border}`,padding:isM?"14px":"16px 20px",marginBottom:8,cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
               <div style={{width:42,height:42,borderRadius:13,background:"rgba(255,255,255,.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{a.icon}</div>
               <div style={{flex:1}}>
@@ -576,9 +579,9 @@ export default function GOPrototype(){
                 <p style={{margin:"2px 0 0",fontSize:11,fontWeight:600,letterSpacing:1.4,color:T.accent}}>{a.time} · {a.price}</p>
                 <p style={{margin:"6px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{a.desc}</p>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:12}}><polyline points="9 18 15 12 9 6"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:4}}><polyline points="9 18 15 12 9 6"/></svg>
             </div>
-          </Link>
+          </div>
         ))}
 
         {/* ── Venues (compact link to venues view) ── */}
@@ -622,9 +625,9 @@ export default function GOPrototype(){
             </button>);})}
         </div>
         {VENUES.filter(v=>cities.size===3||!v.city||cities.has(v.city)).filter(v=>venCat==="all"||v.type===venCat).map((v,i)=>(
-          <Link key={v.id} href={v.slug===("henry-doorly-zoo")?"/zoo/":"/venues/"+(v.slug||v.id)+"/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`}}>
+          <Link key={v.id} href={"/venues/"+v.id+"/"} className="ecard" style={{display:"block",textDecoration:"none",color:"inherit",background:CG._,borderRadius:18,border:`1px solid ${T.border}`,overflow:"hidden",marginBottom:8,animation:`cardIn .3s ${i*.03}s both`,cursor:"pointer"}}>
             <div style={{position:"relative",height:isD?140:isM?100:115,overflow:"hidden"}}>
-              <img loading="lazy" src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
+              <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.5}} onError={e=>{e.target.style.display="none"}}/>
               <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.85) 100%)"}}/>
               <div style={{position:"absolute",top:10,right:10,display:"flex",gap:5}}>
                 <span style={{fontSize:9,padding:"3px 8px",borderRadius:99,background:"rgba(255,255,255,.08)",color:T.textBody,fontWeight:600}}>{v.type}</span>
@@ -689,7 +692,7 @@ export default function GOPrototype(){
             {/* Card header */}
             <div onClick={()=>setGalExpanded(open?null:v.id)} style={{borderRadius:open?"18px 18px 0 0":18,background:artGrad,overflow:"hidden",border:`1px solid ${open?ac+"44":T.border}`,borderBottom:open?`1px solid ${T.border}`:undefined,cursor:"pointer"}}>
               <div style={{position:"relative",height:open?160:120,overflow:"hidden"}}>
-                <img loading="lazy" src={v.img} alt={v.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>
+                <img src={v.img} alt={v.name} style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}}/>
                 <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(39,31,48,.2) 0%,rgba(39,31,48,.85) 100%)"}}/>
                 <div style={{position:"absolute",top:10,left:12,display:"flex",gap:6}}>
                   <span style={{fontSize:8,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",padding:"3px 9px",borderRadius:99,background:`${ac}25`,color:ac,border:`1px solid ${ac}40`}}>{v.type}</span>
@@ -817,7 +820,7 @@ export default function GOPrototype(){
 
           {/* ── HERO IMAGE ── */}
           <div style={{position:"relative",height:isD?280:isM?220:250,overflow:"hidden",borderRadius:"0 0 24px 24px"}}>
-            <img loading="lazy" src={hImgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
+            <img src={hImgs[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
             <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)`}}/>
             <button onClick={()=>setTab("explore")} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(20,22,24,.6)",backdropFilter:"blur(8px)",border:`1px solid ${T.border}`,borderRadius:99,padding:"8px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:.5}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Explore</button>
             <div style={{position:"absolute",bottom:0,left:0,right:0,padding:`0 ${px}px 20px`}}>
@@ -841,7 +844,7 @@ export default function GOPrototype(){
           {/* ── IMAGE CAROUSEL ── */}
           {hImgs.length>1&&<div style={{display:"flex",gap:8,overflowX:"auto",margin:"16px 0",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
             {hImgs.map((img,i)=><div key={i} style={{width:isD?200:isM?150:170,height:isD?130:isM?100:110,borderRadius:14,overflow:"hidden",flexShrink:0,border:`1px solid ${T.border}`}}>
-              <img loading="lazy" src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.65}}/>
+              <img src={img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.65}}/>
             </div>)}
           </div>}
 
@@ -933,16 +936,16 @@ export default function GOPrototype(){
           {hoodVenues.length>0&&<div style={{marginTop:24}}>
             <Head text={"Venues in "+hood.name} count={hoodVenues.length} color={hood.color}/>
             {hoodVenues.map((v,i)=>(
-              <Link key={v.id} href={v.slug==="henry-doorly-zoo"?"/zoo/":"/venues/"+(v.slug||v.id)+"/"} className="ecard" style={{display:"flex",alignItems:"center",gap:12,textDecoration:"none",color:"inherit",background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 14px",marginBottom:6}}>
+              <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{display:"flex",alignItems:"center",gap:12,textDecoration:"none",color:"inherit",background:CG._,borderRadius:16,border:`1px solid ${T.border}`,padding:"12px 14px",marginBottom:6}}>
                 <div style={{width:48,height:48,borderRadius:14,overflow:"hidden",flexShrink:0,background:"rgba(255,255,255,.05)"}}>
-                  <img loading="lazy" src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.6}} onError={e=>{e.target.style.display="none"}}/>
+                  <img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.6}} onError={e=>{e.target.style.display="none"}}/>
                 </div>
                 <div style={{flex:1,minWidth:0}}>
                   <h4 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{v.name}</h4>
                   <p style={{margin:"1px 0 0",fontSize:10,color:T.textSec,letterSpacing:.5}}>{v.type} \u00b7 {v.cap}</p>
                 </div>
                 {IC.chev(T.textDim,16)}
-              </Link>
+              </a>
             ))}
           </div>}
 
@@ -1014,7 +1017,7 @@ export default function GOPrototype(){
 
           {/* ── HERO IMAGE ── */}
           <div style={{position:"relative",height:isD?280:isM?220:250,overflow:"hidden",borderRadius:"0 0 24px 24px"}}>
-            <img loading="lazy" src={park.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
+            <img src={park.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>
             <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)`}}/>
             <button onClick={()=>setTab("explore")} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(20,22,24,.6)",backdropFilter:"blur(8px)",border:`1px solid ${T.border}`,borderRadius:99,padding:"8px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:6,color:T.textBody,fontSize:10,fontWeight:600,letterSpacing:.5}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Explore</button>
             <div style={{position:"absolute",top:16,right:16,display:"flex",gap:8}}>
@@ -1297,7 +1300,7 @@ export default function GOPrototype(){
         const venueEvents=EVENTS.filter(e=>e.venue&&venue.name&&(e.venue.toLowerCase().includes(venue.name.split(" ")[0].toLowerCase())||venue.name.toLowerCase().includes(e.venue.split(" ")[0].toLowerCase()))).slice(0,5);
         return(<div style={{...sec,paddingTop:0}}>
           <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
-            {venue.img?<img loading="lazy" src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
+            {venue.img?<img src={venue.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
             <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
             <div style={{position:"absolute",bottom:20,left:20,right:20}}>
@@ -1355,96 +1358,77 @@ export default function GOPrototype(){
         </div>);
       })()}
 
+      {/* ═══ VENUE PAGE (from VENUES tab) ═══ */}
+      {tab.startsWith("venuepage:")&&(()=>{
+        const vid=parseInt(tab.split(":")[1]);
+        const v=VENUES.find(x=>x.id===vid);
+        if(!v)return null;
+        const venueEvents=EVENTS.filter(e=>{const vl=(e.venue||"").toLowerCase(),nl=(v.name||"").toLowerCase();return vl.includes(nl.split(" ")[0])||nl.includes(vl.split(" ")[0]);}).sort((a,b)=>(a.date||"").localeCompare(b.date||"")).slice(0,20);
+        return(<div style={{...sec,paddingTop:0}}>
+          <div style={{position:"relative",height:isD?320:260,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            {v.img?<img src={v.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<div style={{width:"100%",height:"100%",background:CG._}}/>}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.85) 100%)"}}/>
+            <button onClick={()=>{setTab(prevTab||"venues");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{v.name}</h1>
+              <p style={{margin:"4px 0 0",fontSize:12,color:T.venue}}>{v.area} · {v.cap} capacity · {v.type}</p>
+            </div>
+          </div>
+          <p style={{margin:"16px 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{v.desc}</p>
+          {venueEvents.length>0&&<div style={{marginTop:20}}>
+            <h3 style={{fontSize:12,fontWeight:600,color:T.textSec,letterSpacing:2,textTransform:"uppercase",margin:"0 0 12px"}}>Upcoming Events ({venueEvents.length})</h3>
+            {venueEvents.map(ev=>{const ac=CA[ev.cat]||T.accent,gr=CG[ev.cat]||CG._;return(
+              <div key={ev.id} onClick={()=>navigateToEvent(ev.id)} className="ecard" style={{background:gr,borderRadius:14,border:`1px solid ${T.border}`,padding:"12px 16px",marginBottom:8,cursor:"pointer"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  {(ev.contentImage||ev.image)?<img loading="lazy" src={ev.contentImage||ev.image} alt="" style={{width:40,height:40,borderRadius:10,objectFit:"cover"}} onError={e=>{e.target.style.display="none"}}/>:<span style={{fontSize:18}}>{ev.emoji}</span>}
+                  <div style={{flex:1}}>
+                    <h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{ev.title}</h4>
+                    <p style={{margin:"2px 0 0",fontSize:11,color:ac,fontWeight:500}}>{ev.date} · {ev.time}{ev.subcategory?` · ${ev.subcategory}`:""}</p>
+                  </div>
+                  <span style={{fontSize:13,fontWeight:300,color:T.textHi}}>{ev.price}</span>
+                </div>
+              </div>
+            );})}
+          </div>}
+          <div style={{display:"flex",gap:8,marginTop:20}}>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name+" Omaha NE")}`} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,255,255,.06)",border:`1px solid ${T.border}`,color:T.textBody,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir(T.textBody,14)} Directions</a>
+            {v.url&&<a href={v.url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:`${T.accent}15`,border:`1px solid ${T.accent}30`,color:T.accent,fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.link(T.accent,13)} Website</a>}
+          </div>
+          <div style={{height:120}}/>
+        </div>);
+      })()}
+
       {/* ═══ WALK DETAIL PAGE ═══ */}
       {tab.startsWith("walk:")&&(()=>{
         const walkId=tab.split(":")[1];
         const walk=WALKS.find(w=>w.id===walkId);
         if(!walk)return null;
-        const wAc="#FFB74D";const wSoft="rgba(255,183,77,.12)";const wBdr="rgba(255,183,77,.25)";
-        const mapQ=encodeURIComponent(walk.startPoint||walk.name+", Omaha NE");
         return(<div style={{...sec,paddingTop:0}}>
-          {/* HERO */}
-          <div style={{position:"relative",height:isD?320:isM?260:280,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:`0 -${px}px`}}>
-            {walk.img?<img loading="lazy" src={walk.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.45}}/>:<div style={{width:"100%",height:"100%",background:CG.hood}}/>}
-            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.15) 0%,rgba(20,22,24,.95) 100%)"}}/>
+          <div style={{position:"relative",height:isD?280:220,overflow:"hidden",borderRadius:"0 0 24px 24px",margin:"0 -16px"}}>
+            <div style={{width:"100%",height:"100%",background:CG.hood}}/>
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>{typeof walk.icon==="function"?walk.icon("#FFB74D",64):resolveIcon(walk.icon)?.("#FFB74D",64)||<span style={{fontSize:48}}>{walk.icon==="walk"?"🚶":walk.icon==="camera"?"📸":walk.icon==="food"?"🍽️":"🗺️"}</span>}</div>
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,.1) 0%,rgba(20,22,24,.8) 100%)"}}/>
             <button onClick={()=>{setTab(prevTab||"today");scrollTop();}} className="hbtn" style={{position:"absolute",top:16,left:16,background:"rgba(0,0,0,.5)",border:"none",borderRadius:99,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",backdropFilter:"blur(8px)"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <div style={{position:"absolute",bottom:0,left:0,right:0,padding:`0 ${px}px 20px`}}>
-              <div style={{display:"flex",gap:6,marginBottom:8}}><span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"4px 10px",borderRadius:99,background:wSoft,color:wAc,border:`1px solid ${wBdr}`}}>Walking Tour</span>{walk.difficulty&&<span style={{fontSize:8,fontWeight:700,letterSpacing:1,textTransform:"uppercase",padding:"4px 10px",borderRadius:99,background:"rgba(255,255,255,.06)",color:T.textSec}}>{walk.difficulty}</span>}</div>
-              <h1 style={{margin:0,fontSize:isD?30:isM?24:27,fontWeight:700,color:T.textHi,lineHeight:1.15}}>{walk.name}</h1>
-              <p style={{margin:"6px 0 0",fontSize:11,color:T.textSec}}>{walk.distance} \u00B7 {walk.time} \u00B7 {walk.stops?walk.stops.length:0} stops</p>
+            <div style={{position:"absolute",bottom:20,left:20,right:20}}>
+              <h1 style={{margin:0,fontSize:isD?28:24,fontWeight:300,color:T.textHi,letterSpacing:1}}>{walk.name}</h1>
             </div>
           </div>
-
-          {/* QUICK STATS */}
-          <div style={{display:"flex",gap:8,margin:"16px 0",overflowX:"auto",paddingBottom:4,WebkitOverflowScrolling:"touch"}}>
-            {[{val:walk.distance,unit:"Distance",icon:"\uD83D\uDCCF"},{val:walk.time,unit:"Time",icon:"\u23F1\uFE0F"},{val:walk.difficulty||"Easy",unit:"Difficulty",icon:"\uD83E\uDDB6"},{val:String(walk.stops?walk.stops.length:0),unit:"Stops",icon:"\uD83D\uDCCD"}].map((s,i)=>(<div key={i} style={{flexShrink:0,padding:"12px 16px",borderRadius:14,textAlign:"center",background:"rgba(255,255,255,.03)",border:`1px solid ${T.border}`,minWidth:80}}><span style={{fontSize:14}}>{s.icon}</span><p style={{fontSize:16,fontWeight:700,color:wAc,margin:"2px 0 0"}}>{s.val}</p><p style={{fontSize:9,color:T.textSec,fontWeight:600,letterSpacing:1,textTransform:"uppercase",margin:0}}>{s.unit}</p></div>))}
-          </div>
-
-          {/* ABOUT */}
-          <p style={{fontSize:14,color:T.textBody,lineHeight:1.7,margin:"0 0 8px"}}>{walk.longDesc||walk.desc}</p>
-          {walk.startPoint&&<p style={{fontSize:11,color:wAc,fontWeight:600,margin:"0 0 16px",letterSpacing:.3}}>{"\uD83D\uDEB6 Start: "+walk.startPoint}</p>}
-          <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:20}}>{walk.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
-
-          {/* MAP */}
-          <div style={{marginBottom:24}}>
-            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Route Map</h2>
-            <div style={{borderRadius:16,overflow:"hidden",border:`1px solid ${T.border}`,height:isD?280:200}}>
-              <iframe title="Walk Map" width="100%" height="100%" style={{border:"none",filter:"invert(90%) hue-rotate(180deg)"}} loading="lazy" src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q="+mapQ+"&zoom=15&maptype=roadmap"}/>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:20}}>
+            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Distance</div>
+              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.distance}</div>
+            </div>
+            <div style={{background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",borderRadius:12,padding:"8px 14px",textAlign:"center"}}>
+              <div style={{fontSize:9,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginBottom:2}}>Time</div>
+              <div style={{fontSize:13,fontWeight:600,color:"#FFB74D"}}>{walk.time}</div>
             </div>
           </div>
-
-          {/* STOPS ALONG THE WAY */}
-          {walk.stops&&walk.stops.length>0&&<div style={{marginBottom:24}}>
-            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Stops Along the Way <span style={{color:T.textDim,fontSize:11,letterSpacing:1}}>({walk.stops.length})</span></h2>
-            <div style={{display:"flex",flexDirection:"column",gap:10}}>
-              {walk.stops.map((stop,i)=>(
-                <div key={i} style={{display:"flex",gap:14,padding:"16px",borderRadius:16,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`}}>
-                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,flexShrink:0}}>
-                    <div style={{width:36,height:36,borderRadius:99,background:wSoft,border:`1px solid ${wBdr}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:wAc}}>{i+1}</div>
-                    {stop.img&&<div style={{width:56,height:56,borderRadius:12,overflow:"hidden",border:`1px solid ${T.border}`}}><img loading="lazy" src={stop.img} alt="" style={{width:"100%",height:"100%",objectFit:"cover",opacity:.75}}/></div>}
-                  </div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-                      <span style={{fontSize:16}}>{stop.icon}</span>
-                      <h3 style={{margin:0,fontSize:14,fontWeight:600,color:T.textHi}}>{stop.name}</h3>
-                    </div>
-                    <p style={{margin:"0 0 8px",fontSize:12,color:T.textBody,lineHeight:1.5}}>{stop.desc}</p>
-                    <a href={`https://www.google.com/maps/search/?api=1&query=${stop.lat},${stop.lng}`} target="_blank" rel="noopener noreferrer" style={{fontSize:10,color:wAc,fontWeight:600,textDecoration:"none",display:"inline-flex",alignItems:"center",gap:4}}>{IC.pin(wAc,12)} Open in Maps</a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>}
-
-          {/* HIGHLIGHTS */}
-          {walk.highlights&&<div style={{marginBottom:24}}>
-            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Highlights</h2>
-            <div style={{borderRadius:16,background:"rgba(255,255,255,.02)",border:`1px solid ${T.border}`,padding:"14px 16px"}}>
-              {walk.highlights.map((h,i)=>(<div key={i} style={{display:"flex",gap:8,padding:"6px 0"}}><span style={{width:4,height:4,borderRadius:99,background:wAc,flexShrink:0,marginTop:7,opacity:.6}}/><p style={{margin:0,fontSize:12,color:T.textBody,lineHeight:1.5}}>{h}</p></div>))}
-            </div>
-          </div>}
-
-          {/* TIPS */}
-          {walk.tips&&<div style={{marginBottom:24}}>
-            <h2 style={{fontSize:12,fontWeight:600,color:wAc,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Tips</h2>
-            <div style={{display:"grid",gridTemplateColumns:isD?"1fr 1fr":"1fr",gap:8}}>
-              {walk.tips.map((tip,i)=>(<div key={i} style={{background:"rgba(255,255,255,.02)",borderRadius:16,border:`1px solid ${T.border}`,padding:"14px"}}>
-                <div style={{display:"flex",alignItems:"flex-start",gap:10}}>
-                  <span style={{fontSize:20,flexShrink:0}}>{tip.icon}</span>
-                  <div><h4 style={{margin:0,fontSize:13,fontWeight:600,color:T.textHi}}>{tip.title}</h4><p style={{margin:"4px 0 0",fontSize:12,color:T.textBody,lineHeight:1.5}}>{tip.text}</p></div>
-                </div>
-              </div>))}
-            </div>
-          </div>}
-
-          {/* CTAs */}
-          <div style={{display:"flex",gap:8,marginBottom:28}}>
-            <a href={mapsDir(walk.lat,walk.lng)} target="_blank" rel="noopener noreferrer" className="cta" style={{flex:1,padding:"14px 0",borderRadius:99,background:`linear-gradient(135deg,${wAc},${wAc}dd)`,color:T.bg,fontSize:12,fontWeight:700,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8,letterSpacing:1.5,textTransform:"uppercase"}}>{IC.dir(T.bg,14)} Start Walk</a>
-            <button onClick={()=>{if(navigator.share)navigator.share({title:walk.name,url:window.location.href}).catch(()=>{});else navigator.clipboard?.writeText(window.location.href);}} className="hbtn" style={{padding:"14px 20px",borderRadius:99,background:"rgba(255,255,255,.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}>{IC.share(T.textSec,13)} Share</button>
+          <p style={{margin:"16px 0 0",fontSize:14,color:T.textBody,lineHeight:1.7}}>{walk.desc}</p>
+          <div style={{display:"flex",gap:5,marginTop:16,flexWrap:"wrap"}}>{walk.tags.map(tag=><span key={tag} style={{fontSize:10,padding:"4px 12px",borderRadius:99,background:"rgba(255,255,255,.05)",color:T.textSec,fontWeight:500}}>{tag}</span>)}</div>
+          <div style={{display:"flex",gap:8,marginTop:24}}>
+            <a href={mapsDir(walk.lat,walk.lng)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,padding:"14px 0",borderRadius:99,background:"rgba(255,183,77,.12)",border:"1px solid rgba(255,183,77,.25)",color:"#FFB74D",fontSize:13,fontWeight:600,textAlign:"center",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:6,minHeight:48}}>{IC.dir("#FFB74D",14)} Get Directions</a>
           </div>
-
-          <div style={{textAlign:"center",paddingBottom:20,borderTop:`1px solid ${T.border}`,paddingTop:16}}><p style={{fontSize:9,color:"rgba(235,230,220,.2)",margin:0}}>{"\u00A9"} 2026 GO: Guide to Omaha</p></div>
-          <div style={{height:80}}/>
+          <div style={{height:120}}/>
         </div>);
       })()}
 

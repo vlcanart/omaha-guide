@@ -46,14 +46,31 @@ const I={
 
 /* ═══ KNOWN TEAMS (for auto-enrichment) ═══ */
 const TEAMS={
+  // Match longer/more specific keys FIRST — order matters for the find() loop
+  "omaha lancers":{name:"Omaha Lancers",abbr:"OL",color:"#00843D",logo:"/images/content/teams/omaha-lancers/hero.jpg"},
+  "omaha supernovas":{name:"Omaha Supernovas",abbr:"SUP",color:"#FFD700",logo:"/images/content/teams/omaha-supernovas/og-image.png"},
+  "omaha storm chasers":{name:"Omaha Storm Chasers",abbr:"OMA",color:"#003DA5",logo:"/images/content/teams/omaha-storm-chasers/og-image.jpg"},
+  "omaha kings":{name:"Omaha Kings & Queens",abbr:"OKQ",color:"#C41E3A",logo:"/images/content/teams/omaha-kings-queens/hero.jpg"},
+  "storm chasers":{name:"Omaha Storm Chasers",abbr:"OMA",color:"#003DA5",logo:"/images/content/teams/omaha-storm-chasers/og-image.jpg"},
+  "union omaha":{name:"Union Omaha",abbr:"UO",color:"#1C2B39",logo:""},
+  "lancers":{name:"Omaha Lancers",abbr:"OL",color:"#00843D",logo:"/images/content/teams/omaha-lancers/hero.jpg"},
+  "supernovas":{name:"Omaha Supernovas",abbr:"SUP",color:"#FFD700",logo:"/images/content/teams/omaha-supernovas/og-image.png"},
   "creighton":{name:"Creighton Bluejays",abbr:"CU",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},
   "bluejays":{name:"Creighton Bluejays",abbr:"CU",color:"#005CA9",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/156.png"},
   "nebraska":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
   "huskers":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
-  "omaha":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
+  "omaha mavericks":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
   "mavericks":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
-  "storm chasers":{name:"Storm Chasers",abbr:"OMA",color:"#003DA5",logo:""},
-  "union omaha":{name:"Union Omaha",abbr:"UO",color:"#1C2B39",logo:""},
+  "sioux falls":{name:"Sioux Falls Stampede",abbr:"SF",color:"#003DA5",logo:""},
+  "lincoln stars":{name:"Lincoln Stars",abbr:"LS",color:"#FFD700",logo:""},
+  "sioux city":{name:"Sioux City Musketeers",abbr:"SC",color:"#003366",logo:""},
+  "stampede":{name:"Sioux Falls Stampede",abbr:"SF",color:"#003DA5",logo:""},
+  "musketeers":{name:"Sioux City Musketeers",abbr:"SC",color:"#003366",logo:""},
+  "buffalo":{name:"Buffalo Bisons",abbr:"BUF",color:"#003DA5",logo:""},
+  "indianapolis":{name:"Indianapolis Indians",abbr:"IND",color:"#C8102E",logo:""},
+  "grand rapids":{name:"Grand Rapids Rise",abbr:"GR",color:"#00843D",logo:""},
+  "dallas pulse":{name:"Dallas Pulse",abbr:"DAL",color:"#003DA5",logo:""},
+  "indy ignite":{name:"Indy Ignite",abbr:"IND",color:"#FF6B00",logo:""},
   "iowa":{name:"Iowa",abbr:"IOW",color:"#FFCD00",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2294.png"},
   "kansas":{name:"Kansas",abbr:"KU",color:"#0051BA",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png"},
   "villanova":{name:"Villanova",abbr:"NOVA",color:"#00205B",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/222.png"},
@@ -83,7 +100,9 @@ function autoEnrichSports(ev){
   if(vsMatch){
     const find=(str)=>{
       const s=str.trim().toLowerCase();
-      for(const[k,v]of Object.entries(TEAMS)){if(s.includes(k))return v;}
+      // Sort keys by length descending so "omaha lancers" matches before "omaha"
+      const sortedKeys=Object.keys(TEAMS).sort((a,b)=>b.length-a.length);
+      for(const k of sortedKeys){if(s.includes(k))return TEAMS[k];}
       // Fallback: use the name parts
       const words=str.trim().split(/\s+/);
       const abbr=words.map(w=>w[0]).join("").toUpperCase().slice(0,4);
@@ -311,6 +330,20 @@ function InfoRow({icon,label,value,accent}){
 /* ═══ MAIN COMPONENT ═══ */
 export default function EventDetail({event:rawEv,isSaved,onToggleSave,onBack,isM,isT,isD}){
   const ev=autoEnrichSports(rawEv);
+  // Auto-generate pricing tiers for any event with a price but no pricing array
+  if(!ev.pricing&&ev.price){
+    const m=ev.price.match(/\$(\d+(?:\.\d+)?)/);
+    if(m){
+      const base=Math.round(parseFloat(m[1]));
+      if(ev.cat==="sports"){
+        ev.pricing=[{tier:"Upper Level",price:`$${base}`,note:"General seating"},{tier:"Lower Level",price:`$${Math.round(base*1.8)}`,note:"Closer to the action"},{tier:"Premium",price:`$${Math.round(base*3)}`,note:"Best views"}];
+      }else if(ev.cat==="concerts"){
+        ev.pricing=[{tier:"General Admission",price:`$${base}`,note:"Standing/open seating"},{tier:"Reserved",price:`$${Math.round(base*1.5)}`,note:"Assigned seats"},{tier:"VIP",price:`$${Math.round(base*2.5)}`,note:"Premium experience"}];
+      }else{
+        ev.pricing=[{tier:"Standard",price:`$${base}`,note:"General admission"},{tier:"Premium",price:`$${Math.round(base*2)}`,note:"Best available"}];
+      }
+    }
+  }
   const[scrollY,setScrollY]=useState(0);
   const[imgErr,setImgErr]=useState(false);
 
@@ -426,6 +459,39 @@ export default function EventDetail({event:rawEv,isSaved,onToggleSave,onBack,isM
         {ev.desc&&<div style={{marginBottom:24}}>
           <p style={{fontSize:isM?11:12,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>About This Event</p>
           <p style={{fontSize:14,color:T.textBody,lineHeight:1.75,letterSpacing:0.3,margin:0}}>{ev.desc}</p>
+          {ev.artistBio&&<p style={{fontSize:13,color:T.textSec,lineHeight:1.7,margin:"10px 0 0",fontStyle:"italic"}}>{ev.artistBio}</p>}
+        </div>}
+
+        {/* Subcategory / Genre badge */}
+        {ev.subcategory&&<div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
+          <span style={{fontSize:10,fontWeight:700,color:ac,letterSpacing:1.5,textTransform:"uppercase",padding:"5px 14px",borderRadius:99,background:`${ac}12`,border:`1px solid ${ac}25`}}>{ev.subcategory}</span>
+          {ev.ageRestriction&&ev.ageRestriction!=="All Ages"&&<span style={{fontSize:10,fontWeight:600,color:T.textSec,padding:"5px 12px",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`}}>{ev.ageRestriction}</span>}
+        </div>}
+
+        {/* YouTube Songs — enriched */}
+        {(ev.song1||ev.song2||ev.song3)&&<div style={{marginBottom:24}}>
+          <p style={{fontSize:isM?11:12,fontWeight:700,color:T.textSec,letterSpacing:2.5,textTransform:"uppercase",margin:"0 0 12px"}}>Listen</p>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            {[ev.song1,ev.song2,ev.song3].filter(Boolean).map((url,i)=>(
+              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",borderRadius:99,background:"rgba(255,0,0,0.06)",border:"1px solid rgba(255,0,0,0.15)",color:"#ff4444",fontSize:11,fontWeight:600,textDecoration:"none"}}>
+                {I.play("#ff4444",12)} Song {i+1}
+              </a>
+            ))}
+          </div>
+        </div>}
+
+        {/* Best Video — enriched */}
+        {ev.bestVideo&&!ev.ytId&&<div style={{marginBottom:24}}>
+          <a href={ev.bestVideo} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:8,padding:"10px 18px",borderRadius:99,background:"rgba(255,0,0,0.08)",border:"1px solid rgba(255,0,0,0.18)",color:"#ff4444",fontSize:12,fontWeight:600,textDecoration:"none"}}>
+            {I.play("#ff4444",14)} Watch on YouTube
+          </a>
+        </div>}
+
+        {/* Spotify link — enriched */}
+        {ev.spotifyUrl&&!ev.spotifyTrackId&&<div style={{marginBottom:24}}>
+          <a href={ev.spotifyUrl} target="_blank" rel="noopener noreferrer" className="hbtn" style={{display:"inline-flex",alignItems:"center",gap:8,padding:"10px 18px",borderRadius:99,background:"rgba(30,215,96,0.08)",border:"1px solid rgba(30,215,96,0.18)",color:"#1DB954",fontSize:12,fontWeight:600,textDecoration:"none"}}>
+            {I.spotify("#1DB954",14)} Listen on Spotify
+          </a>
         </div>}
 
         {/* Spotify embed */}
@@ -443,8 +509,9 @@ export default function EventDetail({event:rawEv,isSaved,onToggleSave,onBack,isM
           <InfoRow icon={I.cal(ac,16)} label="Date" value={fmtDate(ev.date)} accent={ac}/>
           {ev.time&&<InfoRow icon={I.clock(ac,16)} label="Time" value={`${ev.time}${ev.doors?` · Doors at ${ev.doors}`:""}`} accent={ac}/>}
           <InfoRow icon={I.pin(ac,16)} label="Venue" value={`${ev.venue}${ev.venueType?` · ${ev.venueType}`:""}`} accent={ac}/>
-          {ev.address&&<InfoRow icon={I.pin(ac,14)} label="Address" value={ev.address} accent={ac}/>}
-          {(ev.area&&!ev.address)&&<InfoRow icon={I.pin(ac,14)} label="Area" value={ev.area} accent={ac}/>}
+          {(ev.address||ev.venueAddress)&&<InfoRow icon={I.pin(ac,14)} label="Address" value={ev.address||ev.venueAddress} accent={ac}/>}
+          {(!ev.address&&!ev.venueAddress&&ev.area)&&<InfoRow icon={I.pin(ac,14)} label="Area" value={ev.area} accent={ac}/>}
+          {ev.ageRestriction&&<InfoRow icon={I.users(ac,14)} label="Age" value={ev.ageRestriction} accent={ac}/>}
           {ev.broadcast&&<InfoRow icon={I.tv(ac,14)} label="Broadcast" value={ev.broadcast} accent={ac}/>}
         </div>
 
@@ -466,7 +533,7 @@ export default function EventDetail({event:rawEv,isSaved,onToggleSave,onBack,isM
 
         {/* Secondary CTAs */}
         <div style={{display:"flex",gap:8,marginBottom:32}}>
-          <a href={mapsUrl(ev.address||ev.venue)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",textDecoration:"none"}}>
+          <a href={mapsUrl(ev.address||ev.venueAddress||ev.venue)} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",textDecoration:"none"}}>
             {I.pin(T.textSec,13)} Directions
           </a>
           {ev.date&&ev.date.match(/^\d{4}-\d{2}-\d{2}/)&&<a href={`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${ev.date.replace(/-/g,"")}/${ev.date.replace(/-/g,"")}&details=${encodeURIComponent((ev.venue||"")+" "+(ev.address||""))}&location=${encodeURIComponent(ev.address||ev.venue||"")}`} target="_blank" rel="noopener noreferrer" className="hbtn" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 0",borderRadius:99,background:"rgba(255,255,255,0.04)",border:`1px solid ${T.border}`,color:T.text,fontSize:11,fontWeight:600,letterSpacing:1.2,textTransform:"uppercase",textDecoration:"none"}}>
@@ -483,10 +550,10 @@ export default function EventDetail({event:rawEv,isSaved,onToggleSave,onBack,isM
             <div style={{width:44,height:44,borderRadius:13,background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.pin(ac,20)}</div>
             <div style={{minWidth:0}}>
               <p style={{fontSize:15,fontWeight:600,color:T.textHi,margin:0}}>{ev.venue}</p>
-              <p style={{fontSize:12,color:T.textSec,margin:"2px 0 0"}}>{[ev.venueType,ev.address||ev.area].filter(Boolean).join(" · ")}</p>
+              <p style={{fontSize:12,color:T.textSec,margin:"2px 0 0"}}>{[ev.venueType,ev.address||ev.venueAddress||ev.area].filter(Boolean).join(" · ")}</p>
             </div>
           </div>
-          <a href={mapsUrl(ev.address||ev.venue)} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,fontSize:12,color:ac,fontWeight:500,textDecoration:"none"}}>
+          <a href={mapsUrl(ev.address||ev.venueAddress||ev.venue)} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,fontSize:12,color:ac,fontWeight:500,textDecoration:"none"}}>
             Open in Google Maps {I.ext(ac,12)}
           </a>
         </div>

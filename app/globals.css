@@ -30,10 +30,19 @@ body {
 
 /* Detail / sub-pages need normal scrolling (not app-shell locked) */
 body.detail-page {
-  overflow: auto;
-  overflow-x: hidden;
-  height: auto;
-  min-height: 100%;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100% !important;
+  overscroll-behavior: auto !important;
+}
+body.detail-page #app-shell {
+  height: auto !important;
+  overflow: visible !important;
+}
+body.detail-page #app-content {
+  overflow: visible !important;
+  height: auto !important;
 }
 
 /* App shell: fills body, flex column keeps nav at bottom */

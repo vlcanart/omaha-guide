@@ -1,6 +1,9 @@
 import { GALLERIES } from "../../data/galleries";
+import { INGESTED_EVENTS } from "../../events-data";
 import { GalleryClient } from "./GalleryClient";
 import { DetailPageScroll } from "../../components/DetailPageScroll";
+import fs from "fs";
+import path from "path";
 
 export function generateStaticParams() {
   return GALLERIES.map(g => ({ id: g.id }));
@@ -49,6 +52,36 @@ export default function GalleryPage({ params }) {
   const gallery = GALLERIES.find(g => g.id === params.id);
   if (!gallery) return <div style={{ minHeight: "100vh", background: "#141618", color: "#F2EFE9", display: "flex", alignItems: "center", justifyContent: "center" }}><p>Gallery not found</p></div>;
 
+  // Find upcoming events at this gallery/museum
+  const today = new Date().toISOString().split("T")[0];
+  const galleryEvents = (INGESTED_EVENTS || [])
+    .filter(e => {
+      if (e.date < today) return false;
+      const ev = (e.venue || "").toLowerCase();
+      const gn = (gallery.name || "").toLowerCase();
+      if (ev === gn) return true;
+      const evFirst = ev.replace(/^the\s+/, "").split(/\s+/).find(w => w.length > 3) || "";
+      const gnFirst = gn.replace(/^the\s+/, "").split(/\s+/).find(w => w.length > 3) || "";
+      return evFirst && gnFirst && (ev.includes(gnFirst) || gn.includes(evFirst));
+    })
+    .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+    .slice(0, 20);
+
+  // Find content image
+  let contentImage = null;
+  try {
+    const slugMap = { joslyn: "joslyn-art-museum", bemis: "bemis-center", durham: "durham-museum" };
+    const slug = slugMap[params.id] || (gallery.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const dirs = ["landmarks", "venues"];
+    for (const dir of dirs) {
+      const contentDir = path.join(process.cwd(), "public", "images", "content", dir, slug);
+      if (fs.existsSync(contentDir)) {
+        const imgs = fs.readdirSync(contentDir).filter(f => f.match(/\.(jpg|jpeg|png)$/i));
+        if (imgs.length) { contentImage = `/images/content/${dir}/${slug}/${imgs[0]}`; break; }
+      }
+    }
+  } catch (e) {}
+
   const isMuseum = gallery.type === "Museum";
   const isKids = gallery.type === "Kids";
   const schemaType = isMuseum ? "Museum" : isKids ? "TouristAttraction" : "ArtGallery";
@@ -84,7 +117,7 @@ export default function GalleryPage({ params }) {
       <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
-      <GalleryClient gallery={gallery} />
+      <GalleryClient gallery={gallery} events={galleryEvents} contentImage={contentImage} />
     </>
   );
 }

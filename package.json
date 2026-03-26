@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/prebuild-events.js",
+    "prebuild": "node scripts/prebuild-events.js && node scripts/prebuild-images.js",
     "build": "node scripts/cache-images.js && node scripts/prebuild-events.js && node scripts/generate-sitemap.js && next build",
     "images:cache": "node scripts/cache-images.js",
     "images:force": "node scripts/cache-images.js --force",

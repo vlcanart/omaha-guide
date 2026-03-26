@@ -138,36 +138,11 @@ export function NeighborhoodClient({ hood }) {
             </div>;
           })()}
 
-          {/* -- AREA EVENTS -- */}
-          {hood.events && hood.events.length > 0 && <div style={{ marginTop: 24 }}>
-            <Head text="Events & Happenings" count={hood.events.length} color={hood.color} />
-            {hood.events.map((ev, i) => (
-              <div key={i} className="ecard" style={{ background: CG._, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 16px", marginBottom: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <h4 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.textHi }}>{ev.name}</h4>
-                  <span style={{ fontSize: 9, padding: "3px 9px", borderRadius: 99, background: `${hood.color}15`, border: `1px solid ${hood.color}33`, color: hood.color, fontWeight: 600, letterSpacing: .5 }}>{ev.when}</span>
-                </div>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: T.textBody, lineHeight: 1.45 }}>{ev.desc}</p>
-              </div>
-            ))}
-            {hoodEvents.length > 0 && hoodEvents.map((ev, i) => { const ac = CA[ev.cat] || T.accent, gr = CG[ev.cat] || CG._; return (
-              <div key={ev.id} className="ecard" style={{ background: gr, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 16px", marginBottom: 6 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 16 }}>{ev.emoji}</span>
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: T.textHi }}>{ev.title}</h4>
-                    <p style={{ margin: "1px 0 0", fontSize: 10, fontWeight: 600, color: ac, letterSpacing: 1 }}>{ev.date} {"\u00b7"} {ev.time} {"\u00b7"} {ev.price}</p>
-                  </div>
-                </div>
-              </div>
-            ); })}
-          </div>}
-
           {/* -- VENUES -- */}
           {hoodVenues.length > 0 && <div style={{ marginTop: 24 }}>
             <Head text={"Venues in " + hood.name} count={hoodVenues.length} color={hood.color} />
             {hoodVenues.map((v, i) => (
-              <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className="ecard" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", background: CG._, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 14px", marginBottom: 6 }}>
+              <Link key={v.id} href={"/venues/" + v.id + "/"} className="ecard" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", background: CG._, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 14px", marginBottom: 6 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,.05)" }}>
                   <img loading="lazy" src={v.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .6 }} onError={e => { e.target.style.display = "none" }} />
                 </div>
@@ -176,7 +151,7 @@ export function NeighborhoodClient({ hood }) {
                   <p style={{ margin: "1px 0 0", fontSize: 10, color: T.textSec, letterSpacing: .5 }}>{v.type} {"\u00b7"} {v.cap}</p>
                 </div>
                 {IC.chev(T.textDim, 16)}
-              </a>
+              </Link>
             ))}
           </div>}
 

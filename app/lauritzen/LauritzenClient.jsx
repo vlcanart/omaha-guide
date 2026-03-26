@@ -83,7 +83,7 @@ function Hero() {
   return (
     <div style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${t.pagePx} 3rem`, background: t.bg, overflow: "hidden" }}>
       {/* Hero image */}
-      <img loading="lazy" src="/images/parks/lauritzen-gardens.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.2, pointerEvents: "none" }} />
+      <img loading="lazy" src="/images/content/landmarks/lauritzen-gardens/lauritzen-gardens-1.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.2, pointerEvents: "none" }} />
       {/* Organic glow — dappled light through a canopy */}
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 40% 30% at 30% 20%, rgba(123,168,88,0.08) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 70% 60%, rgba(123,168,88,0.05) 0%, transparent 55%), radial-gradient(ellipse 35% 50% at 85% 25%, rgba(196,149,107,0.06) 0%, transparent 55%)`, pointerEvents: "none" }} />
       {/* Organic curve — abstract leaf */}

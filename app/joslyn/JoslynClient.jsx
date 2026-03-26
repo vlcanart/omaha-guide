@@ -114,7 +114,7 @@ function Hero() {
       }}
     >
       {/* Hero image */}
-      <img loading="lazy" src="/images/venues/joslyn-art-museum.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
+      <img loading="lazy" src="/images/content/landmarks/joslyn-art-museum/joslyn-art-museum-1.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
       {/* Ambient glow */}
       <div
         style={{
@@ -515,7 +515,7 @@ function Collection() {
 
   return (
     <>
-    <FullWidthImage src="/images/venues/joslyn-art-museum.jpg" alt="Joslyn Art Museum interior" />
+    <FullWidthImage src="/images/content/landmarks/joslyn-art-museum/joslyn-art-museum-1.jpg" alt="Joslyn Art Museum interior" />
     <section
       style={{
         padding: `4.5rem ${t.pagePx}`,

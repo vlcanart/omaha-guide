@@ -121,7 +121,7 @@ function runImageAudit() {
       ticketmaster.push(e);
     } else if (img.includes('img.ticketomaha.com')) {
       ticketOmaha.push(e);
-    } else if (img.startsWith('/images/venues/')) {
+    } else if (img.startsWith('/images/content/venues/') || img.startsWith('/images/content/landmarks/')) {
       venueFallback.push(e);
     } else if (img.startsWith('/images/events/')) {
       localCached.push(e);
@@ -161,7 +161,7 @@ function runImageAudit() {
   console.log();
 
   // Venue fallback images
-  console.log(`📸 Venue fallback images (/images/venues/): ${venueFallback.length}`);
+  console.log(`📸 Venue fallback images (/images/content/venues/): ${venueFallback.length}`);
   console.log();
 
   // No image
@@ -264,7 +264,7 @@ function categorizeMissingImages(noImage) {
 
   // Bucket 1: Venue fallback
   console.log(`🏟️  Venue fallback available: ${venueFallback.length}`);
-  console.log('   (These venues have curated images in /public/images/venues/)');
+  console.log('   (These venues have curated images in /public/images/content/venues/)');
   if (venueFallback.length > 0) {
     for (const e of venueFallback) {
       console.log(`     "${e.title}" @ ${e.venue} [${e.cat}]`);

@@ -55,7 +55,7 @@ function Hero() {
   return (
     <div style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: `0 ${t.pagePx} 3rem`, background: t.bg, overflow: "hidden" }}>
       {/* Hero image */}
-      <img loading="lazy" src="/images/venues/kiewit-luminarium.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.15, pointerEvents: "none" }} />
+      <img loading="lazy" src="/images/content/venues/kiewit-luminarium/kiewit-luminarium-1.jpg" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.15, pointerEvents: "none" }} />
       {/* Electric glow — dual plasma spots */}
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 45% 35% at 60% 30%, rgba(139,108,224,0.09) 0%, transparent 60%), radial-gradient(ellipse 40% 50% at 25% 75%, rgba(61,214,232,0.06) 0%, transparent 55%)`, pointerEvents: "none" }} />
       {/* Geometric: stellated icosahedron hint — intersecting triangles */}

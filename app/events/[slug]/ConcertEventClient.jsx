@@ -1,6 +1,8 @@
 "use client";
 // Install: app/events/[slug]/ConcertEventClient.jsx
 import { useState, useEffect } from "react";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
+import { BottomNav } from "../../components/BottomNav";
 
 var T = {
   bg:"#141618",surface:"#1B1D21",card:"#1F2227",
@@ -180,12 +182,41 @@ export default function ConcertEventClient(props){
   var shareUrl="https://go-omaha.com/events/"+slug;
   var ytThumb=ev.ytId?"https://img.youtube.com/vi/"+ev.ytId+"/hqdefault.jpg":null;
   var ytEmbed=ev.ytId?"https://www.youtube.com/embed/"+ev.ytId+"?autoplay=1&rel=0":null;
-  var low=lowestPrice(ev.tickets);
+  // Auto-generate ticket tiers from price + url if no tickets array
+  var tickets=ev.tickets;
+  if((!tickets||!tickets.length)&&ev.url&&ev.url!=="&num;"){
+    var prov=ev.affiliatePlatform||"ticketmaster";
+    var nums=(ev.price||"").match(/\d+\.?\d*/g);
+    if(nums&&nums.length>=2){
+      var lo=Math.round(parseFloat(nums[0]));var hi=Math.round(parseFloat(nums[nums.length-1]));
+      var mid=Math.round((lo+hi)/2);
+      tickets=[
+        {name:"Upper Level",sub:"Best value",total:lo,prov:prov,url:ev.url},
+        {name:"Mid Level",sub:"Great view",total:mid,prov:prov,url:ev.url},
+        {name:"Floor / Premium",sub:"Closest to stage",total:hi,prov:prov,url:ev.url}
+      ];
+    } else if(nums&&nums.length===1){
+      var base=Math.round(parseFloat(nums[0]));
+      tickets=[
+        {name:"General Admission",sub:"Standard entry",total:base,prov:prov,url:ev.url}
+      ];
+    } else {
+      tickets=[{name:"General Admission",sub:"See event page for pricing",total:0,prov:prov,url:ev.url}];
+    }
+  }
+  var low=lowestPrice(tickets);
+
+  // Build internal venue page URL
+  var venueSlug=(ev.venue||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  var VENUE_PAGE_MAP={"chi-health-center":1,"orpheum-theater":2,"orpheum-theater-omaha":2,"the-slowdown":3,"charles-schwab-field":4,"baxter-arena":5,"the-astro":6,"steelhouse-omaha":7,"the-admiral":8,"werner-park":9,"liberty-first-credit-union-arena":10,"barnato":11,"holland-center":12,"bemis-center":13,"mid-america-center":14,"omaha-community-playhouse":15,"film-streams":16,"henry-doorly-zoo":17};
+  var venuePageId=VENUE_PAGE_MAP[venueSlug];
+  var internalVenueUrl=venuePageId?"/venues/"+venuePageId+"/":null;
 
   function handleShare(){if(navigator.share){try{navigator.share({title:ev.title,text:ev.title+" at "+ev.venue,url:shareUrl});}catch(e){}}else{try{navigator.clipboard.writeText(shareUrl);}catch(e){}}setShared(true);setTimeout(function(){setShared(false);},2000);}
 
   return(
-    <div style={{minHeight:"100vh",background:T.bg,fontFamily:T.sans,color:T.text,paddingBottom:48}}>
+    <div style={{minHeight:"100vh",background:T.bg,fontFamily:T.sans,color:T.text,paddingBottom:80}}>
+      <DetailPageScroll />
       {/* HERO */}
       <div style={{position:"relative",height:isM?380:460,overflow:"hidden"}}>
         <img loading="lazy" src={heroImg} alt={ev.title} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.5}}/>
@@ -284,7 +315,7 @@ export default function ConcertEventClient(props){
         {ev.tags&&ev.tags.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:24}}>{ev.tags.map(function(t){return <span key={t} style={{fontSize:10,padding:"5px 13px",borderRadius:99,background:"rgba(255,255,255,0.04)",border:"1px solid "+T.border,color:T.textSec,fontWeight:500}}>{t}</span>;})}</div>}
 
         {/* Tickets */}
-        <TicketSelect tickets={ev.tickets} isM={isM}/>
+        <TicketSelect tickets={tickets} isM={isM}/>
 
         {/* Directions / Calendar / Share */}
         <div style={{display:"flex",gap:8,marginBottom:28}}>
@@ -299,13 +330,13 @@ export default function ConcertEventClient(props){
           </button>
         </div>
 
-        {/* Venue card - links to venue website */}
-        <a href={venueUrl} target="_blank" rel="noopener noreferrer" style={{display:"block",textDecoration:"none",borderRadius:18,border:"1px solid "+T.border,padding:"20px 18px",marginBottom:28,background:"rgba(255,255,255,0.02)"}}>
+        {/* Venue card */}
+        <a href={internalVenueUrl||venueUrl} target={internalVenueUrl?undefined:"_blank"} rel={internalVenueUrl?undefined:"noopener noreferrer"} style={{display:"block",textDecoration:"none",borderRadius:18,border:"1px solid "+T.border,padding:"20px 18px",marginBottom:28,background:"rgba(255,255,255,0.02)"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div>
               <p style={{fontSize:16,fontWeight:600,color:T.textHi,margin:"0 0 4px"}}>{ev.venue}</p>
               <p style={{fontSize:12,color:T.textSec,margin:"0 0 8px"}}>{venueType+(venueAddr?" \u00B7 "+venueAddr:"")}</p>
-              <span style={{fontSize:11,color:catColor,fontWeight:600}}>Visit Venue Website</span>
+              <span style={{fontSize:11,color:catColor,fontWeight:600}}>{internalVenueUrl?"View Venue & Upcoming Events \u2192":"Visit Venue Website"}</span>
             </div>
             <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><polyline points="9 18 15 12 9 6"/></svg>
           </div>
@@ -314,6 +345,7 @@ export default function ConcertEventClient(props){
         <p style={{fontSize:9,color:T.textDim,textAlign:"center",marginBottom:20}}>Prices subject to change {"\u00B7"} Some links may earn a small commission</p>
         <div style={{textAlign:"center",paddingBottom:20,borderTop:"1px solid "+T.border,paddingTop:16}}><p style={{fontSize:10,color:"rgba(235,230,220,0.25)",margin:0}}>{"\u00A9"} 2026 GO: Guide to Omaha</p></div>
       </div>
+      <BottomNav active="events" />
     </div>
   );
 }

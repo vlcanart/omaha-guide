@@ -1,9 +1,9 @@
-import { u } from '../lib/helpers';
 const h = (slug) => `/images/content/neighborhoods/${slug}/${slug}-1.jpg`;
+const hAll = (slug, count) => Array.from({length: count}, (_, i) => `/images/content/neighborhoods/${slug}/${slug}-${i+1}.jpg`);
 
 export const HOODS=[
   {id:"old-market",name:"Old Market",sub:"Downtown",desc:"Cobblestone streets, galleries, chef-driven restaurants, and Omaha's best nightlife. The cultural heart of the city since the 1800s.",lat:41.2555,lng:-95.932,color:"#5EC4B6",
-    imgs:[h("old-market")],
+    imgs:hAll("old-market",3),
     history:"The Old Market began as a wholesale fruit and vegetable market in the late 1800s. The brick warehouses along Howard and Jones streets housed produce dealers until the 1960s, when artists and entrepreneurs began converting the abandoned spaces into galleries and studios. A pivotal restoration movement in the 1970s preserved the cobblestone streets and iron facades that define the district today. The Passageway, M's Pub (before the 2015 fire), and the Artists Cooperative Gallery were early anchors that proved mixed-use urban revitalization could work.",
     walk:{name:"Old Market Loop",distance:"1.2 mi",time:"45 min",steps:["Start at 10th & Howard by the flower murals","Walk south on 10th — peek into Jackson Street galleries","Cut through The Passageway to Jones Street","West on Jones past Upstream Brewing and M's Pub site","South on 13th to the Bemis Center for Contemporary Arts","Circle back via Howard Street for restaurants and shops"]},
     spots:[
@@ -71,7 +71,7 @@ export const HOODS=[
     tags:["Music","Bars","Vintage","Murals","Indie","Record Shops"],
     vibe:"Eclectic & Creative",bestFor:"Music lovers, night owls, creatives"},
   {id:"dundee",name:"Dundee",sub:"Memorial Park Area",desc:"Tree-lined streets, walkable restaurants on Underwood Ave, and Elmwood Park trails. Classic Omaha at its most charming.",lat:41.262,lng:-95.975,color:"#81C784",
-    imgs:[h("dundee")],
+    imgs:hAll("dundee",3),
     history:"Dundee was platted in 1880 and developed as one of Omaha's first streetcar suburbs. The name comes from Dundee, Scotland. Warren Buffett has lived in the same Dundee house since 1958, purchased for $31,500. Happy Hollow Country Club (1907) and the historic Dundee Theater (1925, now a Film Streams location) anchor the neighborhood's century-old identity. Underwood Avenue's restaurant boom in the 2010s transformed a quiet residential strip into one of Omaha's top dining destinations.",
     walk:{name:"Dundee to Elmwood",distance:"2.1 mi",time:"1 hr",steps:["Start at 50th & Underwood — the restaurant corridor","Walk west past Dario's, Dante, and Pitch Pizzeria","Turn south on 52nd toward Elmwood Park","Loop through Elmwood's shaded trails and bridge","Return via Happy Hollow Blvd past historic homes","End at Dundee Dell for a beer"]},
     spots:[
@@ -110,7 +110,7 @@ export const HOODS=[
     tags:["Dining","Parks","Walking","Family","Film","Historic Homes"],
     vibe:"Charming & Walkable",bestFor:"Foodies, families, park lovers"},
   {id:"blackstone",name:"Blackstone",sub:"Farnam Street",desc:"Omaha's cocktail and culinary hub. Speakeasies, breweries, and chef-driven spots packed into a few electric blocks.",lat:41.259,lng:-95.965,color:"#FFB74D",
-    imgs:[h("blackstone")],
+    imgs:hAll("blackstone",2),
     history:"Named for the Blackstone Hotel (1916), this stretch of Farnam once housed Omaha's grandest lodging. The hotel hosted JFK, Nixon, and celebrities during its heyday. After decades of decline, a massive revitalization beginning around 2015 transformed the district into Omaha's premier cocktail and dining destination. The Blackstone Social, Scriptown Brewing, and a wave of chef-driven restaurants catalyzed the comeback. The historic hotel itself reopened as a Marriott Autograph Collection property.",
     walk:{name:"Blackstone Bar Hop",distance:"0.8 mi",time:"1.5 hrs",steps:["Start at Scriptown Brewing (38th & Farnam)","Walk east to Berry & Rye speakeasy","Cross to Nite Owl for craft cocktails","Hit Stirnella for dinner (or Yoshitomo for sushi)","End at Crescent Moon for Belgian ales"]},
     spots:[

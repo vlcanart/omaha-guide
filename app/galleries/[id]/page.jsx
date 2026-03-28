@@ -60,9 +60,11 @@ export default function GalleryPage({ params }) {
       const ev = (e.venue || "").toLowerCase();
       const gn = (gallery.name || "").toLowerCase();
       if (ev === gn) return true;
-      const evFirst = ev.replace(/^the\s+/, "").split(/\s+/).find(w => w.length > 3) || "";
-      const gnFirst = gn.replace(/^the\s+/, "").split(/\s+/).find(w => w.length > 3) || "";
-      return evFirst && gnFirst && (ev.includes(gnFirst) || gn.includes(evFirst));
+      // Strict match: require at least 2 significant words to match
+      const evWords = ev.replace(/^the\s+/, "").split(/\s+/).filter(w => w.length > 3);
+      const gnWords = gn.replace(/^the\s+/, "").split(/\s+/).filter(w => w.length > 3);
+      const matchCount = gnWords.filter(w => evWords.some(ew => ew.includes(w) || w.includes(ew))).length;
+      return matchCount >= 2;
     })
     .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
     .slice(0, 20);

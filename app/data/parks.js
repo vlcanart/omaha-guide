@@ -1,11 +1,11 @@
-import { u } from '../lib/helpers';
+const p = (slug) => `/images/content/parks/${slug}/${slug}-1.jpg`;
 
 export const PARKS=[
   {id:"cunningham-lake",name:"Cunningham Lake",nickname:"The C",tagline:"Omaha's Urban Oasis",
     desc:"A 390-acre lake surrounded by a 1,050-acre park in north central Omaha. Constructed by the U.S. Army Corps of Engineers for flood control and recreation, it opened in 1977. After a major renovation beginning in 2017, the park reopened in 2021 with upgraded trails, a renovated campground, new marina, disc golf course, and improved access.",
     address:"8965 State St, Omaha, NE 68122",lat:41.327,lng:-96.04,phone:"531-201-5754",website:"https://explorethec.com",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1050,color:"#5CA8D4",
-    tags:["Lake","Trails","Fishing","Camping"],img:u("photo-1500534314263-0869cef27f7d"),icon:"\u{1F3A3}",
+    tags:["Lake","Trails","Fishing","Camping"],img:p("cunningham-lake"),icon:"\u{1F3A3}",
     lake:{acres:390,maxDepth:"23 ft",
       species:[{name:"Channel Catfish",note:"Regularly stocked, up to 13 lbs"},{name:"Largemouth Bass",note:"Developing fishery, good populations"},{name:"Bluegill",note:"Great for beginners & kids"},{name:"White Bass",note:"Stocked since 2020"},{name:"Crappie",note:"Popular panfish target"},{name:"Saugeye",note:"Stocked seasonally"}],
       license:"Required for ages 16+ — Nebraska sport fishing license",licenseUrl:"https://outdoornebraska.gov",
@@ -31,7 +31,7 @@ export const PARKS=[
     desc:"Omaha's flagship urban park, transformed in a $290M renovation completed in 2022. The 72-acre RiverFront spans three connected parks with a performance pavilion, interactive playground, splash pad, slides, and sweeping green lawns against the downtown skyline.",
     address:"1001 Farnam St, Omaha, NE 68102",lat:41.258,lng:-95.93,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
     hours:"6 AM – 11 PM Daily",admission:"Free",acreage:72,color:"#5EC4B6",
-    tags:["Riverfront","Family","Free","Downtown"],img:u("photo-1441974231531-c6227db76b6e"),icon:"\u{1F3DE}\u{FE0F}",
+    tags:["Riverfront","Family","Free","Downtown"],img:p("gene-leahy-mall"),icon:"\u{1F3DE}\u{FE0F}",
     trails:[
       {name:"RiverFront Promenade",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved path connecting Gene Leahy Mall, Heartland of America Park, and Lewis & Clark Landing along the river.",features:["ADA Accessible","Lit Path","River Views"]}],
     activities:[
@@ -47,7 +47,7 @@ export const PARKS=[
     desc:"A 255-acre park centered around a 98-acre lake in West Omaha. The 4.8-mile paved loop is one of the most popular trails in the city, winding through prairie, past fishing piers, and alongside waterbird habitat.",
     address:"3808 S 156th St, Omaha, NE 68130",lat:41.23,lng:-96.075,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:255,color:"#7DD4A0",
-    tags:["Lake","Trails","Family","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"\u{1F6B6}",
+    tags:["Lake","Trails","Family","Free"],img:p("zorinsky-lake"),icon:"\u{1F6B6}",
     lake:{acres:98,maxDepth:"18 ft",
       species:[{name:"Largemouth Bass",note:"Catch and release encouraged"},{name:"Bluegill",note:"Abundant, great for families"},{name:"Channel Catfish",note:"Best in evening hours"},{name:"Crappie",note:"Spring spawning runs"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -68,7 +68,7 @@ export const PARKS=[
     desc:"A 135-acre lake surrounded by trails, a nature center, and one of the best kayak launches in the metro. Located in northwest Omaha, Standing Bear offers fishing, paddle sports, and a quieter alternative to the larger lakes.",
     address:"6404 N 132nd St, Omaha, NE 68164",lat:41.306,lng:-96.065,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:220,color:"#4A90A4",
-    tags:["Lake","Kayaking","Nature","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"\u{1F3DE}\u{FE0F}",
+    tags:["Lake","Kayaking","Nature","Free"],img:p("standing-bear-lake"),icon:"\u{1F3DE}\u{FE0F}",
     lake:{acres:135,maxDepth:"20 ft",
       species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Plentiful along shore"},{name:"Walleye",note:"Occasional catches"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -89,7 +89,7 @@ export const PARKS=[
     desc:"A downtown park featuring a scenic lake with a dramatic fountain, walking paths, and stunning skyline views. Part of the RiverFront revitalization, it connects to Gene Leahy Mall and Lewis & Clark Landing.",
     address:"800 S 10th St, Omaha, NE 68108",lat:41.254,lng:-95.922,phone:"402-444-5900",website:"https://theriverfrontomaha.com",
     hours:"6 AM – 11 PM Daily",admission:"Free",acreage:31,color:"#64B5F6",
-    tags:["Downtown","Lake","Skyline","Free"],img:u("photo-1506157786151-b8491531f063"),icon:"\u{26F2}",
+    tags:["Downtown","Lake","Skyline","Free"],img:p("heartland-america"),icon:"\u{26F2}",
     trails:[
       {name:"Lakeside Path",distance:"0.6 mi",surface:"Paved",difficulty:"Easy",desc:"Walking path around the lake with fountain views and downtown skyline backdrop.",features:["ADA Accessible","Lit at Night","Photo Spots"]}],
     activities:[
@@ -103,7 +103,7 @@ export const PARKS=[
     desc:"A 2,000-acre nature preserve in Bellevue featuring old-growth forest, boardwalk canopy trails, and diverse wildlife. Home to TreeRush Adventures (aerial obstacle course) and a raptor rehabilitation center with live birds of prey.",
     address:"1111 Bellevue Blvd N, Bellevue, NE 68005",lat:41.157,lng:-95.9,phone:"402-731-3140",website:"https://fontenelleforest.org",
     hours:"8 AM – 5 PM Daily",admission:"$12 adults / $8 kids",acreage:2000,color:"#6BBF7A",
-    tags:["Forest","Nature","Family","Adventure"],img:u("photo-1448375240586-882707db888b"),icon:"\u{1F332}",
+    tags:["Forest","Nature","Family","Adventure"],img:p("fontenelle-forest"),icon:"\u{1F332}",
     trails:[
       {name:"Boardwalk Trail",distance:"1.0 mi",surface:"Boardwalk",difficulty:"Easy",desc:"Elevated boardwalk through the forest canopy. Fully accessible with stunning tree-top views.",features:["ADA Accessible","Canopy Views","All Ages"]},
       {name:"Riverview Trail",distance:"2.5 mi",surface:"Natural",difficulty:"Moderate",desc:"Descends to the Missouri River floodplain through oak-hickory forest. Watch for deer and wild turkeys.",features:["River Views","Wildlife","Elevation Change"]},
@@ -120,7 +120,7 @@ export const PARKS=[
     desc:"A 100-acre botanical garden and arboretum featuring themed garden rooms, a conservatory with tropical plants, seasonal model train displays, and the Marjorie K. Daugherty Conservatory. Beautiful in every season.",
     address:"100 Bancroft St, Omaha, NE 68108",lat:41.2384,lng:-95.9158,phone:"402-346-4002",website:"https://www.lauritzengardens.org",
     hours:"9 AM – 5 PM Daily",admission:"$14 adults / $7 kids",acreage:100,color:"#E88BD4",
-    tags:["Gardens","Seasonal","Family"],img:u("photo-1585320806297-9794b3e4eeae"),icon:"\u{1F33A}",
+    tags:["Gardens","Seasonal","Family"],img:p("lauritzen-gardens"),icon:"\u{1F33A}",
     trails:[
       {name:"Garden Walk",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Winding paths through themed gardens including the Rose Garden, Victorian Garden, and Japanese Garden.",features:["ADA Accessible","Year-Round Beauty","Benches Throughout"]}],
     activities:[
@@ -135,7 +135,7 @@ export const PARKS=[
     desc:"A 204-acre historic park in the heart of the Dundee neighborhood. Features a public golf course, tennis courts, disc golf, rose garden, and shaded trails through mature elm and oak trees. A beloved community gathering spot since 1890.",
     address:"802 S 60th St, Omaha, NE 68106",lat:41.252,lng:-95.971,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:204,color:"#A8D5BA",
-    tags:["Historic","Trails","Golf","Free"],img:u("photo-1448375240586-882707db888b"),icon:"\u{1F333}",
+    tags:["Historic","Trails","Golf","Free"],img:p("elmwood-park"),icon:"\u{1F333}",
     trails:[
       {name:"Park Loop",distance:"2.0 mi",surface:"Paved / Gravel",difficulty:"Easy",desc:"Shaded loop through the park passing the rose garden, golf course, and picnic areas.",features:["Shaded","Historic Trees","Family-Friendly"]}],
     activities:[
@@ -150,7 +150,7 @@ export const PARKS=[
     desc:"A sprawling 83-acre park in Central Omaha known for summer concerts, community events, and open green space. Home to large-scale events and a popular running loop. The park honors veterans with memorial installations.",
     address:"6005 Underwood Ave, Omaha, NE 68132",lat:41.262,lng:-95.975,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:83,color:"#FFB74D",
-    tags:["Concerts","Events","Free"],img:u("photo-1441974231531-c6227db76b6e"),icon:"\u{1F3B6}",
+    tags:["Concerts","Events","Free"],img:p("memorial-park"),icon:"\u{1F3B6}",
     trails:[
       {name:"Memorial Loop",distance:"1.5 mi",surface:"Paved",difficulty:"Easy",desc:"Paved loop around the park perimeter. Popular morning running route.",features:["Flat","Lit at Night","Year-Round"]}],
     activities:[
@@ -165,7 +165,7 @@ export const PARKS=[
     desc:"A 1,186-acre recreation area in southwest Omaha featuring Wehrspann Lake, restored prairie, and an excellent nature center. The 8-mile trail loop around the lake offers rolling hills and diverse habitats.",
     address:"8901 S 154th St, Omaha, NE 68138",lat:41.18,lng:-96.13,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:1186,color:"#C49A6C",
-    tags:["Prairie","Trails","Nature Center","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"\u{1F985}",
+    tags:["Prairie","Trails","Nature Center","Free"],img:p("chalco-hills"),icon:"\u{1F985}",
     lake:{acres:255,maxDepth:"15 ft",
       species:[{name:"Largemouth Bass",note:"Good populations"},{name:"Channel Catfish",note:"Stocked regularly"},{name:"Bluegill",note:"Excellent for families"},{name:"Wipers",note:"White bass hybrid — stocked"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -186,7 +186,7 @@ export const PARKS=[
     desc:"A 450-acre recreation area featuring a 105-acre lake, modern playground, and paved trails in Papillion. Great for fishing, kayaking, and family outings with newer facilities and easy highway access.",
     address:"14725 Hwy 370, Papillion, NE 68046",lat:41.168,lng:-96.02,phone:"402-444-5900",website:"https://parks.cityofomaha.org",
     hours:"5 AM – 11 PM Daily",admission:"Free",acreage:450,color:"#5DADE2",
-    tags:["Lake","Family","Kayaking","Free"],img:u("photo-1500534314263-0869cef27f7d"),icon:"\u{1F6F6}",
+    tags:["Lake","Family","Kayaking","Free"],img:p("walnut-creek"),icon:"\u{1F6F6}",
     lake:{acres:105,maxDepth:"16 ft",
       species:[{name:"Largemouth Bass",note:"Good numbers"},{name:"Channel Catfish",note:"Stocked annually"},{name:"Bluegill",note:"Abundant"},{name:"Crappie",note:"Spring runs"}],
       license:"Required for ages 16+ — Nebraska permit",licenseUrl:"https://outdoornebraska.gov",
@@ -206,7 +206,7 @@ export const PARKS=[
     desc:"A beloved 10-acre urban park at Midtown Crossing, home to Jazz on the Green (free summer concert series), the Omaha Farmers Market winter location, and seasonal ice rink. Surrounded by restaurants and shops.",
     address:"3110 Farnam St, Omaha, NE 68131",lat:41.255,lng:-95.96,phone:"402-444-5900",website:"https://midtowncrossing.com",
     hours:"6 AM – 11 PM Daily",admission:"Free",acreage:10,color:"#D4AD65",
-    tags:["Jazz","Events","Free","Dining"],img:u("photo-1441974231531-c6227db76b6e"),icon:"\u{1F3B5}",
+    tags:["Jazz","Events","Free","Dining"],img:p("turner-park"),icon:"\u{1F3B5}",
     activities:[
       {name:"Jazz on the Green",icon:"music",desc:"Free Thursday evening jazz concerts all summer. Bring wine, picnic blankets, and friends.",season:"Jun–Aug"},
       {name:"Ice Rink",icon:"splash",desc:"Outdoor ice skating rink at Midtown Crossing during winter months.",season:"Nov–Feb"},

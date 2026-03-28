@@ -3,6 +3,7 @@ import Link from "next/link";
 import { T, CG } from "../../lib/design-tokens";
 import { IC } from "../../lib/icons";
 import { useResponsive } from "../../components/ResponsiveProvider";
+import { BottomNav } from "../../components/BottomNav";
 
 const CA = { concerts: "#5EC4B6", sports: "#64B5F6", festivals: "#CE93D8", family: "#81C784", arts: "#B39DDB", comedy: "#FFB74D" };
 const CGrad = {
@@ -17,8 +18,8 @@ const CGrad = {
 const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 const DAYS = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 
-function slugify(title, id) {
-  return (title || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) + "-" + id;
+function eventSlugFn(ev) {
+  return [ev.title, ev.venue, ev.date].filter(Boolean).join(" ").toLowerCase().replace(/['']/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 function parseDate(d) {
@@ -40,7 +41,7 @@ export function VenueClient({ venue, events = [], contentImage }) {
   const heroImg = contentImage || venue.img;
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans }}>
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: 80 }}>
       <div style={{ maxWidth: mxW, margin: "0 auto" }}>
 
         {/* HERO IMAGE */}
@@ -110,7 +111,8 @@ export function VenueClient({ venue, events = [], contentImage }) {
               const gr = CGrad[ev.cat] || CGrad._;
               const d = parseDate(ev.date);
               return (
-                <div key={ev.id} className="ecard" style={{ background: gr, borderRadius: 16, border: `1px solid ${T.border}`, padding: 0, marginBottom: 10, overflow: "hidden" }}>
+                <Link key={ev.id} href={"/events/" + eventSlugFn(ev) + "/"} style={{ display: "block", textDecoration: "none", color: "inherit" }}>
+                <div className="ecard" style={{ background: gr, borderRadius: 16, border: `1px solid ${T.border}`, padding: 0, marginBottom: 10, overflow: "hidden", cursor: "pointer" }}>
                   <div style={{ display: "flex", alignItems: "stretch" }}>
 
                     {/* Calendar date card */}
@@ -141,6 +143,7 @@ export function VenueClient({ venue, events = [], contentImage }) {
 
                   </div>
                 </div>
+                </Link>
               );
             })}
           </div>}
@@ -158,6 +161,7 @@ export function VenueClient({ venue, events = [], contentImage }) {
           <div style={{ height: 100 }} />
         </div>
       </div>
+      <BottomNav active="explore" />
     </div>
   );
 }

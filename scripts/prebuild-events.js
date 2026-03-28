@@ -145,6 +145,56 @@ if (excludedCount > 0) {
   console.log(`🚫 Excluded ${excludedCount} events (venue filters + library TBD + Scriptown)`);
 }
 
+// ═══ FIX 4: RECATEGORIZE MISCATEGORIZED EVENTS ═══
+// Ticketmaster often puts sporting events under "concerts". Fix based on title/venue patterns.
+const SPORT_TITLE = [
+  /\bvs\.?\s/i, /\bv\s+[A-Z]/i, /\bbaseball\b/i, /\bsoftball\b/i, /\bvolleyball\b/i,
+  /\bhockey\b/i, /\bsoccer\b/i, /\bfootball\b/i, /\bbasketball\b/i, /\bwrestling\b/i,
+  /\bgraduation\b/i, /\bcommencement\b/i, /\bpro indoor soccer\b/i,
+  /\bstorm chasers\b/i, /\blancers\b/i, /\bsupernovas\b/i, /\bmavericks\b/i,
+  /\bbluejays\b/i, /\bcornhuskers\b/i, /\bhuskers\b/i, /\blovb\b/i,
+  /\bnational duals\b/i, /\bmusketeers\b/i, /\bstampede\b/i, /\blincoln stars\b/i,
+  /\bbuffalo bisons\b/i, /\bindianapolis indians\b/i, /\bdallas pulse\b/i,
+  /\bgrand rapids rise\b/i, /\bindy ignite\b/i,
+];
+const SPORT_VENUE = [
+  /charles schwab field/i, /werner park/i, /connie claussen/i,
+  /tal anderson/i, /creighton softball/i, /ryan center/i, /sokol arena/i,
+];
+const ARTS_TITLE = [/\bmusical\b/i, /\btheater\b/i, /\btheatre\b/i, /\bballet\b/i, /\bopera\b/i, /\bsymphony\b/i];
+const ARTS_VENUE = [/community playhouse/i];
+const COMEDY_TITLE = [/\bcomedy\b/i, /\bcomedian\b/i, /\bstand.?up\b/i, /\bimprov\b/i];
+const COMEDY_VENUE = [/funny bone/i, /backline/i];
+const FAMILY_TITLE = [/\bkids\b/i, /\bfamily\b/i, /\bchildren/i, /\bjr\.?\s/i, /\bjunior\b/i];
+const FEST_TITLE = [/\bfestival\b/i, /\bfest\b/i, /\bexpo\b/i, /\bconvention\b/i, /\bfair\b/i, /\btattoo arts\b/i];
+
+let recat = { sports: 0, arts: 0, comedy: 0, family: 0, festivals: 0 };
+for (const ev of ingested) {
+  const t = ev.title || "";
+  const v = ev.venue || "";
+  // Only fix events currently miscategorized (mostly concerts)
+  if (ev.cat === "concerts" || ev.cat === "arts") {
+    if (SPORT_TITLE.some(p => p.test(t)) || SPORT_VENUE.some(p => p.test(v))) {
+      ev.cat = "sports"; ev.emoji = "🏆"; recat.sports++;
+    }
+  }
+  if (ev.cat === "concerts") {
+    if (ARTS_TITLE.some(p => p.test(t)) || ARTS_VENUE.some(p => p.test(v))) {
+      ev.cat = "arts"; ev.emoji = "🎨"; recat.arts++;
+    } else if (COMEDY_TITLE.some(p => p.test(t)) || COMEDY_VENUE.some(p => p.test(v))) {
+      ev.cat = "comedy"; ev.emoji = "😂"; recat.comedy++;
+    } else if (FAMILY_TITLE.some(p => p.test(t))) {
+      ev.cat = "family"; ev.emoji = "👨‍👩‍👧"; recat.family++;
+    } else if (FEST_TITLE.some(p => p.test(t))) {
+      ev.cat = "festivals"; ev.emoji = "🎪"; recat.festivals++;
+    }
+  }
+}
+const totalRecat = Object.values(recat).reduce((a, b) => a + b, 0);
+if (totalRecat > 0) {
+  console.log(`🏷️  Recategorized ${totalRecat} events: ${Object.entries(recat).filter(([,v]) => v > 0).map(([k,v]) => `${v} → ${k}`).join(", ")}`);
+}
+
 // ═══ FIX: REGENERATE EVENT IDs ═══
 // Old pipeline used Date.now() + random which caused ID collisions.
 // Regenerate all IDs using content-based FNV-1a hash for stable, unique keys.

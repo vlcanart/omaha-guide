@@ -1,7 +1,7 @@
 // GO: Guide to Omaha — Service Worker
 // Caches the app shell and event data for offline access
 
-const CACHE_NAME = "go-guide-v5";
+const CACHE_NAME = "go-guide-v6";
 const OFFLINE_URL = "/";
 
 // App shell files to cache on install

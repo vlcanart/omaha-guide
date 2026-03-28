@@ -4,6 +4,7 @@ import Link from "next/link";
 import { T, CG } from "../lib/design-tokens";
 import { IC } from "../lib/icons";
 import { useResponsive } from "../components/ResponsiveProvider";
+import { BottomNav } from "../components/BottomNav";
 import {
   ZOO_INFO, ZOO_SEASONS, getCurrentSeason, ZOO_PRICING,
   ZOO_EXHIBITS, EXHIBIT_CATS, ZOO_RIDES, ZOO_IMAX,
@@ -37,7 +38,7 @@ export function ZooClient() {
   const diningToShow = showAllDining ? ZOO_DINING : ZOO_DINING.filter(d => d.featured);
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: 48 }}>
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: 80 }}>
       <div style={{ maxWidth: mxW, margin: "0 auto" }}>
 
         {/* ═══════ HERO ═══════ */}
@@ -169,10 +170,11 @@ export function ZooClient() {
               const open = expanded === ex.id;
               return (
                 <div key={ex.id} onClick={() => setExpanded(open ? null : ex.id)} className="ecard" style={{ background: zooGrad, borderRadius: 18, border: `1px solid ${open ? ac + "44" : T.border}`, overflow: "hidden", cursor: "pointer" }}>
-                  {/* Image */}
+                  {/* Image / Icon */}
                   <div style={{ position: "relative", height: open ? 140 : 100, overflow: "hidden" }}>
-                    <img loading="lazy" src={ex.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} onError={e => { e.target.style.display = "none" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(30,36,32,.2) 0%,rgba(30,36,32,.9) 100%)" }} />
+                    <div style={{ width: "100%", height: "100%", background: ex.cat === "indoor" ? "linear-gradient(135deg,rgba(100,181,246,.08),rgba(30,36,32,.95))" : ex.cat === "interactive" ? "linear-gradient(135deg,rgba(129,199,132,.08),rgba(30,36,32,.95))" : "linear-gradient(135deg,rgba(255,183,77,.08),rgba(30,36,32,.95))" }} />
+                    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: 16, opacity: .25, fontSize: open ? 64 : 48 }}>{ex.icon}</div>
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(30,36,32,.1) 0%,rgba(30,36,32,.85) 100%)" }} />
                     <div style={{ position: "absolute", top: 8, left: 10, display: "flex", gap: 5 }}>
                       <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 99, background: ex.cat === "indoor" ? "rgba(100,181,246,.15)" : ex.cat === "interactive" ? "rgba(129,199,132,.15)" : "rgba(255,183,77,.15)", color: ex.cat === "indoor" ? "#64B5F6" : ex.cat === "interactive" ? "#81C784" : ac }}>{ex.cat === "indoor" ? "Indoor" : ex.cat === "interactive" ? "Interactive" : "Outdoor"}</span>
                       {ex.award && <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1, padding: "3px 8px", borderRadius: 99, background: "rgba(212,173,101,.15)", color: T.gold }}>{ex.award}</span>}
@@ -355,6 +357,7 @@ export function ZooClient() {
           <div style={{ height: 60 }} />
         </div>
       </div>
+      <BottomNav active="explore" />
     </div>
   );
 }

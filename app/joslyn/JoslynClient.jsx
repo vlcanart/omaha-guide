@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useResponsive } from "../components/ResponsiveProvider";
+import { BottomNav } from "../components/BottomNav";
 
 // ═══════════════════════════════════════════════════════════════
 // GO: Guide to Omaha — Design Tokens
@@ -1137,7 +1138,7 @@ export default function JoslynVenuePage() {
   // Scroll to top on mount
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
-    <div style={{ background: t.bg, color: t.text, minHeight: "100svh" }}>
+    <div style={{ background: t.bg, color: t.text, minHeight: "100svh", paddingBottom: 80 }}>
       {/* Global keyframes */}
       <style>{`
         @keyframes goFadeUp {
@@ -1157,7 +1158,6 @@ export default function JoslynVenuePage() {
         }
       `}</style>
 
-      <GoBar />
       <Hero />
       <VitalsBar />
       <About />
@@ -1167,6 +1167,7 @@ export default function JoslynVenuePage() {
       <Amenities />
       <FooterCTA />
       <SiteFooter />
+      <BottomNav active="explore" />
     </div>
   );
 }

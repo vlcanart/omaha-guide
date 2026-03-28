@@ -35,10 +35,14 @@ var TEAMS={
   "huskers":{name:"Nebraska Huskers",abbr:"NEB",color:"#E41C38",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/158.png"},
   "omaha":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
   "mavericks":{name:"Omaha Mavericks",abbr:"UNO",color:"#000000",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2437.png"},
-  "storm chasers":{name:"Storm Chasers",abbr:"OMA",color:"#003DA5",logo:""},
+  "omaha storm chasers":{name:"Omaha Storm Chasers",abbr:"OMA",color:"#003DA5",logo:"/images/content/teams/omaha-storm-chasers/omaha-storm-chasers-1.jpg"},
+  "storm chasers":{name:"Omaha Storm Chasers",abbr:"OMA",color:"#003DA5",logo:"/images/content/teams/omaha-storm-chasers/omaha-storm-chasers-1.jpg"},
   "union omaha":{name:"Union Omaha",abbr:"UO",color:"#1C2B39",logo:""},
-  "supernovas":{name:"Omaha Supernovas",abbr:"SUP",color:"#E8364F",logo:""},
-  "lancers":{name:"Omaha Lancers",abbr:"OL",color:"#003DA5",logo:""},
+  "omaha supernovas":{name:"Omaha Supernovas",abbr:"SUP",color:"#E8364F",logo:"/images/content/teams/omaha-supernovas/omaha-supernovas-1.png"},
+  "supernovas":{name:"Omaha Supernovas",abbr:"SUP",color:"#E8364F",logo:"/images/content/teams/omaha-supernovas/omaha-supernovas-1.png"},
+  "omaha lancers":{name:"Omaha Lancers",abbr:"OL",color:"#003DA5",logo:"/images/content/teams/omaha-lancers/omaha-lancers-1.jpg"},
+  "lancers":{name:"Omaha Lancers",abbr:"OL",color:"#003DA5",logo:"/images/content/teams/omaha-lancers/omaha-lancers-1.jpg"},
+  "omaha kings":{name:"Omaha Kings & Queens",abbr:"OKQ",color:"#FFD700",logo:"/images/content/teams/omaha-kings-queens/omaha-kings-queens-1.jpg"},
   "iowa":{name:"Iowa",abbr:"IOW",color:"#FFCD00",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2294.png"},
   "kansas":{name:"Kansas",abbr:"KU",color:"#0051BA",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/2305.png"},
   "villanova":{name:"Villanova",abbr:"NOVA",color:"#00205B",logo:"https://a.espncdn.com/i/teamlogos/ncaa/500/222.png"},
@@ -68,7 +72,8 @@ function enrichSports(ev) {
   if (vsMatch) {
     var findTeam = function(str) {
       var s = str.trim().toLowerCase();
-      for (var k in TEAMS) { if (s.includes(k)) return Object.assign({}, TEAMS[k]); }
+      var keys = Object.keys(TEAMS).sort(function(a, b) { return b.length - a.length; });
+      for (var i = 0; i < keys.length; i++) { if (s.includes(keys[i])) return Object.assign({}, TEAMS[keys[i]]); }
       var words = str.trim().split(/\s+/);
       var abbr = words.map(function(w) { return w[0]; }).join("").toUpperCase().slice(0, 4);
       return { name: str.trim(), abbr: abbr, color: "#64B5F6", logo: "" };
@@ -120,7 +125,7 @@ function getAllEvents() {
 
 export async function generateStaticParams() {
   var events = getAllEvents();
-  var eligible = events.filter(function(ev) { return ev.cat === "concerts" || ev.cat === "sports"; });
+  var eligible = events;
   return getAllEventSlugs(eligible);
 }
 

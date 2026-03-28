@@ -1,4 +1,4 @@
-import { u } from '../lib/helpers';
+
 
 /* ══════════════════════════════════════════════
    HENRY DOORLY ZOO — COMPREHENSIVE DATA
@@ -16,7 +16,7 @@ export const ZOO_INFO = {
   species: 962,
   badge: "#1 Zoo in the World",
   badgeSub: "USA Today Best Zoo — 4 Consecutive Years",
-  img: u("photo-1534567153574-2b12153a87f0"),
+  img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-1.jpg",
   blurb: "Consistently ranked the #1 zoo in the world by USA Today and TripAdvisor. Spanning 160 acres with 17,000+ animals across 962 species, Henry Doorly Zoo is home to the world's largest indoor desert, largest nocturnal exhibit, and one of North America's largest indoor rainforests. Seven acres of climate-controlled indoor exhibits ensure a world-class experience year-round.",
 };
 
@@ -52,7 +52,7 @@ export const ZOO_PRICING = {
 export const ZOO_EXHIBITS = [
   {
     id: "desert-dome", name: "Desert Dome", icon: "🏜️", cat: "indoor",
-    img: u("photo-1509316785289-025f5b846b35"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-2.jpg",
     tagline: "World's Largest Indoor Desert",
     desc: "A 137-foot glazed geodesic dome sheltering three desert ecosystems — the Namib Desert of southern Africa, Australia's Red Center, and the Sonoran Desert of North America. One of the zoo's most iconic structures.",
     animals: ["Namib sand vipers", "Roadrunners", "Warthogs", "Sand cats", "Monitor lizards"],
@@ -61,7 +61,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "kingdoms", name: "Kingdoms of the Night", icon: "🦇", cat: "indoor",
-    img: u("photo-1504006833117-8886a355efbf"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-3.jpg",
     tagline: "World's Largest Nocturnal Exhibit",
     desc: "Located beneath the Desert Dome, this 42,000 sq ft underground experience features nocturnal animals in six themed environments — wet cave, canyon, African diorama, eucalyptus forest, dry bat cave, and swamp.",
     animals: ["Bats", "Aardvarks", "Pangolins", "Owls", "Bushbabies", "Cave fish"],
@@ -69,7 +69,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "lied-jungle", name: "Lied Jungle", icon: "🌴", cat: "indoor",
-    img: u("photo-1501854140801-50d01698950b"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-1.jpg",
     tagline: "Nation's Largest Indoor Rainforest",
     desc: "Walk through a lush indoor rainforest spanning habitats from South America, Asia, and Africa. Suspension bridges, waterfalls, and 90+ animal species living among tropical vegetation.",
     animals: ["Pygmy hippos", "Gibbons", "Tapirs", "Monkeys", "Tropical birds", "Giant catfish"],
@@ -77,7 +77,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "aquarium", name: "Scott Aquarium", icon: "🦈", cat: "indoor",
-    img: u("photo-1544551763-46a013bb70d5"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-2.jpg",
     tagline: "70-Foot Shark Tunnel",
     desc: "Walk through a 70-foot acrylic tunnel surrounded by sharks, rays, and sea turtles. Coral reef displays, jellyfish galleries, and touch tanks bring the ocean to the Great Plains.",
     animals: ["Sand tiger sharks", "Sea turtles", "Jellyfish", "Rays", "Clownfish", "Penguins"],
@@ -85,7 +85,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "african-grasslands", name: "African Grasslands", icon: "🦁", cat: "outdoor",
-    img: u("photo-1547036967-23d11aacaee0"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-3.jpg",
     tagline: "$73M — Zoo's Largest Exhibit",
     desc: "A sprawling 28-acre panoramic experience featuring African wildlife in naturalistic habitats. The largest single project in the zoo's history at $73 million.",
     animals: ["Lions", "Giraffes", "African elephants", "Cheetahs", "Zebras", "African wild dogs"],
@@ -93,7 +93,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "asian-highlands", name: "Asian Highlands", icon: "🐆", cat: "outdoor",
-    img: u("photo-1456926631375-92c8ce872def"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-1.jpg",
     tagline: "USA Today Best Zoo Exhibit 2024",
     desc: "Eight immersive acres from Northern Indian grasslands to Himalayan peaks. Named USA Today's Best Zoo Exhibit in 2024. Themed Yeti Camp concessions add to the adventure.",
     animals: ["Snow leopards", "Red pandas", "Amur tigers", "Sloth bears", "Sichuan takin"],
@@ -101,7 +101,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "orangutan", name: "Hubbard Orangutan Forest", icon: "🦧", cat: "outdoor",
-    img: u("photo-1605559424843-9e4c228bf1c2"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-2.jpg",
     tagline: "Reopened 2024 After Major Renovation",
     desc: "Recently renovated with integrated technology throughout, this exhibit provides orangutans with enhanced climbing structures and enrichment. Ruby, a 26-year-old Bornean orangutan, is expecting an infant in early 2026.",
     animals: ["Bornean orangutans", "White-cheeked gibbons"],
@@ -109,7 +109,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "gorilla", name: "Hubbard Gorilla Valley", icon: "🦍", cat: "outdoor",
-    img: u("photo-1548247416-ec66f4900b2e"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-3.jpg",
     tagline: "Updated African Jungle Theme",
     desc: "Reopened August 2024 with a refreshed African jungle theme, elevator access, and enhanced educational elements. Watch western lowland gorillas in naturalistic social groups.",
     animals: ["Western lowland gorillas"],
@@ -117,7 +117,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "sea-lion", name: "Owen Sea Lion Shores", icon: "🦭", cat: "outdoor",
-    img: u("photo-1580420210837-4d5297f26ce4"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-1.jpg",
     tagline: "$27.5M Coastal Experience",
     desc: "A 1-acre coastal habitat with a 275,000-gallon saltwater pool featuring natural wave chambers, shallow beaches, and an underwater viewing cavern. The grand sea arch is the largest single rock piece in the zoo.",
     animals: ["California sea lions", "Harbour seals"],
@@ -125,7 +125,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "butterfly", name: "Butterfly & Insect Pavilion", icon: "🦋", cat: "indoor",
-    img: u("photo-1558642452-9d2a7deb7f62"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-2.jpg",
     tagline: "Walk Among Free-Flying Butterflies",
     desc: "A 14,000 sq ft pavilion featuring a 2,450 sq ft glass conservatory where hundreds of butterflies fly freely around you. Insect exhibits showcase the incredible diversity of arthropods.",
     animals: ["Hundreds of butterfly species", "Exotic insects", "Tarantulas", "Beetles"],
@@ -134,7 +134,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "madagascar", name: "Expedition Madagascar", icon: "🐒", cat: "indoor",
-    img: u("photo-1540573133985-87b6da6d54a9"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-3.jpg",
     tagline: "Island of Unique Wildlife",
     desc: "Explore Madagascar's unique biodiversity with lemurs, giant jumping rats, and straw-coloured fruit bats. Linked to the zoo's active conservation projects on the island.",
     animals: ["Ring-tailed lemurs", "Giant jumping rats", "Fruit bats", "Chameleons"],
@@ -142,7 +142,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "adventure-trails", name: "Children's Adventure Trails", icon: "🧒", cat: "interactive",
-    img: u("photo-1596464716127-f2a82984de30"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-1.jpg",
     tagline: "5 Acres of Hands-On Discovery",
     desc: "Five acres of interactive outdoor play and learning. The Treehouse Hub features a 3-level structure with shipwreck slide, climbing net, and bridge. Animal Ambassador demonstrations on the Big Backyard stage.",
     animals: ["Animal Ambassadors (demo animals)", "Farm animals"],
@@ -150,7 +150,7 @@ export const ZOO_EXHIBITS = [
   },
   {
     id: "aviary", name: "Simmons Aviary", icon: "🦅", cat: "outdoor",
-    img: u("photo-1480044965905-02098d419e96"),
+    img: "/images/content/venues/henry-doorly-zoo/henry-doorly-zoo-2.jpg",
     tagline: "Walk-Through Bird Experience",
     desc: "A walk-through aviary housing birds from around the world in naturalistic habitats. Adjacent to Asian Highlands on the main path.",
     animals: ["Eagles", "Cranes", "Tropical birds", "Waterfowl"],

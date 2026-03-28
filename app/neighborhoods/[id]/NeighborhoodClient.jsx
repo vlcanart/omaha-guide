@@ -6,6 +6,7 @@ import { IC } from "../../lib/icons";
 import { mapsDir } from "../../lib/helpers";
 import { useResponsive } from "../../components/ResponsiveProvider";
 import { CompactHero } from "../../components/CompactHero";
+import { BottomNav } from "../../components/BottomNav";
 import { VENUES } from "../../data/venues";
 import { SEED_EVENTS } from "../../data/events";
 import { INGESTED_EVENTS } from "../../events-data";
@@ -43,7 +44,7 @@ export function NeighborhoodClient({ hood }) {
   const hImgs = hood.imgs || [hood.img];
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans }}>
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: 80 }}>
       <CompactHero />
       <div style={{ maxWidth: mxW, margin: "0 auto" }}>
 
@@ -171,6 +172,7 @@ export function NeighborhoodClient({ hood }) {
           <div style={{ height: 100 }} />
         </div>
       </div>
+      <BottomNav active="explore" />
     </div>
   );
 }

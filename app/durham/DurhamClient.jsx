@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { BottomNav } from "../components/BottomNav";
 
 // ═══════════════════════════════════════════════════════════════
 // GO: Guide to Omaha — Design Tokens
@@ -501,7 +502,7 @@ export default function DurhamVenuePage() {
   // Scroll to top on mount
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
-    <div style={{ background: t.bg, color: t.text, minHeight: "100svh" }}>
+    <div style={{ background: t.bg, color: t.text, minHeight: "100svh", paddingBottom: 80 }}>
       <style>{`
         @keyframes goFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes goPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -513,7 +514,6 @@ export default function DurhamVenuePage() {
           .venue-hero h1 { font-size: clamp(2.2rem, 8vw, 4rem) !important; }
         }
       `}</style>
-      <GoBar />
       <Hero />
       <VitalsBar />
       <About />
@@ -524,6 +524,7 @@ export default function DurhamVenuePage() {
       <Amenities />
       <FooterCTA />
       <SiteFooter />
+      <BottomNav active="explore" />
     </div>
   );
 }

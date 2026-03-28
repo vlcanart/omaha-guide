@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { BottomNav } from "../components/BottomNav";
 
 const t = {
   bg: "#141618", bgElevated: "#1A1C1F", bgCard: "#1E2023", bgHover: "#252729",
@@ -349,7 +350,7 @@ export default function LuminariumVenuePage() {
   // Scroll to top on mount
   useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
-    <div style={{ background: t.bg, color: t.text, minHeight: "100svh" }}>
+    <div style={{ background: t.bg, color: t.text, minHeight: "100svh", paddingBottom: 80 }}>
       <style>{`
         @keyframes goFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes goPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -361,7 +362,6 @@ export default function LuminariumVenuePage() {
           .venue-hero h1 { font-size: clamp(2.2rem, 8vw, 4rem) !important; }
         }
       `}</style>
-      <GoBar />
       <Hero />
       <VitalsBar />
       <About />
@@ -370,6 +370,7 @@ export default function LuminariumVenuePage() {
       <Amenities />
       <FooterCTA />
       <SiteFooter />
+      <BottomNav active="explore" />
     </div>
   );
 }

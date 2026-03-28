@@ -196,4 +196,74 @@ Jeremy and Claude (in claude.ai) built this over several sessions:
 - v6: Full Jina + Claude pipeline with 55+ sources
 - v7: Production hardening — alerts, quality review, Google Sheets admin, PWA, SEO, affiliate system, cost tracking
 
-The app is feature-complete. The main task now is deployment and getting the automation running.
+- v8: Image library (131+ real images), SEO-friendly URLs, recategorization engine, custom venue pages (Joslyn, Lauritzen, Durham, Luminarium, Zoo), pre-deploy checklist
+
+The app is deployed at **https://go-omaha.com** and the working prototype is tagged as `v1.0-prototype`.
+
+## Current State (as of March 2026)
+
+- **Live site**: https://go-omaha.com (Netlify static)
+- **GitHub**: https://github.com/vlcanart/omaha-guide
+- **Active branch**: `claude/heuristic-hellman` (merge to main for deploys)
+- **Tagged release**: `v1.0-prototype` — rollback target if things break
+- **Events**: 291 active events from Ticketmaster API + TicketOmaha API + 8 other sources
+- **Images**: 131+ real photos in `public/images/content/` (no Unsplash)
+- **Team**: Jeremy (founder) + Joe Flodman (contributor, has GitHub access)
+
+## CRITICAL: Deployment Guardrails
+
+These rules exist because we lost work multiple times by deploying without checking. **Follow them every time.**
+
+### Before EVERY code change:
+1. `git stash` or `git commit` the current working state
+2. Note which files you're about to modify
+
+### Before EVERY deploy:
+1. Run `node scripts/pre-deploy-check.js` — it catches broken links, missing pages, wrong categories, Unsplash references
+2. If it reports errors, **DO NOT deploy** — fix them first
+3. If it reports only warnings, deploy is OK
+
+### After EVERY deploy:
+1. Hard refresh the live site
+2. Spot-check: Today page, an event detail page, a venue page, a neighborhood page
+
+### NEVER do:
+- Resolve merge conflicts with blanket "keep ours" — review each file
+- Replace `u()` or image helpers globally without checking what they map to
+- Modify `page.jsx` without understanding what section you're changing (it's 700+ lines)
+- Delete files from git without checking what references them
+- Change venue/event ID formats without updating all link references
+
+### Slug formats (must stay consistent):
+- **Venues**: `/venues/{seo-slug}/` (e.g., `/venues/chi-health-center/`)
+- **Events**: `/events/{title-venue-date}/` (e.g., `/events/whitney-cummings-big-baby-the-astro-2026-03-27/`)
+- **Neighborhoods**: `/neighborhoods/{id}/` (e.g., `/neighborhoods/old-market/`)
+- **Galleries**: `/galleries/{id}/` (e.g., `/galleries/joslyn/`)
+- **Custom pages**: `/zoo/`, `/joslyn/`, `/lauritzen/`, `/durham/`, `/luminarium/`
+
+### Image folder convention:
+```
+public/images/content/{category}/{slug}/{slug}-{N}.jpg
+```
+Where N=1 is the hero image. See `public/images/content/IMAGE-GUIDE.md` for full docs.
+
+## Key Commands (Updated)
+
+| Command | What it does |
+|---------|-------------|
+| `npm run build` | Prebuild events + cache images + build static site → out/ |
+| `node scripts/pre-deploy-check.js` | **Run before every deploy** — catches regressions |
+| `npx netlify deploy --prod --dir=out` | Deploy to production |
+| `npm run pipeline` | Scrape + parse + merge events |
+| `npm run pipeline:fast` | Same but skip URL validation |
+| `npm run review:stats` | Event quality dashboard |
+| `git tag -l` | List tagged releases for rollback |
+| `git checkout v1.0-prototype` | Rollback to known-good state |
+
+## Next Steps (Prioritized)
+
+1. **Break up page.jsx** into isolated components (EventCard, DateSlider, VenueCards, etc.) — prevents cascading regressions
+2. **Supabase migration** — move events + images to database/storage for dynamic updates without rebuilds
+3. **Affiliate program applications** — Ticketmaster (impact.com), use prototype as demo
+4. **More photos** — Joe adding neighborhood/venue photos via GitHub
+5. **Google Sheets admin** — for event overrides without code deploys

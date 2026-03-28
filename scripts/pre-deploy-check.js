@@ -140,7 +140,32 @@ for (const cat of imgCats) {
   }
 }
 
-// 10. Slug consistency check — event links should match built pages
+// 10. Cross-category image leak check
+console.log("\n10. Image cross-contamination");
+const dataFiles2 = {
+  "hoods.js": { allowed: ["neighborhoods"], file: "app/data/hoods.js" },
+  "parks.js": { allowed: ["parks", "landmarks"], file: "app/data/parks.js" },
+  "trails.js": { allowed: ["trails", "parks", "neighborhoods", "landmarks"], file: "app/data/trails.js" },
+  "venues.js": { allowed: ["venues", "neighborhoods"], file: "app/data/venues.js" },
+  "galleries.js": { allowed: ["venues", "landmarks", "neighborhoods"], file: "app/data/galleries.js" },
+};
+let leaks = 0;
+for (const [name, cfg] of Object.entries(dataFiles2)) {
+  const fp = path.join(__dirname, "..", cfg.file);
+  if (!fs.existsSync(fp)) continue;
+  const content = fs.readFileSync(fp, "utf8");
+  const imgRefs = content.match(/\/images\/content\/[a-z-]+\/[a-z-]+\/[a-z0-9-]+\.\w+/g) || [];
+  for (const ref of imgRefs) {
+    const cat = ref.split("/")[3]; // e.g. "venues" from /images/content/venues/...
+    if (!cfg.allowed.includes(cat)) {
+      fail(`${name} references ${cat} image (only ${cfg.allowed.join("/")} allowed): ${ref}`);
+      leaks++;
+    }
+  }
+}
+if (leaks === 0) pass("No cross-category image leaks in data files");
+
+// 11. Slug consistency check — event links should match built pages
 console.log("\n10. Event slug consistency");
 function eventSlug(ev) {
   return [ev.title, ev.venue, ev.date].filter(Boolean).join(" ").toLowerCase().replace(/['']/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

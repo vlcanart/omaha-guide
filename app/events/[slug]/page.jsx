@@ -6,6 +6,7 @@ import { SEED_EVENTS } from "../../data/events";
 import { INGESTED_EVENTS } from "../../events-data";
 import { eventSlug, findEventBySlug, getAllEventSlugs, eventJsonLd, eventMeta } from "../event-utils";
 import ConcertEventClient from "./ConcertEventClient";
+import { DetailPageScroll } from "../../components/DetailPageScroll";
 
 var VENUE_MAP = {
   "The Waiting Room": { lat: 41.281, lng: -95.954, cap: "400", area: "Benson", type: "Indie / Club", url: "https://waitingroomlounge.com", addr: "6212 Maple St, Omaha, NE 68104" },
@@ -159,6 +160,7 @@ export default async function EventPage({ params }) {
 
   return (
     <>
+      <DetailPageScroll />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "BreadcrumbList",

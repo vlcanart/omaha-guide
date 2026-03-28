@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useResponsive } from "./ResponsiveProvider";
 
 const T = {
   accent: "#5EC4B6",
@@ -12,10 +13,11 @@ const tabs = [
   { id: "events", label: "Events", href: "/#events", icon: (c, s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
   { id: "explore", label: "Explore", href: "/#explore", icon: (c, s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> },
   { id: "saved", label: "Saved", href: "/#saved", icon: (c, s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> },
-  { id: "more", label: "More", href: "/#more", icon: (c, s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg> },
 ];
 
 export function BottomNav({ active }) {
+  const { isD } = useResponsive();
+  if (isD) return null; // Desktop uses TopNav instead
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 999,

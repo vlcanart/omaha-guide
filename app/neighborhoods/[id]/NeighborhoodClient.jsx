@@ -6,6 +6,7 @@ import { IC } from "../../lib/icons";
 import { mapsDir } from "../../lib/helpers";
 import { useResponsive } from "../../components/ResponsiveProvider";
 import { CompactHero } from "../../components/CompactHero";
+import { TopNav } from "../../components/TopNav";
 import { BottomNav } from "../../components/BottomNav";
 import { VENUES } from "../../data/venues";
 import { SEED_EVENTS } from "../../data/events";
@@ -16,7 +17,7 @@ const EVENTS = [...SEED_EVENTS, ...(INGESTED_EVENTS || [])];
 const Head = ({ text, count, mt = 20, color }) => (
   <div style={{ display: "flex", alignItems: "baseline", gap: 10, margin: `${mt}px 0 10px` }}>
     <h2 style={{ fontSize: 12, fontWeight: 600, color: color || T.textSec, letterSpacing: 2.5, textTransform: "uppercase", margin: 0 }}>{text}</h2>
-    {count != null && <span style={{ fontSize: 11, color: T.textDim, letterSpacing: 1 }}>{count}</span>}
+    {count != null && <span style={{ fontSize: 12, color: T.textDim, letterSpacing: 1 }}>{count}</span>}
   </div>
 );
 
@@ -44,17 +45,18 @@ export function NeighborhoodClient({ hood }) {
   const hImgs = hood.imgs || [hood.img];
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: 80 }}>
-      <CompactHero />
-      <div style={{ maxWidth: mxW, margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: isD ? 32 : 80 }}>
+      <TopNav activeTab="explore" activeSub="neighborhoods" />
+      {!isD && <CompactHero />}
+      <div style={{ maxWidth: mxW, margin: "0 auto", paddingTop: isD ? 56 : 0 }}>
 
         {/* -- HERO IMAGE -- */}
         <div style={{ position: "relative", height: isD ? 280 : isM ? 220 : 250, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
           <img loading="lazy" src={hImgs[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .45 }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(20,22,24,.2) 0%,rgba(20,22,24,.95) 100%)" }} />
-          <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(20,22,24,.6)", backdropFilter: "blur(8px)", border: `1px solid ${T.border}`, borderRadius: 99, padding: "8px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: T.textBody, fontSize: 10, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Explore
-          </Link>
+          {!isD && <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,255,255,.12)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,.20)", borderRadius: 99, padding: "12px 20px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, color: T.text, fontSize: 12, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Explore
+          </Link>}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: `0 ${px}px 20px` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: hood.color, boxShadow: `0 0 12px ${hood.color}` }} />
@@ -63,7 +65,7 @@ export function NeighborhoodClient({ hood }) {
             <h1 style={{ margin: 0, fontSize: isD ? 32 : 26, fontWeight: 300, color: T.textHi, letterSpacing: 1.5, lineHeight: 1.1 }}>{hood.name}</h1>
             <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
               {hood.vibe && <span style={{ fontSize: 10, padding: "4px 10px", borderRadius: 99, background: `${hood.color}18`, border: `1px solid ${hood.color}33`, color: hood.color, fontWeight: 600, letterSpacing: .5 }}>{hood.vibe}</span>}
-              {hood.bestFor && <span style={{ fontSize: 10, padding: "4px 10px", borderRadius: 99, background: "rgba(255,255,255,.06)", border: `1px solid ${T.border}`, color: T.textSec, fontWeight: 500 }}>Best for: {hood.bestFor}</span>}
+              {hood.bestFor && <span style={{ fontSize: 10, padding: "4px 10px", borderRadius: 99, background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.12)", color: T.textSec, fontWeight: 500 }}>Best for: {hood.bestFor}</span>}
             </div>
           </div>
         </div>
@@ -75,7 +77,7 @@ export function NeighborhoodClient({ hood }) {
 
           {/* -- IMAGE CAROUSEL -- */}
           {hImgs.length > 1 && <div style={{ display: "flex", gap: 8, overflowX: "auto", margin: "16px 0", paddingBottom: 4, WebkitOverflowScrolling: "touch" }}>
-            {hImgs.map((img, i) => <div key={i} style={{ width: isD ? 200 : isM ? 150 : 170, height: isD ? 130 : isM ? 100 : 110, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: `1px solid ${T.border}` }}>
+            {hImgs.map((img, i) => <div key={i} style={{ width: isD ? 200 : isM ? 150 : 170, height: isD ? 130 : isM ? 100 : 110, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid rgba(255,255,255,.12)" }}>
               <img loading="lazy" src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .65 }} />
             </div>)}
           </div>}
@@ -106,7 +108,7 @@ export function NeighborhoodClient({ hood }) {
             return <div style={{ marginTop: 24 }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 10, margin: "0 0 10px" }}>
                 <h2 style={{ fontSize: isD ? 22 : 18, fontWeight: 300, color: T.textHi, letterSpacing: 1.5, margin: 0 }}>{hood.name} <span style={{ color: hood.color, fontWeight: 300 }}>Directory</span></h2>
-                <span style={{ fontSize: 11, color: T.textDim, letterSpacing: 1 }}>{filtered.length}</span>
+                <span style={{ fontSize: 12, color: T.textDim, letterSpacing: 1 }}>{filtered.length}</span>
               </div>
               <div style={{ display: "flex", gap: 5, overflowX: "auto", paddingBottom: 8, WebkitOverflowScrolling: "touch", marginBottom: 4 }}>
                 {SCATS.map(c => { const active = spotCat === c.id; const cnt = c.id === "all" ? hood.spots.length : hood.spots.filter(s => s.cat === c.id).length; if (cnt === 0 && c.id !== "all") return null; return (
@@ -116,7 +118,7 @@ export function NeighborhoodClient({ hood }) {
               </div>
               <div style={{ display: "grid", gridTemplateColumns: isD ? "1fr 1fr" : "1fr", gap: 6 }}>
                 {filtered.map((spot, i) => {
-                  const card = <div key={i} className="ecard" style={{ background: CG._, borderRadius: 16, border: `1px solid ${T.border}`, padding: "14px 16px", display: "flex", flexDirection: "column", gap: 4 }}>
+                  const card = <div key={i} className="ecard" style={{ background: CG._, borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 4 }}>
                     <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                       <div style={{ width: 40, height: 40, borderRadius: 11, background: "rgba(255,255,255,.05)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>{spot.icon}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -143,7 +145,7 @@ export function NeighborhoodClient({ hood }) {
           {hoodVenues.length > 0 && <div style={{ marginTop: 24 }}>
             <Head text={"Venues in " + hood.name} count={hoodVenues.length} color={hood.color} />
             {hoodVenues.map((v, i) => (
-              <Link key={v.id} href={"/venues/" + v.id + "/"} className="ecard" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", background: CG._, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 14px", marginBottom: 6 }}>
+              <Link key={v.id} href={"/venues/" + v.id + "/"} className="ecard" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", background: CG._, borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", padding: "12px 14px", marginBottom: 6 }}>
                 <div style={{ width: 48, height: 48, borderRadius: 14, overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,.05)" }}>
                   <img loading="lazy" src={v.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .6 }} onError={e => { e.target.style.display = "none" }} />
                 </div>
@@ -159,7 +161,7 @@ export function NeighborhoodClient({ hood }) {
           {/* -- HISTORY -- */}
           {hood.history && <div style={{ marginTop: 24 }}>
             <Head text="History" color={T.textSec} />
-            <div style={{ background: CG._, borderRadius: 18, border: `1px solid ${T.border}`, padding: isM ? "14px 16px" : "18px 22px" }}>
+            <div style={{ background: CG._, borderRadius: 18, border: "1px solid rgba(255,255,255,.12)", padding: isM ? "14px 16px" : "18px 22px" }}>
               <p style={{ margin: 0, fontSize: 13, color: T.textBody, lineHeight: 1.8, letterSpacing: .3 }}>{hood.history}</p>
             </div>
           </div>}

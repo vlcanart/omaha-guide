@@ -84,6 +84,7 @@ import { Skyline } from "./lib/skyline";
 import { IC } from "./lib/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { TopNav } from "./components/TopNav";
 import { mapsDir, u, slugify } from "./lib/helpers";
 import { TRAILS, WALKS, SUNSETS } from "./data/trails";
 import { DAYTIME, GALLERIES, GAL_FILTERS, GAL_HOODS } from "./data/galleries";
@@ -200,10 +201,14 @@ export default function GOPrototype(){
   const heroMin=isTrailPage?0:fullHero?(isD?400:320):(isD?120:95);
   const heroMax=isTrailPage?0:fullHero?560:135;
 
+  const showExploreSub=tab==="explore"||tab==="venues"||tab==="museums"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("walk:");
+  const topNavH=isD?(showExploreSub?96:56):(isT?44:0);
+
   return (
     <div id="app-shell" style={{background:T.bg,color:T.text,fontFamily:T.sans}}>
       {!mounted?<div style={{height:"100vh",background:T.bg}}/>:<>
-      <div id="app-content" ref={contentRef}>
+      <TopNav activeTab={tab} onTabChange={setTab} savedCount={favs.length} />
+      <div id="app-content" ref={contentRef} style={{paddingTop:topNavH}}>
 
       {/* ═══ HERO ═══ */}
       <div style={{position:"relative",height:heroH,minHeight:heroMin,maxHeight:heroMax,overflow:"hidden",transition:"height 0.5s ease, min-height 0.5s ease, max-height 0.5s ease"}}>
@@ -1497,7 +1502,7 @@ export default function GOPrototype(){
       </div>{/* end #app-content */}
 
       {/* ═══ BOTTOM SLIDER + NAV ═══ */}
-      <div id="app-nav" style={{display:"flex",flexDirection:"column",background:"#000"}}>
+      {!isD&&<div id="app-nav" style={{display:"flex",flexDirection:"column",background:"#000"}}>
         {tab==="today"&&<div style={{width:"100%",maxWidth:isD?560:isT?480:9999,padding:"8px 14px 4px",background:"rgba(32,34,38,.98)",backdropFilter:"blur(22px)",borderTop:`1px solid rgba(255,255,255,.1)`,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",gap:10,maxWidth:440,margin:"0 auto"}}>
             <span style={{fontSize:16,opacity:.7,flexShrink:0}}>☀️</span>
@@ -1525,7 +1530,7 @@ export default function GOPrototype(){
           ))}
         </div>
         <div style={{background:"#000",width:"100%",minHeight:"max(env(safe-area-inset-bottom, 0px), 8px)"}}/>
-      </div>
+      </div>}
 
       <style>{`
         @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}

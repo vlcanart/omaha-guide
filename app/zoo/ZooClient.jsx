@@ -5,6 +5,7 @@ import { T, CG } from "../lib/design-tokens";
 import { IC } from "../lib/icons";
 import { useResponsive } from "../components/ResponsiveProvider";
 import { BottomNav } from "../components/BottomNav";
+import { TopNav } from "../components/TopNav";
 import {
   ZOO_INFO, ZOO_SEASONS, getCurrentSeason, ZOO_PRICING,
   ZOO_EXHIBITS, EXHIBIT_CATS, ZOO_RIDES, ZOO_IMAX,
@@ -20,7 +21,7 @@ const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 const Head = ({ text, count, mt = 24 }) => (
   <div style={{ display: "flex", alignItems: "baseline", gap: 10, margin: `${mt}px 0 10px` }}>
     <h2 style={{ fontSize: 12, fontWeight: 600, color: ac, letterSpacing: 2.5, textTransform: "uppercase", margin: 0 }}>{text}</h2>
-    {count != null && <span style={{ fontSize: 11, color: T.textDim, letterSpacing: 1 }}>{count}</span>}
+    {count != null && <span style={{ fontSize: 12, color: T.textDim, letterSpacing: 1 }}>{count}</span>}
   </div>
 );
 
@@ -47,9 +48,9 @@ export function ZooClient() {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(20,22,24,.15) 0%,rgba(20,22,24,.95) 100%)" }} />
 
           {/* Back */}
-          <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(20,22,24,.6)", backdropFilter: "blur(8px)", border: `1px solid ${T.border}`, borderRadius: 99, padding: "8px 12px", display: "flex", alignItems: "center", gap: 6, color: T.textBody, fontSize: 10, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Back
-          </Link>
+          {!isD && <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,255,255,.12)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,.20)", borderRadius: 99, padding: "12px 20px", display: "flex", alignItems: "center", gap: 8, color: T.text, fontSize: 12, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Back
+          </Link>}
 
           {/* Badges */}
           <div style={{ position: "absolute", top: 12, right: 14, display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
@@ -60,7 +61,7 @@ export function ZooClient() {
           {/* Title */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: `0 ${px}px 20px` }}>
             <h1 style={{ margin: 0, fontSize: isD ? 30 : isM ? 24 : 27, fontWeight: 700, color: T.textHi, lineHeight: 1.15 }}>Henry Doorly Zoo<br /><span style={{ fontWeight: 300, fontSize: isD ? 22 : isM ? 17 : 20, opacity: .85 }}>& Aquarium</span></h1>
-            <p style={{ margin: "6px 0 0", fontSize: 11, color: T.textSec }}>{ZOO_INFO.address} · <span style={{ color: T.green, fontWeight: 600 }}>{season.grounds}</span></p>
+            <p style={{ margin: "6px 0 0", fontSize: 12, color: T.textSec }}>{ZOO_INFO.address} · <span style={{ color: T.green, fontWeight: 600 }}>{season.grounds}</span></p>
           </div>
         </div>
 
@@ -74,7 +75,7 @@ export function ZooClient() {
               { val: "962", unit: "Species" },
               { val: "#1", unit: "in World" },
             ].map((s, i) => (
-              <div key={i} style={{ flexShrink: 0, padding: "12px 16px", borderRadius: 14, textAlign: "center", background: zooGrad, border: `1px solid ${T.border}`, minWidth: 80 }}>
+              <div key={i} style={{ flexShrink: 0, padding: "12px 16px", borderRadius: 14, textAlign: "center", background: zooGrad, border: "1px solid rgba(255,255,255,.12)", minWidth: 80 }}>
                 <p style={{ fontSize: 20, fontWeight: 700, color: ac, margin: "0 0 2px" }}>{s.val}</p>
                 <p style={{ fontSize: 9, color: T.textSec, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", margin: 0 }}>{s.unit}</p>
               </div>
@@ -83,11 +84,11 @@ export function ZooClient() {
 
           {/* Blurb */}
           <p style={{ fontSize: 13, color: T.textBody, lineHeight: 1.7, margin: "0 0 4px", letterSpacing: .3 }}>{ZOO_INFO.blurb}</p>
-          <p style={{ fontSize: 11, color: T.gold, fontWeight: 600, margin: "0 0 16px", letterSpacing: .4 }}>{ZOO_INFO.badgeSub}</p>
+          <p style={{ fontSize: 12, color: T.gold, fontWeight: 600, margin: "0 0 16px", letterSpacing: .4 }}>{ZOO_INFO.badgeSub}</p>
 
           {/* ═══════ HOURS & PRICING ═══════ */}
           <Head text="Hours & Admission" />
-          <div style={{ background: zooGrad, borderRadius: 18, border: `1px solid ${T.border}`, padding: "16px", marginBottom: 8 }}>
+          <div style={{ background: zooGrad, borderRadius: 18, border: "1px solid rgba(255,255,255,.12)", padding: "16px", marginBottom: 8 }}>
             {/* Current season */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
               <div style={{ width: 10, height: 10, borderRadius: "50%", background: T.green, boxShadow: `0 0 10px ${T.green}` }} />
@@ -100,8 +101,8 @@ export function ZooClient() {
               {ZOO_SEASONS.map(s => (
                 <div key={s.id} style={{ flex: "1 1 45%", minWidth: 140, padding: "8px 12px", borderRadius: 12, background: s.id === season.id ? `${T.green}10` : "rgba(255,255,255,.02)", border: `1px solid ${s.id === season.id ? T.green + "30" : "rgba(255,255,255,.04)"}` }}>
                   <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: s.id === season.id ? T.green : T.textDim, letterSpacing: 1, textTransform: "uppercase" }}>{s.label}</p>
-                  <p style={{ margin: "2px 0 0", fontSize: 11, color: T.textBody }}>{s.dates}</p>
-                  <p style={{ margin: "1px 0 0", fontSize: 11, color: T.textSec }}>{s.grounds}</p>
+                  <p style={{ margin: "2px 0 0", fontSize: 12, color: T.textBody }}>{s.dates}</p>
+                  <p style={{ margin: "1px 0 0", fontSize: 12, color: T.textSec }}>{s.grounds}</p>
                 </div>
               ))}
             </div>
@@ -133,7 +134,7 @@ export function ZooClient() {
               <p style={{ margin: "0 0 8px", fontSize: 10, fontWeight: 700, color: T.textSec, letterSpacing: 2, textTransform: "uppercase" }}>Memberships</p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {ZOO_PRICING.membership.map((m, i) => (
-                  <div key={i} style={{ padding: "8px 12px", borderRadius: 12, background: "rgba(255,255,255,.02)", border: `1px solid ${T.border}` }}>
+                  <div key={i} style={{ padding: "8px 12px", borderRadius: 12, background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.12)" }}>
                     <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: T.textHi }}>{m.type}</p>
                     <p style={{ margin: "2px 0 0", fontSize: 14, fontWeight: 700, color: ac }}>{m.price}</p>
                   </div>
@@ -145,7 +146,7 @@ export function ZooClient() {
                 ))}
               </div>
             </div>}
-            <button onClick={() => setShowAllPricing(!showAllPricing)} style={{ display: "flex", alignItems: "center", gap: 4, margin: "10px auto 0", padding: "6px 14px", borderRadius: 99, background: "rgba(255,255,255,.04)", border: `1px solid ${T.border}`, color: T.textSec, fontSize: 10, fontWeight: 600, cursor: "pointer", letterSpacing: .8, textTransform: "uppercase" }}>
+            <button onClick={() => setShowAllPricing(!showAllPricing)} style={{ display: "flex", alignItems: "center", gap: 4, margin: "10px auto 0", padding: "6px 14px", borderRadius: 99, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)", color: T.textSec, fontSize: 10, fontWeight: 600, cursor: "pointer", letterSpacing: .8, textTransform: "uppercase" }}>
               {showAllPricing ? "Less" : "Memberships & Perks"}
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAllPricing ? "rotate(180deg)" : "none", transition: "transform .2s" }}><polyline points="6 9 12 15 18 9" /></svg>
             </button>
@@ -203,7 +204,7 @@ export function ZooClient() {
                       {ex.highlights && ex.highlights.map((h, i) => (
                         <div key={i} style={{ display: "flex", gap: 6, padding: "3px 0" }}>
                           <span style={{ width: 4, height: 4, borderRadius: 99, background: ac, flexShrink: 0, marginTop: 6, opacity: .5 }} />
-                          <p style={{ margin: 0, fontSize: 11, color: T.textSec, lineHeight: 1.4 }}>{h}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: T.textSec, lineHeight: 1.4 }}>{h}</p>
                         </div>
                       ))}
                       {ex.note && <p style={{ margin: "8px 0 0", fontSize: 10, color: T.red, fontWeight: 600, letterSpacing: .3 }}>⚠ {ex.note}</p>}
@@ -218,7 +219,7 @@ export function ZooClient() {
           <Head text="Rides & Attractions" count={ZOO_RIDES.length} />
           <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 6, WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
             {ZOO_RIDES.map(r => (
-              <div key={r.id} className="ecard" style={{ background: zooGrad, borderRadius: 18, border: `1px solid ${T.border}`, padding: "16px", width: isD ? 260 : isM ? 220 : 240, minWidth: isD ? 260 : isM ? 220 : 240, flexShrink: 0, scrollSnapAlign: "start", opacity: r.open ? 1 : .65 }}>
+              <div key={r.id} className="ecard" style={{ background: zooGrad, borderRadius: 18, border: "1px solid rgba(255,255,255,.12)", padding: "16px", width: isD ? 260 : isM ? 220 : 240, minWidth: isD ? 260 : isM ? 220 : 240, flexShrink: 0, scrollSnapAlign: "start", opacity: r.open ? 1 : .65 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                   <div>
                     <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.textHi }}>{r.name}</h3>
@@ -237,12 +238,12 @@ export function ZooClient() {
 
           {/* ═══════ IMAX THEATER ═══════ */}
           <Head text="IMAX Theater" />
-          <div style={{ background: zooGrad, borderRadius: 18, border: `1px solid ${T.border}`, padding: "16px", marginBottom: 8 }}>
+          <div style={{ background: zooGrad, borderRadius: 18, border: "1px solid rgba(255,255,255,.12)", padding: "16px", marginBottom: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={ac} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" /><line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="2" y1="7" x2="7" y2="7" /><line x1="2" y1="17" x2="7" y2="17" /><line x1="17" y1="7" x2="22" y2="7" /><line x1="17" y1="17" x2="22" y2="17" /></svg>
               <div>
                 <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: T.textHi }}>{ZOO_IMAX.name}</h3>
-                <p style={{ margin: "2px 0 0", fontSize: 11, color: T.textSec }}>{ZOO_IMAX.hours}</p>
+                <p style={{ margin: "2px 0 0", fontSize: 12, color: T.textSec }}>{ZOO_IMAX.hours}</p>
               </div>
               <div style={{ marginLeft: "auto", textAlign: "right" }}>
                 <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: T.green }}>FREE for members</p>
@@ -255,16 +256,16 @@ export function ZooClient() {
             <p style={{ fontSize: 9, fontWeight: 700, color: T.textDim, letterSpacing: 1.5, textTransform: "uppercase", margin: "0 0 8px" }}>Now Showing</p>
             {ZOO_IMAX.films.map((f, i) => (
               <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 0", borderTop: i > 0 ? "1px solid rgba(255,255,255,.04)" : "none" }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: `${ac}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ac} strokeWidth="1.5"><polygon points="5 3 19 12 5 21 5 3" /></svg></div>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: `${ac}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ac} strokeWidth="1.5"><polygon points="5 3 19 12 5 21 5 3" /></svg></div>
                 <div>
                   <h4 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: T.textHi }}>{f.title}</h4>
-                  <p style={{ margin: "3px 0 0", fontSize: 11, color: T.textBody, lineHeight: 1.45 }}>{f.desc}</p>
+                  <p style={{ margin: "3px 0 0", fontSize: 12, color: T.textBody, lineHeight: 1.45 }}>{f.desc}</p>
                 </div>
               </div>
             ))}
             <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 10 }}>
               {ZOO_IMAX.specs.map((s, i) => (
-                <span key={i} style={{ fontSize: 9, padding: "3px 9px", borderRadius: 99, background: "rgba(255,255,255,.04)", border: `1px solid ${T.border}`, color: T.textSec, fontWeight: 500 }}>{s}</span>
+                <span key={i} style={{ fontSize: 9, padding: "3px 9px", borderRadius: 99, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)", color: T.textSec, fontWeight: 500 }}>{s}</span>
               ))}
             </div>
             <p style={{ margin: "8px 0 0", fontSize: 10, color: T.textDim, fontStyle: "italic" }}>{ZOO_IMAX.note}</p>
@@ -274,7 +275,7 @@ export function ZooClient() {
           <Head text="Events & Seasonal" count={ZOO_EVENTS.length} />
           <div style={{ display: "grid", gridTemplateColumns: isD ? "1fr 1fr" : "1fr", gap: 8 }}>
             {ZOO_EVENTS.map(ev => (
-              <div key={ev.id} className="ecard" style={{ background: zooGrad, borderRadius: 16, border: `1px solid ${T.border}`, padding: "14px 16px" }}>
+              <div key={ev.id} className="ecard" style={{ background: zooGrad, borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", padding: "14px 16px" }}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
@@ -291,21 +292,21 @@ export function ZooClient() {
 
           {/* ═══════ DINING ═══════ */}
           <Head text="Dining" count={ZOO_DINING.length} />
-          <p style={{ fontSize: 11, color: T.textSec, margin: "-4px 0 10px", letterSpacing: .3 }}>13 dining locations · Outside food welcome · Picnic areas available</p>
+          <p style={{ fontSize: 12, color: T.textSec, margin: "-4px 0 10px", letterSpacing: .3 }}>13 dining locations · Outside food welcome · Picnic areas available</p>
           <div style={{ display: "grid", gridTemplateColumns: isD ? "1fr 1fr" : "1fr", gap: 6 }}>
             {diningToShow.map((d, i) => (
-              <div key={i} className="ecard" style={{ background: zooGrad, borderRadius: 16, border: `1px solid ${T.border}`, padding: "12px 14px" }}>
+              <div key={i} className="ecard" style={{ background: zooGrad, borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", padding: "12px 14px" }}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h4 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: T.textHi }}>{d.name}</h4>
                     <p style={{ margin: "2px 0 0", fontSize: 10, color: T.textDim }}>{d.location} · {d.hours}</p>
-                    <p style={{ margin: "4px 0 0", fontSize: 11, color: T.textBody, lineHeight: 1.4 }}>{d.desc}</p>
+                    <p style={{ margin: "4px 0 0", fontSize: 12, color: T.textBody, lineHeight: 1.4 }}>{d.desc}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <button onClick={() => setShowAllDining(!showAllDining)} className="hbtn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%", margin: "8px 0 0", padding: "10px 0", borderRadius: 99, background: "rgba(255,255,255,.04)", border: `1px solid ${T.border}`, color: T.textSec, fontSize: 10, fontWeight: 600, cursor: "pointer", letterSpacing: .8, textTransform: "uppercase" }}>
+          <button onClick={() => setShowAllDining(!showAllDining)} className="hbtn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%", margin: "8px 0 0", padding: "10px 0", borderRadius: 99, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)", color: T.textSec, fontSize: 10, fontWeight: 600, cursor: "pointer", letterSpacing: .8, textTransform: "uppercase" }}>
             {showAllDining ? "Show Featured Only" : `Show All ${ZOO_DINING.length} Dining Spots`}
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: showAllDining ? "rotate(180deg)" : "none", transition: "transform .2s" }}><polyline points="6 9 12 15 18 9" /></svg>
           </button>
@@ -314,7 +315,7 @@ export function ZooClient() {
           <Head text="Visitor Tips" count={ZOO_TIPS.length} />
           <div style={{ display: "grid", gridTemplateColumns: isD ? "1fr 1fr" : "1fr", gap: 6 }}>
             {ZOO_TIPS.map((tip, i) => (
-              <div key={i} style={{ background: zooGrad, borderRadius: 16, border: `1px solid ${T.border}`, padding: "14px 14px" }}>
+              <div key={i} style={{ background: zooGrad, borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", padding: "14px 14px" }}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                   <div>
                     <h4 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: T.textHi }}>{tip.title}</h4>
@@ -330,7 +331,7 @@ export function ZooClient() {
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="cta" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", borderRadius: 99, textDecoration: "none", background: `linear-gradient(135deg, ${T.accent}, ${T.accent}dd)`, color: T.bg, fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", boxShadow: `0 4px 20px rgba(94,196,182,.3)` }}>
               {IC.dir(T.bg, 14)} Get Directions
             </a>
-            <a href={ZOO_INFO.web} target="_blank" rel="noopener noreferrer" className="hbtn" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "14px 20px", borderRadius: 99, textDecoration: "none", background: "rgba(255,255,255,.04)", border: `1px solid ${T.border}`, color: T.text, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
+            <a href={ZOO_INFO.web} target="_blank" rel="noopener noreferrer" className="hbtn" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "14px 20px", borderRadius: 99, textDecoration: "none", background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)", color: T.text, fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
               Website
             </a>
           </div>
@@ -341,8 +342,8 @@ export function ZooClient() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={ac} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M13 5v2" /><path d="M13 17v2" /><path d="M13 11v2" /></svg>
               <div style={{ flex: 1 }}>
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: T.textHi }}>Become a Member</h3>
-                <p style={{ margin: "2px 0 0", fontSize: 11, color: ac, fontWeight: 600 }}>Starting at $109/yr · Pays for itself in 3 visits</p>
-                <p style={{ margin: "4px 0 0", fontSize: 11, color: T.textBody }}>Unlimited visits, free IMAX, 50+ zoo reciprocals</p>
+                <p style={{ margin: "2px 0 0", fontSize: 12, color: ac, fontWeight: 600 }}>Starting at $109/yr · Pays for itself in 3 visits</p>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: T.textBody }}>Unlimited visits, free IMAX, 50+ zoo reciprocals</p>
               </div>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={T.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><polyline points="9 18 15 12 9 6" /></svg>
             </div>

@@ -4,6 +4,7 @@ import { T, CG } from "../../lib/design-tokens";
 import { IC } from "../../lib/icons";
 import { useResponsive } from "../../components/ResponsiveProvider";
 import { BottomNav } from "../../components/BottomNav";
+import { TopNav } from "../../components/TopNav";
 
 const CA = { concerts: "#5EC4B6", sports: "#64B5F6", festivals: "#CE93D8", family: "#81C784", arts: "#B39DDB", comedy: "#FFB74D" };
 const CGrad = {
@@ -41,17 +42,18 @@ export function VenueClient({ venue, events = [], contentImage }) {
   const heroImg = contentImage || venue.img;
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: 80 }}>
-      <div style={{ maxWidth: mxW, margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: T.sans, paddingBottom: isD ? 32 : 80 }}>
+      <TopNav activeTab="explore" activeSub="venues" />
+      <div style={{ maxWidth: mxW, margin: "0 auto", paddingTop: isD ? 56 : isT ? 44 : 0 }}>
 
         {/* HERO IMAGE */}
         <div style={{ position: "relative", height: isD ? 340 : isM ? 240 : 280, overflow: "hidden", borderRadius: "0 0 24px 24px" }}>
           <img src={heroImg} alt={venue.name} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: .6 }} onError={e => { e.target.src = venue.img; e.target.onerror = null; }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(20,22,24,.05) 0%,rgba(20,22,24,.9) 100%)" }} />
 
-          <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(20,22,24,.6)", backdropFilter: "blur(8px)", border: `1px solid ${T.border}`, borderRadius: 99, padding: "8px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: T.textBody, fontSize: 11, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Back
-          </Link>
+          {!isD && <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,255,255,.12)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,.20)", borderRadius: 99, padding: "12px 20px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, color: T.text, fontSize: 12, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Back
+          </Link>}
 
           <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 5 }}>
             <span style={{ fontSize: 9, padding: "4px 10px", borderRadius: 99, background: "rgba(94,196,182,.12)", color: T.accent, fontWeight: 700, letterSpacing: .5, textTransform: "uppercase" }}>{venue.type}</span>

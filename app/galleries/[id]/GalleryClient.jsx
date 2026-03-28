@@ -4,6 +4,7 @@ import { T } from "../../lib/design-tokens";
 import { IC } from "../../lib/icons";
 import { useResponsive } from "../../components/ResponsiveProvider";
 import { BottomNav } from "../../components/BottomNav";
+import { TopNav } from "../../components/TopNav";
 
 const CA = { concerts: "#5EC4B6", sports: "#64B5F6", festivals: "#CE93D8", family: "#81C784", arts: "#B39DDB", comedy: "#FFB74D" };
 const CGrad = {
@@ -40,9 +41,9 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(39,31,48,.2) 0%,rgba(39,31,48,.85) 100%)" }} />
 
           {/* Back button */}
-          <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(20,22,24,.6)", backdropFilter: "blur(8px)", border: `1px solid ${T.border}`, borderRadius: 99, padding: "8px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: T.textBody, fontSize: 10, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Back
-          </Link>
+          {!isD && <Link href="/" className="hbtn" style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,255,255,.12)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,.20)", borderRadius: 99, padding: "12px 20px", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, color: T.text, fontSize: 12, fontWeight: 600, letterSpacing: .5, textDecoration: "none" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg> Back
+          </Link>}
 
           {/* Badges */}
           <div style={{ position: "absolute", top: 10, right: 12, display: "flex", gap: 6 }}>
@@ -55,7 +56,7 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: `0 ${px}px 16px` }}>
             <h1 style={{ fontSize: isD ? 28 : 22, fontWeight: 700, color: T.textHi, margin: "0 0 4px", lineHeight: 1.2 }}>{gallery.name}</h1>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 11, color: T.venue }}>{gallery.neighborhood}</span>
+              <span style={{ fontSize: 12, color: T.venue }}>{gallery.neighborhood}</span>
               {todayH && <span style={{ fontSize: 9, fontWeight: 600, color: isOpen ? T.green : T.red }}>{isOpen ? `Open today ${todayH.hours}` : "Closed today"}{isLateNight ? " \u2022 Late night" : ""}</span>}
             </div>
           </div>
@@ -68,10 +69,10 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
           <p style={{ fontSize: 13, color: T.textBody, lineHeight: 1.7, margin: "0 0 18px" }}>{gallery.blurb}</p>
 
           {/* Address + contact */}
-          <div style={{ padding: "14px", borderRadius: 14, marginBottom: 16, background: "rgba(255,255,255,.02)", border: `1px solid ${T.border}` }}>
+          <div style={{ padding: "14px", borderRadius: 14, marginBottom: 16, background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.12)" }}>
             <p style={{ fontSize: 12, color: T.textHi, margin: "0 0 4px", fontWeight: 600 }}>{gallery.address}</p>
-            {gallery.phone && <p style={{ fontSize: 11, color: T.textSec, margin: "0 0 2px" }}>{gallery.phone}</p>}
-            <p style={{ fontSize: 11, color: ac, margin: 0 }}>{gallery.admission}</p>
+            {gallery.phone && <p style={{ fontSize: 12, color: T.textSec, margin: "0 0 2px" }}>{gallery.phone}</p>}
+            <p style={{ fontSize: 12, color: ac, margin: 0 }}>{gallery.admission}</p>
           </div>
 
           {/* Hours */}
@@ -83,7 +84,7 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
                 return (
                   <div key={i} style={{ padding: "6px 10px", borderRadius: 10, flex: "0 0 auto", minWidth: isM ? "calc(50% - 3px)" : "auto", background: isTd ? `${T.green}10` : "rgba(255,255,255,.02)", border: `1px solid ${isTd ? T.green + "30" : "rgba(255,255,255,.04)"}` }}>
                     <span style={{ fontSize: 10, fontWeight: 700, color: isTd ? T.green : T.textDim, marginRight: 6 }}>{h.day}</span>
-                    <span style={{ fontSize: 11, color: h.closed ? T.textDim : T.textBody }}>{h.hours}</span>
+                    <span style={{ fontSize: 12, color: h.closed ? T.textDim : T.textBody }}>{h.hours}</span>
                     {h.late && <span style={{ fontSize: 8, color: ac, marginLeft: 4 }}>{"\u2605"}</span>}
                   </div>
                 );
@@ -128,15 +129,15 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
 
           {/* Notice */}
           {gallery.notice && <div style={{ padding: "10px 14px", borderRadius: 12, marginBottom: 16, background: "rgba(232,54,79,.06)", border: "1px solid rgba(232,54,79,.12)" }}>
-            <p style={{ fontSize: 11, color: T.textBody, margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 12, color: T.textBody, margin: 0, lineHeight: 1.5 }}>
               <span style={{ color: T.red, fontWeight: 700, fontSize: 9, letterSpacing: 1, textTransform: "uppercase" }}>Notice: </span>{gallery.notice}
             </p>
           </div>}
 
           {/* Action buttons */}
           <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
-            {gallery.web && <a href={gallery.web} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 0", borderRadius: 99, textDecoration: "none", background: `linear-gradient(135deg, ${T.accent}, ${T.accent}dd)`, color: T.bg, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Visit Website</a>}
-            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 20px", borderRadius: 99, textDecoration: "none", background: "rgba(255,255,255,.04)", border: `1px solid ${T.border}`, color: T.text, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>Map</a>
+            {gallery.web && <a href={gallery.web} target="_blank" rel="noopener noreferrer" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 0", borderRadius: 99, textDecoration: "none", background: `linear-gradient(135deg, ${T.accent}, ${T.accent}dd)`, color: T.bg, fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Visit Website</a>}
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 20px", borderRadius: 99, textDecoration: "none", background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.12)", color: T.text, fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>Map</a>
           </div>
 
           {/* UPCOMING EVENTS */}
@@ -147,7 +148,7 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
               const gr = CGrad[ev.cat] || CGrad._;
               const d = parseDate(ev.date);
               return (
-                <div key={ev.id} className="ecard" style={{ background: gr, borderRadius: 16, border: `1px solid ${T.border}`, padding: 0, marginBottom: 10, overflow: "hidden" }}>
+                <div key={ev.id} className="ecard" style={{ background: gr, borderRadius: 16, border: "1px solid rgba(255,255,255,.12)", padding: 0, marginBottom: 10, overflow: "hidden" }}>
                   <div style={{ display: "flex", alignItems: "stretch" }}>
                     <div style={{ width: isM ? 62 : 72, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "14px 0", background: "rgba(255,255,255,.03)", borderRight: `1px solid ${T.border}` }}>
                       {d ? <><span style={{ fontSize: 9, fontWeight: 700, color: eac, letterSpacing: 1.5 }}>{d.weekday}</span><span style={{ fontSize: isM ? 22 : 26, fontWeight: 300, color: T.textHi, lineHeight: 1.1, margin: "2px 0" }}>{d.day}</span><span style={{ fontSize: 9, fontWeight: 600, color: T.textDim, letterSpacing: 1 }}>{d.month}</span></> : <span style={{ fontSize: 18 }}>{ev.emoji}</span>}
@@ -157,7 +158,7 @@ export function GalleryClient({ gallery, events = [], contentImage }) {
                         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: T.textHi }}>{ev.title}</h3>
                         {ev.subcategory && <span style={{ fontSize: 8, fontWeight: 600, padding: "2px 7px", borderRadius: 99, background: `${eac}15`, color: eac, letterSpacing: .5 }}>{ev.subcategory}</span>}
                       </div>
-                      <p style={{ margin: "4px 0 0", fontSize: 11, fontWeight: 500, color: T.textSec }}>{ev.time || "TBD"} {"\u00B7"} {ev.price || "TBD"}</p>
+                      <p style={{ margin: "4px 0 0", fontSize: 12, fontWeight: 500, color: T.textSec }}>{ev.time || "TBD"} {"\u00B7"} {ev.price || "TBD"}</p>
                     </div>
                     {ev.url ? <a href={ev.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "0 16px", background: `${eac}12`, borderLeft: `1px solid ${eac}25`, color: eac, fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", textDecoration: "none", flexShrink: 0, gap: 5, whiteSpace: "nowrap" }}>Tickets</a> : <div style={{ display: "flex", alignItems: "center", padding: "0 14px", color: T.textDim, fontSize: 10, fontWeight: 600, flexShrink: 0 }}>Details →</div>}
                   </div>

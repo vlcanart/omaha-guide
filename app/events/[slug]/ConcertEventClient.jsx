@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { DetailPageScroll } from "../../components/DetailPageScroll";
 import { BottomNav } from "../../components/BottomNav";
+import { TopNav } from "../../components/TopNav";
+import { useResponsive } from "../../components/ResponsiveProvider";
 
 var T = {
   bg:"#141618",surface:"#1B1D21",card:"#1F2227",
@@ -215,16 +217,17 @@ export default function ConcertEventClient(props){
   function handleShare(){if(navigator.share){try{navigator.share({title:ev.title,text:ev.title+" at "+ev.venue,url:shareUrl});}catch(e){}}else{try{navigator.clipboard.writeText(shareUrl);}catch(e){}}setShared(true);setTimeout(function(){setShared(false);},2000);}
 
   return(
-    <div style={{minHeight:"100vh",background:T.bg,fontFamily:T.sans,color:T.text,paddingBottom:80}}>
+    <div style={{minHeight:"100vh",background:T.bg,fontFamily:T.sans,color:T.text,paddingBottom:w>=960?32:80}}>
+      <TopNav activeTab="events" />
       <DetailPageScroll />
       {/* HERO */}
-      <div style={{position:"relative",height:isM?380:460,overflow:"hidden"}}>
+      <div style={{position:"relative",height:isM?380:460,overflow:"hidden",marginTop:w>=960?56:w>=600?44:0}}>
         <img loading="lazy" src={heroImg} alt={ev.title} style={{width:"100%",height:"100%",objectFit:"cover",opacity:0.5}}/>
         <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(20,22,24,0.05) 0%,rgba(20,22,24,0.15) 25%,rgba(20,22,24,0.75) 65%,#141618 100%)"}}/>
 
-        <a href="/" style={{position:"absolute",top:16,left:px,zIndex:2,display:"flex",alignItems:"center",gap:6,padding:"8px 16px 8px 12px",borderRadius:99,background:"rgba(20,22,24,0.75)",border:"1px solid rgba(255,255,255,0.2)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",textDecoration:"none",color:T.text,fontSize:12,fontWeight:600}}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Back
-        </a>
+        {w<960&&<a href="/" style={{position:"absolute",top:16,left:px,zIndex:2,display:"flex",alignItems:"center",gap:8,padding:"12px 20px",borderRadius:99,background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",textDecoration:"none",color:T.text,fontSize:12,fontWeight:600}}>
+          <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Back
+        </a>}
         {ev.tickets&&ev.tickets[0]&&<a href={ev.tickets[0].url} target="_blank" rel="noopener noreferrer" style={{position:"absolute",top:16,right:px,zIndex:2,padding:"8px 18px",borderRadius:99,background:T.accent,color:T.bg,fontSize:11,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",textDecoration:"none"}}>Tickets</a>}
 
         <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 "+px+"px 28px"}}>

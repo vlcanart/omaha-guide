@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useResponsive } from "./ResponsiveProvider";
 import Link from "next/link";
 
@@ -24,13 +25,19 @@ const EXPLORE_SUBS = [
 ];
 
 function isExploreActive(tab) {
+  if (!tab) return false;
   return tab === "explore" || tab === "venues" || tab === "museums" ||
-    (tab && (tab.startsWith("hood:") || tab.startsWith("park:") || tab.startsWith("trail:") ||
-     tab.startsWith("trailDetail:") || tab.startsWith("venue:") || tab.startsWith("walk:")));
+    tab.startsWith("hood:") || tab.startsWith("park:") || tab.startsWith("trail:") ||
+    tab.startsWith("trailDetail:") || tab.startsWith("venue:") || tab.startsWith("walk:");
 }
 
 export function TopNav({ activeTab = "today", onTabChange, savedCount = 0, activeSub }) {
   const { isM, isT, isD } = useResponsive();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // Don't render until mounted (prevents hydration mismatch)
+  if (!mounted) return null;
 
   // Mobile: don't render
   if (isM) return null;

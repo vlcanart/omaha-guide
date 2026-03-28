@@ -202,7 +202,7 @@ export default function GOPrototype(){
   const heroMax=isTrailPage?0:fullHero?560:135;
 
   const showExploreSub=tab==="explore"||tab==="venues"||tab==="museums"||tab.startsWith("hood:")||tab.startsWith("park:")||tab.startsWith("trail:")||tab.startsWith("trailDetail:")||tab.startsWith("walk:");
-  const topNavH=isD?(showExploreSub?96:56):(isT?44:0);
+  const topNavH=mounted?(isD?(showExploreSub?96:56):(isT?44:0)):0;
 
   return (
     <div id="app-shell" style={{background:T.bg,color:T.text,fontFamily:T.sans}}>
